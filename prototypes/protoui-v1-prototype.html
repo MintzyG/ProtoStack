@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ProtoUI v1 Interactive Prototype</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+    color: var(--foreground, #eef2f8);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  /* Micro-frontend URL bar simulating the two Cloudflare sites */
+  .site-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .site-tabs {
+    display: inline-flex;
+    background: var(--card, #141923);
+    border: 1px solid var(--border, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    padding: 3px;
+    gap: 3px;
+  }
+  .site-tab {
+    border: 0;
+    background: transparent;
+    color: var(--muted-foreground, #8b95a8);
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+  .site-tab.active {
+    background: var(--secondary, rgba(255,255,255,0.1));
+    color: var(--foreground, #eef2f8);
+    font-weight: 600;
+  }
+  .site-hint {
+    font-size: 11px;
+    color: var(--muted-foreground, #8b95a8);
+  }
+
+  /* Main workbench shell */
+  .app {
+    background: var(--card, #12161f);
+    border: 1px solid var(--border, rgba(255,255,255,0.1));
+    border-radius: var(--radius, 10px);
+    overflow: hidden;
+  }
+
+  /* Top Global Bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+    background: var(--secondary, rgba(255,255,255,0.03));
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-slot {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px dashed var(--border, rgba(255,255,255,0.28));
+    display: grid;
+    place-items: center;
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    color: var(--muted-foreground, #8b95a8);
+  }
+  .brand-name {
+    font-weight: 700;
+    font-size: 13.5px;
+    letter-spacing: -0.01em;
+  }
+  .mode-pill {
+    font-size: 10px;
+    font-family: var(--font-mono, monospace);
+    padding: 2px 6px;
+    border-radius: 99px;
+    background: var(--muted, rgba(255,255,255,0.08));
+    color: var(--muted-foreground, #9aa4b6);
+  }
+  .mode-pill.builder {
+    background: var(--warning-surface, rgba(245,158,11,0.16));
+    color: var(--warning, #f59e0b);
+  }
+
+  .top-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .conn-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    border: 1px solid var(--border, rgba(255,255,255,0.12));
+    background: var(--card, #141923);
+    color: var(--foreground, #eef2f8);
+    font-size: 11.5px;
+    cursor: pointer;
+  }
+  .conn-btn:hover { border-color: var(--primary, #38bdf8); }
+  .led-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--warning, #f59e0b);
+  }
+  .led-dot.live { background: var(--success, #22c55e); }
+
+  .telemetry-chip {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: var(--muted, rgba(255,255,255,0.06));
+    color: var(--muted-foreground, #9aa4b6);
+  }
+  .telemetry-chip.warn {
+    background: var(--warning-surface, rgba(245,158,11,0.15));
+    color: var(--warning, #f59e0b);
+  }
+
+  .btn {
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--border, rgba(255,255,255,0.12));
+    background: var(--secondary, rgba(255,255,255,0.06));
+    color: var(--foreground, #eef2f8);
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+  .btn:hover { background: var(--muted, rgba(255,255,255,0.12)); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary {
+    background: var(--primary, #38bdf8);
+    color: var(--primary-foreground, #091018);
+    border-color: transparent;
+    font-weight: 600;
+  }
+  .btn-primary:hover { filter: brightness(1.08); background: var(--primary, #38bdf8); }
+  .btn-warn {
+    border-color: var(--warning, #f59e0b);
+    color: var(--warning, #f59e0b);
+    background: var(--warning-surface, rgba(245,158,11,0.12));
+  }
+
+  /* Visor Hero Stage */
+  .stage {
+    padding: 14px;
+    border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--background, rgba(0,0,0,0.22));
+  }
+  .stage-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11.5px;
+  }
+  .ram-badge {
+    font-family: var(--font-mono, monospace);
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 99px;
+    background: var(--accent-surface, rgba(56,189,248,0.14));
+    color: var(--primary, #38bdf8);
+  }
+  .ram-badge.saved {
+    background: rgba(34,197,94,0.14);
+    color: var(--success, #22c55e);
+  }
+  .visor-housing {
+    background: #07090d;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  #visorCanvas {
+    width: 100%;
+    max-width: 640px;
+    height: 156px;
+    display: block;
+    border-radius: 8px;
+    background: #040608;
+    image-rendering: pixelated;
+  }
+  .visor-meta {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    color: var(--muted-foreground, #7d879b);
+  }
+
+  /* Virtual test triggers under visor */
+  .sim-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .sim-label {
+    font-size: 11px;
+    color: var(--muted-foreground, #8b95a8);
+    margin-right: 4px;
+  }
+  .sim-trigger {
+    padding: 4px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border, rgba(255,255,255,0.14));
+    background: var(--card, #141923);
+    color: var(--foreground, #eef2f8);
+    font-size: 11px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .sim-trigger:hover { border-color: var(--primary, #38bdf8); }
+  .sim-trigger.firing {
+    background: var(--primary, #38bdf8);
+    color: var(--primary-foreground, #091018);
+    border-color: transparent;
+    font-weight: 600;
+  }
+
+  /* Body split: nav + panel */
+  .workspace {
+    display: grid;
+    grid-template-columns: 164px 1fr;
+    min-height: 360px;
+  }
+  .nav {
+    border-right: 1px solid var(--border, rgba(255,255,255,0.08));
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nav-btn {
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 7px;
+    border: 0;
+    background: transparent;
+    color: var(--muted-foreground, #8b95a8);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .nav-btn:hover { background: var(--secondary, rgba(255,255,255,0.05)); color: var(--foreground, #eef2f8); }
+  .nav-btn.active {
+    background: var(--accent-surface, rgba(56,189,248,0.14));
+    color: var(--primary, #38bdf8);
+    font-weight: 600;
+  }
+  .nav-foot {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--border, rgba(255,255,255,0.08));
+  }
+  .nav-link {
+    background: transparent;
+    border: 0;
+    color: var(--muted-foreground, #8b95a8);
+    font-size: 11px;
+    text-align: left;
+    padding: 4px 6px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .nav-link:hover { color: var(--foreground, #eef2f8); }
+
+  .content {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sec-title {
+    margin: 0 0 2px 0;
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  .sec-sub {
+    margin: 0;
+    font-size: 11.5px;
+    color: var(--muted-foreground, #8b95a8);
+  }
+
+  /* Face grid */
+  .face-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .face-card {
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border, rgba(255,255,255,0.1));
+    background: var(--secondary, rgba(255,255,255,0.03));
+    color: var(--foreground, #eef2f8);
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .face-card:hover { border-color: rgba(255,255,255,0.25); }
+  .face-card.active {
+    border-color: var(--primary, #38bdf8);
+    background: var(--accent-surface, rgba(56,189,248,0.12));
+  }
+  .face-name { font-weight: 600; font-size: 12px; }
+  .face-meta { font-family: var(--font-mono, monospace); font-size: 10px; color: var(--muted-foreground, #8b95a8); }
+
+  /* Controls & cards */
+  .card-box {
+    padding: 11px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border, rgba(255,255,255,0.09));
+    background: var(--secondary, rgba(255,255,255,0.03));
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .row-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .swatches {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+  .swatch.active { border-color: #ffffff; transform: scale(1.08); }
+
+  .dropzone {
+    border: 1px dashed var(--border, rgba(255,255,255,0.22));
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .spec-list {
+    font-family: var(--font-mono, monospace);
+    font-size: 10.5px;
+    color: var(--muted-foreground, #8b95a8);
+  }
+
+  /* Sensor bar */
+  .meter-wrap {
+    position: relative;
+    height: 14px;
+    border-radius: 99px;
+    background: var(--muted, rgba(255,255,255,0.08));
+    overflow: hidden;
+  }
+  .meter-fill {
+    height: 100%;
+    background: var(--primary, #38bdf8);
+    transition: width 0.08s linear;
+  }
+  .meter-thresh {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--warning, #f59e0b);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--primary, #38bdf8);
+  }
+  select {
+    background: var(--card, #141923);
+    color: var(--foreground, #eef2f8);
+    border: 1px solid var(--border, rgba(255,255,255,0.14));
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 11.5px;
+  }
+  .paw-row {
+    display: grid;
+    grid-template-columns: 78px 1fr 1fr auto;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: var(--card, #141923);
+    border: 1px solid var(--border, rgba(255,255,255,0.07));
+  }
+  .paw-row.lit { border-color: var(--primary, #38bdf8); }
+  .pin-tag {
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--muted, rgba(255,255,255,0.08));
+    color: var(--muted-foreground, #9aa4b6);
+  }
+  .notice {
+    font-size: 11.5px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--warning, #f59e0b);
+    background: var(--warning-surface, rgba(245,158,11,0.12));
+    color: var(--warning, #f59e0b);
+  }
+  .notice.ok {
+    border-color: var(--success, #22c55e);
+    background: rgba(34,197,94,0.12);
+    color: var(--success, #22c55e);
+  }
+  .log-box {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #080b10;
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    color: var(--muted-foreground, #9aa4b6);
+    white-space: pre-line;
+  }
+  .toast {
+    font-size: 11.5px;
+    color: var(--success, #22c55e);
+    min-height: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .workspace { grid-template-columns: 1fr; }
+    .nav { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--border, rgba(255,255,255,0.08)); }
+    .nav-foot { margin-top: 0; border-top: 0; padding-top: 0; }
+    .face-grid { grid-template-columns: repeat(2, 1fr); }
+    .paw-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="site-bar">
+  <div class="site-tabs" role="tablist">
+    <button class="site-tab active" id="siteConfigBtn">config.protostack.dev (Owner)</button>
+    <button class="site-tab" id="siteBuilderBtn">builder.protostack.dev (Builder)</button>
+  </div>
+  <span class="site-hint">Two separate Cloudflare micro-frontends sharing proto-ui-core</span>
+</div>
+
+<div class="app">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-slot" title="White-label brand logo slot">LOGO</div>
+      <span class="brand-name">ProtoStack</span>
+      <span class="mode-pill" id="modePill">Config</span>
+    </div>
+
+    <div class="top-right">
+      <button class="conn-btn" id="connBtn" title="Click to toggle simulated WebHID USB connection">
+        <span class="led-dot" id="connDot"></span>
+        <span id="connText">Simulator Mode (Connect USB)</span>
+      </button>
+      <span class="telemetry-chip" id="powerChip">1.15A / 3.0A</span>
+      <span class="telemetry-chip" id="fanChip">Fan 65%</span>
+      <button class="btn" id="undoBtn" disabled>Undo</button>
+      <button class="btn btn-primary" id="saveBtn">Save to Head</button>
+    </div>
+  </div>
+
+  <!-- Always-visible Dual 64x32 HUB75 Live Stage -->
+  <div class="stage">
+    <div class="stage-head">
+      <div>
+        <strong id="stageTitle">Dual 64x32 HUB75 Live Preview</strong>
+        <span style="color:var(--muted-foreground,#8b95a8);margin-left:6px" id="stageFaceLabel">Face: Idle</span>
+      </div>
+      <span class="ram-badge saved" id="ramBadge">Saved on Head</span>
+    </div>
+
+    <div class="visor-housing">
+      <canvas id="visorCanvas" width="128" height="32"></canvas>
+      <div class="visor-meta">
+        <span>LEFT PANEL (64x32)</span>
+        <span id="metaCenter">Teensy 4.1 | 128x32 | RGB | 60 FPS</span>
+        <span>RIGHT PANEL (64x32)</span>
+      </div>
+    </div>
+
+    <div class="sim-bar" id="simBar"></div>
+  </div>
+
+  <!-- Workspace Body -->
+  <div class="workspace">
+    <nav class="nav" id="sideNav"></nav>
+    <main class="content" id="mainContent"></main>
+  </div>
+</div>
+
+<script>
+const DEFAULT_SNAPSHOT = {
+  face: "idle",
+  color: "#38bdf8",
+  mirror: true,
+  brightness: 80,
+  powerLimitA: 3.0,
+  fanPreset: "balanced",
+  fanDuty: 65,
+  boopEnabled: true,
+  boopThresholdCm: 5,
+  boopFace: "blush",
+  boopDurationSec: 3,
+  pawButtons: [
+    { id: 1, pin: 14, mode: "Tap", action: "happy" },
+    { id: 2, pin: 15, mode: "Tap", action: "angry" },
+    { id: 3, pin: 16, mode: "Tap", action: "cycle" }
+  ],
+  customFaces: [],
+  boardPreset: "smartled-v5",
+  panelDriver: "FM6126A",
+  colorOrder: "RGB",
+  boopHardware: "APDS9960 (I2C)"
+};
+
+let factorySnapshot = structuredClone(DEFAULT_SNAPSHOT);
+let savedState = structuredClone(DEFAULT_SNAPSHOT);
+let state = structuredClone(DEFAULT_SNAPSHOT);
+let undoStack = [];
+
+let activeSite = "config"; // "config" | "builder"
+let activeTab = "faces";
+let usbConnected = false;
+let boopLiveCm = 14;
+let boopOverrideUntil = 0;
+let identifyPanel = 0; // 0 = off, 1 = left, 2 = right
+let identifyUntil = 0;
+let flashProgress = -1;
+let flashLog = "Ready. Connects via WebHID (Teensy 4.1 HalfKay 0x16C0:0x0479).";
+let scanLog = "Click Scan I2C Bus to detect attached sensors.";
+let toastMsg = "";
+let litPawId = null;
+
+const BUILTIN_FACES = [
+  { id: "idle", name: "Idle", meta: "Built-in | Auto-blink" },
+  { id: "happy", name: "Happy", meta: "Built-in | Animated" },
+  { id: "blush", name: "Blush", meta: "Built-in | Boop default" },
+  { id: "angry", name: "Angry", meta: "Built-in | Sharp" },
+  { id: "sleepy", name: "Sleepy", meta: "Built-in | Slow blink" },
+  { id: "starry", name: "Starry", meta: "Built-in | Sparkle" }
+];
+
+const SWATCHES = ["#38bdf8", "#34d399", "#f472b6", "#fbbf24", "#a78bfa", "#f87171", "#ffffff"];
+
+function allFaces() {
+  return [...BUILTIN_FACES, ...state.customFaces];
+}
+
+function isDirty() {
+  return JSON.stringify(state) !== JSON.stringify(savedState);
+}
+
+function pushUndo() {
+  undoStack.push(structuredClone(state));
+  if (undoStack.length > 25) undoStack.shift();
+}
+
+function mutate(fn, skipRender) {
+  pushUndo();
+  fn();
+  if (!skipRender) renderAll();
+  else updateHeaderAndSim();
+}
+
+function setToast(msg) {
+  toastMsg = msg;
+  const el = document.getElementById("toastArea");
+  if (el) el.textContent = msg;
+}
+
+function calcPower() {
+  // Estimate HUB75 dual 64x32 active pixel draw: ~0.35A base + up to 3.1A at 100% brightness
+  const rawA = 0.35 + (state.brightness / 100) * 2.85;
+  const capped = rawA > state.powerLimitA;
+  const effectiveScale = capped ? Math.max(0.15, (state.powerLimitA - 0.35) / 2.85) : (state.brightness / 100);
+  const drawA = Math.min(rawA, state.powerLimitA);
+  return { rawA, drawA, capped, effectivePct: Math.round(effectiveScale * 100), effectiveScale };
+}
+
+function triggerBoop() {
+  boopLiveCm = Math.max(1, state.boopThresholdCm - 2);
+  if (state.boopEnabled) {
+    boopOverrideUntil = performance.now() + state.boopDurationSec * 1000;
+  }
+  const b = document.getElementById("simBoopBtn");
+  if (b) { b.classList.add("firing"); setTimeout(() => b.classList.remove("firing"), 320); }
+  setTimeout(() => { boopLiveCm = 14; if (activeTab === "inputs") renderContent(); }, 700);
+  if (activeTab === "inputs") renderContent();
+}
+
+function triggerPaw(btn) {
+  litPawId = btn.id;
+  setTimeout(() => { litPawId = null; renderSimBar(); if (activeTab === "inputs") renderContent(); }, 350);
+  if (btn.action === "cycle") {
+    const list = allFaces();
+    const idx = list.findIndex(f => f.id === state.face);
+    state.face = list[(idx + 1) % list.length].id;
+  } else {
+    state.face = btn.action;
+  }
+  boopOverrideUntil = 0;
+  renderAll();
+}
+
+function switchSite(site) {
+  activeSite = site;
+  activeTab = site === "config" ? "faces" : "flash";
+  renderAll();
+}
+
+// Top bar bindings
+document.getElementById("siteConfigBtn").onclick = () => switchSite("config");
+document.getElementById("siteBuilderBtn").onclick = () => switchSite("builder");
+
+document.getElementById("connBtn").onclick = () => {
+  usbConnected = !usbConnected;
+  updateHeaderAndSim();
+  setToast(usbConnected ? "Connected to ProtoStack Visor (Teensy 4.1) over WebHID." : "Switched to zero-hardware Simulator Mode.");
+};
+
+document.getElementById("undoBtn").onclick = () => {
+  if (!undoStack.length) return;
+  state = undoStack.pop();
+  renderAll();
+};
+
+document.getElementById("saveBtn").onclick = () => {
+  savedState = structuredClone(state);
+  undoStack = [];
+  updateHeaderAndSim();
+  setToast(usbConnected ? "Committed to Teensy 4.1 QSPI flash (A/B safe slot)." : "Saved in simulator profile.");
+};
+
+function updateHeaderAndSim() {
+  document.getElementById("siteConfigBtn").classList.toggle("active", activeSite === "config");
+  document.getElementById("siteBuilderBtn").classList.toggle("active", activeSite === "builder");
+
+  const pill = document.getElementById("modePill");
+  pill.textContent = activeSite === "config" ? "Config" : "Builder";
+  pill.classList.toggle("builder", activeSite === "builder");
+
+  const dot = document.getElementById("connDot");
+  dot.classList.toggle("live", usbConnected);
+  document.getElementById("connText").textContent = usbConnected
+    ? "Teensy 4.1 (WebHID)"
+    : "Simulator Mode (Connect USB)";
+
+  const pwr = calcPower();
+  const pChip = document.getElementById("powerChip");
+  pChip.textContent = `${pwr.drawA.toFixed(2)}A / ${state.powerLimitA.toFixed(1)}A${pwr.capped ? " CAP" : ""}`;
+  pChip.classList.toggle("warn", pwr.capped);
+
+  const fChip = document.getElementById("fanChip");
+  fChip.textContent = `Fan ${state.fanDuty}%`;
+  fChip.classList.toggle("warn", state.fanDuty < 20);
+
+  document.getElementById("undoBtn").disabled = undoStack.length === 0;
+  const dirty = isDirty();
+  const ram = document.getElementById("ramBadge");
+  ram.textContent = dirty ? "Previewing in RAM (Unsaved)" : "Saved on Head";
+  ram.classList.toggle("saved", !dirty);
+
+  const curFace = allFaces().find(f => f.id === state.face);
+  document.getElementById("stageFaceLabel").textContent = `Face: ${curFace ? curFace.name : state.face}`;
+  document.getElementById("metaCenter").textContent = `Teensy 4.1 | 128x32 | ${state.colorOrder} | ${state.panelDriver}`;
+
+  renderSimBar();
+}
+
+function renderSimBar() {
+  const bar = document.getElementById("simBar");
+  const pawBtns = state.pawButtons.map(b => {
+    const targetName = b.action === "cycle" ? "Cycle" : (allFaces().find(f => f.id === b.action)?.name || b.action);
+    return `<button class="sim-trigger ${litPawId === b.id ? "firing" : ""}" data-paw="${b.id}">Paw ${b.id}: ${targetName}</button>`;
+  }).join("");
+
+  bar.innerHTML = `
+    <span class="sim-label">Virtual test:</span>
+    <button class="sim-trigger" id="simBoopBtn">Boop Nose</button>
+    ${pawBtns}
+  `;
+  document.getElementById("simBoopBtn").onclick = triggerBoop;
+  bar.querySelectorAll("[data-paw]").forEach(el => {
+    const id = Number(el.dataset.paw);
+    el.onclick = () => {
+      const btn = state.pawButtons.find(x => x.id === id);
+      if (btn) triggerPaw(btn);
+    };
+  });
+}
+
+function renderNav() {
+  const nav = document.getElementById("sideNav");
+  const tabs = activeSite === "config"
+    ? [
+        { id: "faces", label: "Faces" },
+        { id: "inputs", label: "Boop & Buttons" },
+        { id: "power", label: "Power & Fan" },
+        { id: "profile", label: "Profile & Reset" }
+      ]
+    : [
+        { id: "flash", label: "Firmware Flasher" },
+        { id: "panels", label: "Board & Panels" },
+        { id: "wiring", label: "Inputs & Diagnostics" }
+      ];
+
+  nav.innerHTML = tabs.map(t =>
+    `<button class="nav-btn ${activeTab === t.id ? "active" : ""}" data-tab="${t.id}">${t.label}</button>`
+  ).join("") + `
+    <div class="nav-foot">
+      <button class="nav-link" id="crossSiteLink">
+        ${activeSite === "config" ? "Open Builder site ->" : "<- Back to Config site"}
+      </button>
+    </div>
+  `;
+
+  nav.querySelectorAll("[data-tab]").forEach(el => {
+    el.onclick = () => { activeTab = el.dataset.tab; renderAll(); };
+  });
+  document.getElementById("crossSiteLink").onclick = () => {
+    switchSite(activeSite === "config" ? "builder" : "config");
+  };
+}
+
+function renderContent() {
+  const root = document.getElementById("mainContent");
+  const faces = allFaces();
+
+  if (activeSite === "config" && activeTab === "faces") {
+    root.innerHTML = `
+      <div>
+        <h3 class="sec-title">Visor Expressions</h3>
+        <p class="sec-sub">Changes preview live in RAM. Click Save to Head when you are happy with them.</p>
+      </div>
+      <div class="face-grid">
+        ${faces.map(f => `
+          <button class="face-card ${state.face === f.id ? "active" : ""}" data-face="${f.id}">
+            <span class="face-name">${f.name}</span>
+            <span class="face-meta">${f.meta}</span>
+          </button>
+        `).join("")}
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <strong>Visor Color Tint</strong>
+          <label style="font-size:11.5px;display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="mirrorChk" ${state.mirror ? "checked" : ""}/> Mirror Left / Right
+          </label>
+        </div>
+        <div class="swatches">
+          ${SWATCHES.map(c => `<button class="swatch ${state.color.toLowerCase() === c ? "active" : ""}" style="background:${c}" data-color="${c}"></button>`).join("")}
+          <input type="color" id="customColor" value="${state.color}" style="width:28px;height:22px;border:0;background:transparent;cursor:pointer" title="Custom color"/>
+        </div>
+      </div>
+      <div class="dropzone">
+        <div>
+          <strong style="font-size:12px">Import Custom Animation</strong>
+          <div class="spec-list">64x32 per panel (or 128x32 combined) | PNG, GIF, sprite strip | up to 30 FPS</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn" id="sampleImportBtn">Import Sample ("Cyber Heart")</button>
+        </div>
+      </div>
+      <div class="toast" id="toastArea">${toastMsg}</div>
+    `;
+
+    root.querySelectorAll("[data-face]").forEach(el => {
+      el.onclick = () => mutate(() => { state.face = el.dataset.face; boopOverrideUntil = 0; });
+    });
+    root.querySelectorAll("[data-color]").forEach(el => {
+      el.onclick = () => mutate(() => { state.color = el.dataset.color; });
+    });
+    document.getElementById("customColor").oninput = (e) => mutate(() => { state.color = e.target.value; }, true);
+    document.getElementById("mirrorChk").onchange = (e) => mutate(() => { state.mirror = e.target.checked; });
+    document.getElementById("sampleImportBtn").onclick = () => {
+      mutate(() => {
+        if (!state.customFaces.some(f => f.id === "heart")) {
+          state.customFaces.push({ id: "heart", name: "Cyber Heart", meta: "Imported GIF | 64x32" });
+        }
+        state.face = "heart";
+      });
+      setToast("Imported cyber_heart_64x32.gif into RAM preview.");
+    };
+    return;
+  }
+
+  if (activeSite === "config" && activeTab === "inputs") {
+    const boopTriggered = boopLiveCm <= state.boopThresholdCm;
+    const proxPct = Math.max(4, Math.min(100, ((20 - boopLiveCm) / 20) * 100));
+    const threshPct = Math.max(4, Math.min(100, ((20 - state.boopThresholdCm) / 20) * 100));
+
+    root.innerHTML = `
+      <div>
+        <h3 class="sec-title">Boop Sensor &amp; Wired Paw Buttons</h3>
+        <p class="sec-sub">Calibrate boop distance with the live bar and assign faces to your wired buttons.</p>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <strong>Boop Sensor (${state.boopHardware})</strong>
+          <label style="font-size:11.5px;display:inline-flex;align-items:center;gap:5px">
+            <input type="checkbox" id="boopEn" ${state.boopEnabled ? "checked" : ""}/> Enabled
+          </label>
+        </div>
+        <div class="row-between" style="font-size:11px;color:var(--muted-foreground,#8b95a8)">
+          <span>Live distance: <strong style="color:var(--foreground,#eef2f8)">${boopLiveCm} cm</strong> ${boopTriggered ? "(TRIGGERED)" : "(idle)"}</span>
+          <span>Trigger under: <strong style="color:var(--warning,#f59e0b)">${state.boopThresholdCm} cm</strong></span>
+        </div>
+        <div class="meter-wrap">
+          <div class="meter-fill" style="width:${proxPct}%;background:${boopTriggered ? "var(--success,#22c55e)" : "var(--primary,#38bdf8)"}"></div>
+          <div class="meter-thresh" style="left:${threshPct}%"></div>
+        </div>
+        <div class="row-between">
+          <label style="flex:1;font-size:11px;color:var(--muted-foreground,#8b95a8)">
+            Trigger sensitivity (${state.boopThresholdCm} cm)
+            <input type="range" id="boopThresh" min="2" max="15" value="${state.boopThresholdCm}"/>
+          </label>
+          <select id="boopFaceSel">
+            ${faces.map(f => `<option value="${f.id}" ${state.boopFace === f.id ? "selected" : ""}>Play: ${f.name}</option>`).join("")}
+          </select>
+          <select id="boopDurSel">
+            ${[2, 3, 5].map(s => `<option value="${s}" ${state.boopDurationSec === s ? "selected" : ""}>${s}s</option>`).join("")}
+          </select>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div class="row-between">
+          <strong>Wired Paw Buttons (${state.pawButtons.length} configured)</strong>
+          <span style="font-size:11px;color:var(--muted-foreground,#8b95a8)">Add/remove button pins in Builder site</span>
+        </div>
+        ${state.pawButtons.length === 0
+          ? `<div class="sec-sub">No paw buttons enabled in hardware manifest.</div>`
+          : state.pawButtons.map(b => `
+            <div class="paw-row ${litPawId === b.id ? "lit" : ""}">
+              <span style="font-weight:600;font-size:11.5px">Button ${b.id} <span class="pin-tag">P${b.pin}</span></span>
+              <select data-paw-mode="${b.id}">
+                <option value="Tap" ${b.mode === "Tap" ? "selected" : ""}>Tap</option>
+                <option value="Hold" ${b.mode === "Hold" ? "selected" : ""}>Hold</option>
+              </select>
+              <select data-paw-act="${b.id}">
+                <option value="cycle" ${b.action === "cycle" ? "selected" : ""}>Cycle Next Face</option>
+                ${faces.map(f => `<option value="${f.id}" ${b.action === f.id ? "selected" : ""}>Set: ${f.name}</option>`).join("")}
+              </select>
+              <button class="btn" data-paw-test="${b.id}">Test</button>
+            </div>
+          `).join("")}
+      </div>
+      <div class="toast" id="toastArea">${toastMsg}</div>
+    `;
+
+    document.getElementById("boopEn").onchange = e => mutate(() => { state.boopEnabled = e.target.checked; });
+    document.getElementById("boopThresh").oninput = e => mutate(() => { state.boopThresholdCm = Number(e.target.value); });
+    document.getElementById("boopFaceSel").onchange = e => mutate(() => { state.boopFace = e.target.value; });
+    document.getElementById("boopDurSel").onchange = e => mutate(() => { state.boopDurationSec = Number(e.target.value); });
+    root.querySelectorAll("[data-paw-mode]").forEach(el => {
+      el.onchange = e => mutate(() => {
+        const b = state.pawButtons.find(x => x.id === Number(el.dataset.pawMode));
+        if (b) b.mode = e.target.value;
+      });
+    });
+    root.querySelectorAll("[data-paw-act]").forEach(el => {
+      el.onchange = e => mutate(() => {
+        const b = state.pawButtons.find(x => x.id === Number(el.dataset.pawAct));
+        if (b) b.action = e.target.value;
+      });
+    });
+    root.querySelectorAll("[data-paw-test]").forEach(el => {
+      el.onclick = () => {
+        const b = state.pawButtons.find(x => x.id === Number(el.dataset.pawTest));
+        if (b) triggerPaw(b);
+      };
+    });
+    return;
+  }
+
+  if (activeSite === "config" && activeTab === "power") {
+    const pwr = calcPower();
+    root.innerHTML = `
+      <div>
+        <h3 class="sec-title">Power Budget &amp; Cooling Fan</h3>
+        <p class="sec-sub">Automatic current limiting prevents sudden 5V power-bank brownout reboots.</p>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <strong>Visor Brightness: ${state.brightness}%</strong>
+          <span style="font-family:var(--font-mono,monospace);font-size:11px">Est. draw: ${pwr.drawA.toFixed(2)}A (raw ${pwr.rawA.toFixed(2)}A)</span>
+        </div>
+        <input type="range" id="brightSlider" min="10" max="100" value="${state.brightness}"/>
+        <div class="row-between">
+          <strong>5V Power Bank Current Limit: ${state.powerLimitA.toFixed(1)}A</strong>
+          <span style="font-size:11px;color:var(--muted-foreground,#8b95a8)">Standard USB bank: 2.4A - 3.0A</span>
+        </div>
+        <input type="range" id="limitSlider" min="1.5" max="5.0" step="0.1" value="${state.powerLimitA}"/>
+        ${pwr.capped
+          ? `<div class="notice">Power governor active: visor scaled to ${pwr.effectivePct}% to stay under ${state.powerLimitA.toFixed(1)}A and avoid brownout.</div>`
+          : `<div class="notice ok">Power draw is safely within your ${state.powerLimitA.toFixed(1)}A battery limit.</div>`}
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <strong>Cooling Fan Speed: ${state.fanDuty}%</strong>
+          <div style="display:flex;gap:5px">
+            <button class="btn ${state.fanDuty === 40 ? "btn-primary" : ""}" data-fan="40">Quiet (40%)</button>
+            <button class="btn ${state.fanDuty === 65 ? "btn-primary" : ""}" data-fan="65">Balanced (65%)</button>
+            <button class="btn ${state.fanDuty === 100 ? "btn-primary" : ""}" data-fan="100">Con Cool (100%)</button>
+          </div>
+        </div>
+        <input type="range" id="fanSlider" min="0" max="100" value="${state.fanDuty}"/>
+        ${state.fanDuty < 20
+          ? `<div class="notice">Warning: fan speed below 20% may fog the visor or get hot inside the helmet. Not locked, your choice.</div>`
+          : ``}
+      </div>
+      <div class="toast" id="toastArea">${toastMsg}</div>
+    `;
+
+    document.getElementById("brightSlider").oninput = e => mutate(() => { state.brightness = Number(e.target.value); });
+    document.getElementById("limitSlider").oninput = e => mutate(() => { state.powerLimitA = Number(e.target.value); });
+    document.getElementById("fanSlider").oninput = e => mutate(() => { state.fanDuty = Number(e.target.value); });
+    root.querySelectorAll("[data-fan]").forEach(el => {
+      el.onclick = () => mutate(() => { state.fanDuty = Number(el.dataset.fan); });
+    });
+    return;
+  }
+
+  if (activeSite === "config" && activeTab === "profile") {
+    root.innerHTML = `
+      <div>
+        <h3 class="sec-title">Profile Backup &amp; Safe Recovery</h3>
+        <p class="sec-sub">Your helmet is never locked. You can always restore the saved Factory Snapshot or open the Builder site.</p>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <div>
+            <strong>Builder Factory Snapshot</strong>
+            <div class="sec-sub">Reverts faces, colors, boop threshold, and fan speed to the last known-good snapshot.</div>
+          </div>
+          <button class="btn btn-warn" id="restoreFactoryBtn">Restore Factory Snapshot</button>
+        </div>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <div>
+            <strong>Portable Profile (.protoprofile)</strong>
+            <div class="sec-sub">Export your current config to share or back up before a convention.</div>
+          </div>
+          <button class="btn" id="exportBtn">Copy JSON Summary</button>
+        </div>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <div>
+            <strong>Need firmware flashing, pinouts, or panel setup?</strong>
+            <div class="sec-sub">Hardware settings live on the separate Builder site to prevent accidental edits.</div>
+          </div>
+          <button class="btn" id="goBuilderBtn">Open builder.protostack.dev -></button>
+        </div>
+      </div>
+      <div class="toast" id="toastArea">${toastMsg}</div>
+    `;
+
+    document.getElementById("restoreFactoryBtn").onclick = () => {
+      mutate(() => { state = structuredClone(factorySnapshot); });
+      setToast("Loaded Factory Snapshot into RAM preview. Click Save to Head to make permanent.");
+    };
+    document.getElementById("exportBtn").onclick = () => {
+      setToast(`Profile ready: ${state.face}, ${state.color}, ${state.pawButtons.length} paw buttons, ${state.powerLimitA}A limit.`);
+    };
+    document.getElementById("goBuilderBtn").onclick = () => switchSite("builder");
+    return;
+  }
+
+  // ===== BUILDER MICRO-FRONTEND =====
+  if (activeSite === "builder" && activeTab === "flash") {
+    root.innerHTML = `
+      <div>
+        <h3 class="sec-title">In-Browser Teensy 4.1 WebHID Flasher</h3>
+        <p class="sec-sub">Flashes ProtoStack firmware straight from Chrome/Edge via HalfKay WebHID (0x16C0:0x0479). No Teensyduino or helmet teardown required.</p>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <div>
+            <strong>Firmware Release: protostack-teensy41-v0.1.0.hex</strong>
+            <div class="sec-sub">Uses ProtoSpeak BOOTLOADER_JUMP (bkpt #251) then writes 1088-byte HID blocks.</div>
+          </div>
+          <button class="btn btn-primary" id="startFlashBtn" ${flashProgress >= 0 && flashProgress < 100 ? "disabled" : ""}>
+            ${flashProgress >= 0 && flashProgress < 100 ? `Flashing ${flashProgress}%...` : "Flash Teensy 4.1 via WebHID"}
+          </button>
+        </div>
+        <div class="meter-wrap">
+          <div class="meter-fill" style="width:${Math.max(0, flashProgress)}%;background:var(--success,#22c55e)"></div>
+        </div>
+        <div class="log-box">${flashLog}</div>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <div>
+            <strong>Commission Studio Handoff</strong>
+            <div class="sec-sub">Saves the current tested config as the helmet's Factory Snapshot (owners can still edit freely).</div>
+          </div>
+          <button class="btn" id="saveSnapBtn">Save as Factory Snapshot</button>
+        </div>
+      </div>
+      <div class="toast" id="toastArea">${toastMsg}</div>
+    `;
+
+    document.getElementById("startFlashBtn").onclick = () => {
+      if (flashProgress >= 0 && flashProgress < 100) return;
+      flashProgress = 5;
+      flashLog = "[1/4] Sending ProtoSpeak BOOTLOADER_JUMP (0x00FE)...";
+      renderContent();
+      setTimeout(() => {
+        flashProgress = 25;
+        flashLog += "\n[2/4] HalfKay WebHID detected (VID 0x16C0 / PID 0x0479). Erasing block 0...";
+        renderContent();
+      }, 450);
+      setTimeout(() => {
+        flashProgress = 70;
+        flashLog += "\n[3/4] Writing 1088-byte flash pages (142 / 196)...";
+        renderContent();
+      }, 950);
+      setTimeout(() => {
+        flashProgress = 100;
+        usbConnected = true;
+        flashLog += "\n[4/4] Sent reboot magic [0xFF, 0xFF, 0xFF]. Teensy 4.1 back online!";
+        updateHeaderAndSim();
+        renderContent();
+        setToast("Teensy 4.1 firmware updated cleanly over WebHID.");
+      }, 1500);
+    };
+
+    document.getElementById("saveSnapBtn").onclick = () => {
+      factorySnapshot = structuredClone(state);
+      savedState = structuredClone(state);
+      updateHeaderAndSim();
+      setToast("Saved current hardware & face setup as the Factory Snapshot.");
+    };
+    return;
+  }
+
+  if (activeSite === "builder" && activeTab === "panels") {
+    root.innerHTML = `
+      <div>
+        <h3 class="sec-title">Board Preset &amp; Dual 64x32 HUB75 Panel Setup</h3>
+        <p class="sec-sub">Runtime manifest settings - no C++ header editing or recompiling needed.</p>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <label style="font-size:11.5px">Board / Shield Preset
+            <select id="presetSel" style="margin-left:6px">
+              <option value="smartled-v5" ${state.boardPreset === "smartled-v5" ? "selected" : ""}>SmartLED Shield V5 (Teensy 4.1)</option>
+              <option value="coela-delta" ${state.boardPreset === "coela-delta" ? "selected" : ""}>Coela Delta Shield (Teensy 4.1)</option>
+              <option value="custom" ${state.boardPreset === "custom" ? "selected" : ""}>Custom FlexIO Pinout</option>
+            </select>
+          </label>
+          <span class="pin-tag">OE:2 LATCH:3 CLK:7 R0:6 G0:9 B0:10</span>
+        </div>
+        <div class="row-between">
+          <label style="font-size:11.5px">HUB75 Driver Timing
+            <select id="driverSel" style="margin-left:6px">
+              <option value="FM6126A" ${state.panelDriver === "FM6126A" ? "selected" : ""}>FM6126A (100ns latch, 18.46MHz)</option>
+              <option value="Standard" ${state.panelDriver === "Standard" ? "selected" : ""}>Standard DP5020B (20ns latch)</option>
+            </select>
+          </label>
+          <label style="font-size:11.5px">Color Order
+            <select id="orderSel" style="margin-left:6px">
+              <option value="RGB" ${state.colorOrder === "RGB" ? "selected" : ""}>RGB (Standard)</option>
+              <option value="RBG" ${state.colorOrder === "RBG" ? "selected" : ""}>RBG (Swapped G/B)</option>
+              <option value="BGR" ${state.colorOrder === "BGR" ? "selected" : ""}>BGR (Reversed)</option>
+            </select>
+          </label>
+        </div>
+        <div class="row-between" style="padding-top:4px">
+          <span style="font-size:11.5px;color:var(--muted-foreground,#8b95a8)">Flash orientation arrows onto the visor to verify wiring:</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn" id="idP1Btn">Identify Panel 1</button>
+            <button class="btn" id="idP2Btn">Identify Panel 2</button>
+          </div>
+        </div>
+      </div>
+      <div class="toast" id="toastArea">${toastMsg}</div>
+    `;
+
+    document.getElementById("presetSel").onchange = e => mutate(() => { state.boardPreset = e.target.value; });
+    document.getElementById("driverSel").onchange = e => mutate(() => { state.panelDriver = e.target.value; });
+    document.getElementById("orderSel").onchange = e => mutate(() => { state.colorOrder = e.target.value; });
+    document.getElementById("idP1Btn").onclick = () => {
+      identifyPanel = 1; identifyUntil = performance.now() + 2600;
+      setToast("Sent PANEL_IDENTIFY (0x0030) to Panel 1 (Left).");
+    };
+    document.getElementById("idP2Btn").onclick = () => {
+      identifyPanel = 2; identifyUntil = performance.now() + 2600;
+      setToast("Sent PANEL_IDENTIFY (0x0030) to Panel 2 (Right).");
+    };
+    return;
+  }
+
+  if (activeSite === "builder" && activeTab === "wiring") {
+    root.innerHTML = `
+      <div>
+        <h3 class="sec-title">Wired Inputs &amp; Hardware Diagnostics</h3>
+        <p class="sec-sub">Configure boop sensor type and number of wired paw buttons (N = 0 to 8).</p>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <label style="font-size:11.5px">Boop Sensor Hardware
+            <select id="boopHwSel" style="margin-left:6px">
+              <option value="APDS9960 (I2C)" ${state.boopHardware === "APDS9960 (I2C)" ? "selected" : ""}>APDS9960 (I2C 0x39)</option>
+              <option value="Digital Trigger (Pin 21)" ${state.boopHardware === "Digital Trigger (Pin 21)" ? "selected" : ""}>Digital Capacitive / IR (Pin 21)</option>
+            </select>
+          </label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:11.5px">Wired Paw Buttons: <strong>${state.pawButtons.length}</strong></span>
+            <button class="btn" id="remPawBtn" ${state.pawButtons.length <= 0 ? "disabled" : ""}>-</button>
+            <button class="btn" id="addPawBtn" ${state.pawButtons.length >= 8 ? "disabled" : ""}>+</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${state.pawButtons.map(b => `<span class="pin-tag">Btn ${b.id} -> Pin ${b.pin} (INPUT_PULLUP)</span>`).join("") || `<span class="sec-sub">0 paw buttons wired</span>`}
+        </div>
+      </div>
+      <div class="card-box">
+        <div class="row-between">
+          <strong>Live Hardware Scan (SENSOR_SCAN 0x0031)</strong>
+          <button class="btn" id="scanBusBtn">Scan I2C Bus</button>
+        </div>
+        <div class="log-box">${scanLog}</div>
+      </div>
+      <div class="toast" id="toastArea">${toastMsg}</div>
+    `;
+
+    document.getElementById("boopHwSel").onchange = e => mutate(() => { state.boopHardware = e.target.value; });
+    document.getElementById("addPawBtn").onclick = () => mutate(() => {
+      const nextId = state.pawButtons.length + 1;
+      state.pawButtons.push({ id: nextId, pin: 13 + nextId, mode: "Tap", action: "cycle" });
+    });
+    document.getElementById("remPawBtn").onclick = () => mutate(() => {
+      state.pawButtons.pop();
+    });
+    document.getElementById("scanBusBtn").onclick = () => {
+      scanLog = "Scanning Teensy 4.1 I2C0 (Pins 18/19)...\n  0x39 -> APDS9960 Proximity/Light Sensor [OK]\n  0x40 -> INA219 Power/Current Monitor [OK]\n  PWM Pin 22 -> Cooling Fan Tach [OK]\n  Wired Paw Pins -> " + state.pawButtons.length + " active pull-ups [OK]";
+      renderContent();
+    };
+  }
+}
+
+function renderAll() {
+  updateHeaderAndSim();
+  renderNav();
+  renderContent();
+}
+
+// ===== LIVE DUAL 64x32 HUB75 CANVAS RENDERER =====
+const canvas = document.getElementById("visorCanvas");
+const ctx = canvas.getContext("2d");
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  if (state.colorOrder === "RBG") return [r, b, g];
+  if (state.colorOrder === "BGR") return [b, g, r];
+  return [r, g, b];
+}
+
+function drawHalfFace(ox, flipX, face, t, rgb, scale) {
+  const [r, g, b] = rgb.map(v => Math.round(v * scale));
+  const mainCol = `rgb(${r},${g},${b})`;
+  const blushCol = `rgb(${Math.round(255 * scale)},${Math.round(90 * scale)},${Math.round(150 * scale)})`;
+
+  function px(x, y, col = mainCol) {
+    const lx = flipX ? (63 - x) : x;
+    if (lx < 0 || lx >= 64 || y < 0 || y >= 32) return;
+    ctx.fillStyle = col;
+    ctx.fillRect(ox + lx, y, 1, 1);
+  }
+  function rect(x, y, w, h, col = mainCol) {
+    for (let dy = 0; dy < h; dy++) for (let dx = 0; dx < w; dx++) px(x + dx, y + dy, col);
+  }
+
+  const blinkPhase = (t % 3.6);
+  const blinking = (face === "idle" || face === "sleepy") && blinkPhase > 3.42;
+
+  // EYES (coords in 0..63 x 0..31, inner nose is toward x=63 on left panel)
+  if (face === "idle") {
+    if (blinking) {
+      rect(18, 12, 18, 2);
+    } else {
+      rect(18, 7, 18, 2);
+      rect(16, 9, 22, 3);
+      rect(18, 12, 18, 2);
+      rect(22, 14, 10, 1);
+    }
+    // Calm mouth curve
+    rect(26, 23, 24, 2);
+    rect(48, 21, 6, 2);
+    rect(18, 22, 8, 2);
+    // Nose dot
+    rect(55, 16, 4, 2);
+  } else if (face === "happy") {
+    const bounce = Math.round(Math.sin(t * 6) * 1);
+    // ^ arch eye
+    for (let i = 0; i < 18; i++) {
+      const y = 13 - Math.round(Math.sin((i / 17) * Math.PI) * 6) + bounce;
+      rect(17 + i, y, 2, 2);
+    }
+    // Wide happy grin
+    rect(18, 21, 34, 2);
+    rect(15, 19, 4, 2);
+    rect(50, 19, 5, 2);
+    rect(24, 23, 22, 2);
+    rect(55, 15, 4, 2);
+  } else if (face === "blush") {
+    // Big round cute eye
+    rect(20, 6, 14, 2);
+    rect(18, 8, 18, 5);
+    rect(20, 13, 14, 2);
+    // Sparkle cutout
+    rect(22, 8, 3, 3, "#040608");
+    // Animated blush slashes
+    const pulse = 0.65 + 0.35 * Math.sin(t * 7);
+    const bc = `rgb(${Math.round(255 * scale * pulse)},${Math.round(85 * scale * pulse)},${Math.round(150 * scale * pulse)})`;
+    for (let i = 0; i < 3; i++) {
+      rect(11 + i * 5, 17, 2, 4, bc);
+    }
+    // :3 mouth
+    rect(34, 22, 8, 2);
+    rect(42, 24, 6, 2);
+    rect(48, 22, 8, 2);
+    rect(55, 16, 4, 2);
+  } else if (face === "angry") {
+    // Slanted angry brow
+    for (let i = 0; i < 18; i++) {
+      const y = 7 + Math.floor(i * 0.38);
+      rect(17 + i, y, 2, 3);
+    }
+    rect(21, 13, 12, 2);
+    // Zig-zag mouth
+    for (let i = 0; i < 32; i += 6) {
+      rect(18 + i, 22, 3, 2);
+      rect(21 + i, 24, 3, 2);
+    }
+    rect(55, 16, 4, 2);
+  } else if (face === "sleepy") {
+    rect(17, 12, 18, 2);
+    if (!blinking) rect(20, 14, 12, 2);
+    // Floating Z
+    const zy = 4 + Math.round(Math.sin(t * 2.5) * 1);
+    rect(6, zy, 5, 1);
+    px(9, zy + 1); px(8, zy + 2); px(7, zy + 3);
+    rect(6, zy + 4, 5, 1);
+    // Small flat mouth
+    rect(32, 23, 18, 2);
+    rect(55, 17, 3, 2);
+  } else if (face === "starry") {
+    const pulse = Math.sin(t * 8) > 0 ? 1 : 0;
+    // 4-point star eye
+    rect(25, 5 - pulse, 2, 11 + pulse * 2);
+    rect(20 - pulse, 9, 12 + pulse * 2, 2);
+    rect(23, 7, 6, 6);
+    // Smile
+    rect(20, 22, 32, 2);
+    rect(50, 20, 4, 2);
+    rect(55, 16, 4, 2);
+  } else if (face === "heart") {
+    // Imported Cyber Heart animation
+    const beat = Math.sin(t * 7) > 0.2 ? 1 : 0;
+    const hc = blushCol;
+    rect(20 - beat, 7, 5 + beat, 4, hc);
+    rect(27, 7, 5 + beat, 4, hc);
+    rect(19 - beat, 9, 14 + beat * 2, 3, hc);
+    rect(21, 12, 10, 2, hc);
+    rect(23, 14, 6, 2, hc);
+    rect(25, 16, 2, 1, hc);
+    rect(22, 22, 28, 2);
+    rect(48, 20, 5, 2);
+    rect(55, 16, 4, 2);
+  }
+}
+
+function drawIdentify(panel) {
+  const ox = panel === 1 ? 0 : 64;
+  ctx.fillStyle = "#0a2014";
+  ctx.fillRect(ox + 1, 1, 62, 30);
+  ctx.strokeStyle = "#22c55e";
+  ctx.strokeRect(ox + 1.5, 1.5, 61, 29);
+  ctx.fillStyle = "#22c55e";
+  // Up arrow
+  for (let i = 0; i < 7; i++) ctx.fillRect(ox + 20 - i, 7 + i, i * 2 + 1, 1);
+  ctx.fillRect(ox + 19, 14, 3, 10);
+  // Number 1 or 2
+  if (panel === 1) {
+    ctx.fillRect(ox + 40, 8, 3, 16);
+    ctx.fillRect(ox + 37, 10, 3, 2);
+    ctx.fillRect(ox + 37, 22, 9, 2);
+  } else {
+    ctx.fillRect(ox + 36, 8, 10, 2);
+    ctx.fillRect(ox + 44, 10, 2, 5);
+    ctx.fillRect(ox + 36, 15, 10, 2);
+    ctx.fillRect(ox + 36, 17, 2, 5);
+    ctx.fillRect(ox + 36, 22, 10, 2);
+  }
+}
+
+function frameLoop(now) {
+  const t = now / 1000;
+  ctx.fillStyle = "#040608";
+  ctx.fillRect(0, 0, 128, 32);
+
+  // Subtle center divider between the two 64x32 HUB75 panels
+  ctx.fillStyle = "rgba(255,255,255,0.08)";
+  ctx.fillRect(63, 0, 2, 32);
+
+  const pwr = calcPower();
+  const activeFace = (now < boopOverrideUntil) ? state.boopFace : state.face;
+  const rgb = hexToRgb(state.color);
+
+  if (now < identifyUntil && identifyPanel > 0) {
+    drawIdentify(identifyPanel);
+  } else {
+    drawHalfFace(0, false, activeFace, t, rgb, pwr.effectiveScale);
+    drawHalfFace(64, state.mirror, activeFace, t, rgb, pwr.effectiveScale);
+  }
+
+  requestAnimationFrame(frameLoop);
+}
+
+renderAll();
+requestAnimationFrame(frameLoop);
+</script>
+</body>
+</html>

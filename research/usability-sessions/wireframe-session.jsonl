@@ -1,0 +1,221 @@
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:11.683Z","t_ms":1,"view":"config/connect","event":"session_start","viewport":"1956x1087","ua":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:19.686Z","t_ms":8004,"view":"config/connect","event":"hesitation","idle_ms":8000}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:20.633Z","t_ms":8950,"view":"config/connect","event":"$click","x":963,"y":445,"tag":"BUTTON","id":"entryConnectBtn","track_key":"entry_connect","label":"Connect USB"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:23.829Z","t_ms":12147,"view":"config/connect","event":"$click","x":907,"y":561,"tag":"BUTTON","id":"pickTeensy","track_key":"webhid_pick_teensy","label":"ProtoStack Visor Teensy 4.1 · HID"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:23.830Z","t_ms":12148,"view":"config/connect","event":"usb_connected","device":"Teensy 4.1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:23.832Z","t_ms":12149,"view":"config/faces","event":"$pageview","from":"config/connect","prev_dwell_ms":12149}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:30.002Z","t_ms":18320,"view":"config/faces","event":"$click","x":979,"y":354,"tag":"BUTTON","id":null,"track_key":"face_Happy","label":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:30.003Z","t_ms":18321,"view":"config/faces","event":"face_selected","face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:31.486Z","t_ms":19804,"view":"config/faces","event":"$click","x":1141,"y":341,"tag":"BUTTON","id":null,"track_key":"face_Blush","label":"Blush"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:31.488Z","t_ms":19805,"view":"config/faces","event":"face_selected","face":"Blush"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:32.469Z","t_ms":20786,"view":"config/faces","event":"$click","x":1289,"y":332,"tag":"BUTTON","id":null,"track_key":"face_Angry","label":"Angry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:32.470Z","t_ms":20788,"view":"config/faces","event":"face_selected","face":"Angry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:33.322Z","t_ms":21639,"view":"config/faces","event":"$click","x":1205,"y":328,"tag":"BUTTON","id":null,"track_key":"face_Blush","label":"Blush"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:33.323Z","t_ms":21640,"view":"config/faces","event":"face_selected","face":"Blush"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:36.089Z","t_ms":24407,"view":"config/faces","event":"$click","x":792,"y":332,"tag":"BUTTON","id":null,"track_key":"face_Idle","label":"Idle"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:36.090Z","t_ms":24408,"view":"config/faces","event":"face_selected","face":"Idle"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:37.150Z","t_ms":25468,"view":"config/faces","event":"$click","x":931,"y":338,"tag":"BUTTON","id":null,"track_key":"face_Happy","label":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:37.152Z","t_ms":25469,"view":"config/faces","event":"face_selected","face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:38.169Z","t_ms":26487,"view":"config/faces","event":"$click","x":936,"y":408,"tag":"BUTTON","id":null,"track_key":"face_Starry","label":"Starry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:38.170Z","t_ms":26488,"view":"config/faces","event":"face_selected","face":"Starry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:39.230Z","t_ms":27548,"view":"config/faces","event":"$click","x":766,"y":415,"tag":"BUTTON","id":null,"track_key":"face_Sleepy","label":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:39.231Z","t_ms":27549,"view":"config/faces","event":"face_selected","face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:40.764Z","t_ms":29082,"view":"config/faces","event":"$click","x":1121,"y":411,"tag":"BUTTON","id":"openImportBtn","track_key":"open_import","label":"Import"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:44.823Z","t_ms":33141,"view":"config/faces","event":"$click","x":988,"y":582,"tag":"BUTTON","id":"impSampleBtn","track_key":"import_sample","label":"Load Sample (\"Cyber Heart\")"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:44.825Z","t_ms":33143,"view":"config/faces","event":"animation_imported","name":"Cyber Heart"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:49.368Z","t_ms":37685,"view":"config/faces","event":"$click","x":745,"y":498,"tag":"BUTTON","id":null,"track_key":"tint_1","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:49.369Z","t_ms":37687,"view":"config/faces","event":"tint_selected","swatch":1}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:50.708Z","t_ms":39026,"view":"config/faces","event":"$click","x":770,"y":497,"tag":"BUTTON","id":null,"track_key":"tint_2","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:50.709Z","t_ms":39027,"view":"config/faces","event":"tint_selected","swatch":2}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:52.035Z","t_ms":40353,"view":"config/faces","event":"$click","x":802,"y":497,"tag":"BUTTON","id":null,"track_key":"tint_3","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:52.037Z","t_ms":40354,"view":"config/faces","event":"tint_selected","swatch":3}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:52.773Z","t_ms":41091,"view":"config/faces","event":"$click","x":834,"y":497,"tag":"BUTTON","id":null,"track_key":"tint_4","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:52.775Z","t_ms":41092,"view":"config/faces","event":"tint_selected","swatch":4}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:53.555Z","t_ms":41873,"view":"config/faces","event":"$click","x":858,"y":496,"tag":"BUTTON","id":null,"track_key":"tint_5","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:53.556Z","t_ms":41874,"view":"config/faces","event":"tint_selected","swatch":5}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:55.642Z","t_ms":43960,"view":"config/faces","event":"$click","x":711,"y":497,"tag":"BUTTON","id":null,"track_key":"tint_0","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:55.643Z","t_ms":43961,"view":"config/faces","event":"tint_selected","swatch":0}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:57.391Z","t_ms":45709,"view":"config/faces","event":"$click","x":1400,"y":494,"tag":"INPUT","id":"mirrorChk","track_key":"mirror_toggle","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:57.393Z","t_ms":45710,"view":"config/faces","event":"mirror_changed","mirror":false}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:58.101Z","t_ms":46419,"view":"config/faces","event":"$click","x":1400,"y":494,"tag":"INPUT","id":"mirrorChk","track_key":"mirror_toggle","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:58.103Z","t_ms":46420,"view":"config/faces","event":"mirror_changed","mirror":true}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:59.765Z","t_ms":48083,"view":"config/faces","event":"$click","x":1400,"y":494,"tag":"INPUT","id":"mirrorChk","track_key":"mirror_toggle","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:56:59.766Z","t_ms":48084,"view":"config/faces","event":"mirror_changed","mirror":false}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:00.324Z","t_ms":48641,"view":"config/faces","event":"$click","x":1400,"y":494,"tag":"INPUT","id":"mirrorChk","track_key":"mirror_toggle","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:00.325Z","t_ms":48643,"view":"config/faces","event":"mirror_changed","mirror":true}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:02.031Z","t_ms":50348,"view":"config/faces","event":"$click","x":1398,"y":34,"tag":"BUTTON","id":"undoBtn","track_key":"undo","label":"Undo"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:02.032Z","t_ms":50350,"view":"config/faces","event":"undo_clicked"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:02.640Z","t_ms":50957,"view":"config/faces","event":"$click","x":1398,"y":34,"tag":"BUTTON","id":"undoBtn","track_key":"undo","label":"Undo"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:02.641Z","t_ms":50959,"view":"config/faces","event":"undo_clicked"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:03.472Z","t_ms":51789,"view":"config/faces","event":"$click","x":1398,"y":34,"tag":"BUTTON","id":"undoBtn","track_key":"undo","label":"Undo"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:03.473Z","t_ms":51790,"view":"config/faces","event":"undo_clicked"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:04.088Z","t_ms":52406,"view":"config/faces","event":"$click","x":1398,"y":34,"tag":"BUTTON","id":"undoBtn","track_key":"undo","label":"Undo"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:04.089Z","t_ms":52407,"view":"config/faces","event":"undo_clicked"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:05.938Z","t_ms":54255,"view":"config/faces","event":"$click","x":1179,"y":25,"tag":"BUTTON","id":"connBtn","track_key":"connect_usb","label":"Teensy 4.1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:05.939Z","t_ms":54257,"view":"config/faces","event":"usb_disconnect"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:07.624Z","t_ms":55941,"view":"config/faces","event":"$click","x":1203,"y":39,"tag":"BUTTON","id":"connBtn","track_key":"connect_usb","label":"Simulator"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:09.781Z","t_ms":58099,"view":"config/faces","event":"$click","x":928,"y":570,"tag":"BUTTON","id":"pickTeensy","track_key":"webhid_pick_teensy","label":"ProtoStack Visor Teensy 4.1 · HID"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:09.782Z","t_ms":58100,"view":"config/faces","event":"usb_connected","device":"Teensy 4.1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:16.700Z","t_ms":65017,"view":"config/faces","event":"$click","x":558,"y":138,"tag":"BUTTON","id":null,"track_key":"nav_config_inputs","label":"Inputs"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:16.701Z","t_ms":65019,"view":"config/inputs","event":"$pageview","from":"config/faces","prev_dwell_ms":52869}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:22.035Z","t_ms":70352,"view":"config/inputs","event":"boop_cm_changed","cm":3}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:24.874Z","t_ms":73191,"view":"config/inputs","event":"boop_cm_changed","cm":10}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:27.512Z","t_ms":75830,"view":"config/inputs","event":"boop_cm_changed","cm":13}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:30.997Z","t_ms":79314,"view":"config/inputs","event":"boop_cm_changed","cm":15}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:33.356Z","t_ms":81673,"view":"config/inputs","event":"dead_click","x":922,"y":405,"tag":"DIV","id":null,"track_key":null,"label":"Boop Sensor Distance 15 cm Face IdleHapp"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:34.022Z","t_ms":82339,"view":"config/inputs","event":"boop_cm_changed","cm":11}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:34.760Z","t_ms":83078,"view":"config/inputs","event":"boop_cm_changed","cm":8}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:40.236Z","t_ms":88553,"view":"config/inputs","event":"boop_face_changed","face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:43.242Z","t_ms":91560,"view":"config/inputs","event":"$click","x":986,"y":463,"tag":"SELECT","id":"boopSec","track_key":"boop_duration","label":"2s3s5s"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:51.244Z","t_ms":99562,"view":"config/inputs","event":"hesitation","idle_ms":8000}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:52.011Z","t_ms":100329,"view":"config/inputs","event":"$click","x":1226,"y":376,"tag":"SELECT","id":null,"track_key":"paw_1_mode","label":"Tap Hold"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:56.085Z","t_ms":104402,"view":"config/inputs","event":"$click","x":533,"y":166,"tag":"BUTTON","id":null,"track_key":"nav_config_power","label":"Power"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:56.086Z","t_ms":104403,"view":"config/power","event":"$pageview","from":"config/inputs","prev_dwell_ms":39384}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:57:58.917Z","t_ms":107234,"view":"config/power","event":"dead_click","x":1035,"y":402,"tag":"DIV","id":null,"track_key":null,"label":"Power 2.6A / 3.0A Brightness80% 5V Limit"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:06.110Z","t_ms":114428,"view":"config/power","event":"brightness_changed","val":31}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:09.107Z","t_ms":117424,"view":"config/power","event":"brightness_changed","val":100}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:13.208Z","t_ms":121525,"view":"config/power","event":"brightness_changed","val":81}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:14.491Z","t_ms":122809,"view":"config/power","event":"brightness_changed","val":100}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:16.097Z","t_ms":124415,"view":"config/power","event":"brightness_changed","val":75}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:19.904Z","t_ms":128222,"view":"config/power","event":"power_limit_changed","val":5}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:21.532Z","t_ms":129850,"view":"config/power","event":"dead_click","x":1118,"y":383,"tag":"DIV","id":null,"track_key":null,"label":"Power 2.5A / 5.0A Brightness75% 5V Limit"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:22.213Z","t_ms":130531,"view":"config/power","event":"dead_click","x":1025,"y":364,"tag":"DIV","id":null,"track_key":null,"label":"Power 2.5A / 5.0A Brightness75% 5V Limit"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:22.966Z","t_ms":131284,"view":"config/power","event":"brightness_changed","val":100}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:23.211Z","t_ms":131529,"view":"config/power","event":"$click","x":1037,"y":382,"tag":"INPUT","id":"brRange","track_key":"brightness","label":""}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:24.408Z","t_ms":132725,"view":"config/power","event":"power_limit_changed","val":3.6}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:25.454Z","t_ms":133772,"view":"config/power","event":"power_limit_changed","val":3.4}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:27.103Z","t_ms":135421,"view":"config/power","event":"brightness_changed","val":75}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:29.141Z","t_ms":137458,"view":"config/power","event":"$click","x":1382,"y":355,"tag":"BUTTON","id":null,"track_key":"fan_100","label":"100%"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:29.142Z","t_ms":137460,"view":"config/power","event":"fan_preset","val":100}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:30.552Z","t_ms":138870,"view":"config/power","event":"$click","x":1274,"y":370,"tag":"BUTTON","id":null,"track_key":"fan_65","label":"65%"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:30.554Z","t_ms":138872,"view":"config/power","event":"fan_preset","val":65}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:31.485Z","t_ms":139802,"view":"config/power","event":"$click","x":1370,"y":354,"tag":"BUTTON","id":null,"track_key":"fan_100","label":"100%"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:31.486Z","t_ms":139804,"view":"config/power","event":"fan_preset","val":100}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:32.316Z","t_ms":140634,"view":"config/power","event":"$click","x":1234,"y":347,"tag":"BUTTON","id":null,"track_key":"fan_65","label":"65%"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:32.317Z","t_ms":140635,"view":"config/power","event":"fan_preset","val":65}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:33.772Z","t_ms":142089,"view":"config/power","event":"$click","x":1026,"y":242,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:33.774Z","t_ms":142091,"view":"config/power","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:35.048Z","t_ms":143365,"view":"config/power","event":"$click","x":1091,"y":244,"tag":"BUTTON","id":null,"track_key":"sim_paw_2","label":"Paw 2"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:35.049Z","t_ms":143367,"view":"config/power","event":"sim_paw_pressed","paw":2,"action":"Angry","result_face":"Angry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:35.980Z","t_ms":144297,"view":"config/power","event":"$click","x":1179,"y":247,"tag":"BUTTON","id":null,"track_key":"sim_paw_3","label":"Paw 3"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:35.981Z","t_ms":144299,"view":"config/power","event":"sim_paw_pressed","paw":3,"action":"Cycle","result_face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:36.970Z","t_ms":145288,"view":"config/power","event":"$click","x":983,"y":241,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:36.972Z","t_ms":145290,"view":"config/power","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:37.737Z","t_ms":146054,"view":"config/power","event":"$click","x":983,"y":241,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:37.738Z","t_ms":146056,"view":"config/power","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:38.195Z","t_ms":146513,"view":"config/power","event":"$click","x":983,"y":241,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:38.196Z","t_ms":146514,"view":"config/power","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:38.840Z","t_ms":147158,"view":"config/power","event":"$click","x":1048,"y":241,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:38.842Z","t_ms":147160,"view":"config/power","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:39.428Z","t_ms":147746,"view":"config/power","event":"$click","x":969,"y":246,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:39.430Z","t_ms":147747,"view":"config/power","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:42.375Z","t_ms":150692,"view":"config/power","event":"$click","x":523,"y":126,"tag":"BUTTON","id":null,"track_key":"nav_config_inputs","label":"Inputs"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:42.376Z","t_ms":150694,"view":"config/inputs","event":"$pageview","from":"config/power","prev_dwell_ms":46290}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:43.737Z","t_ms":152054,"view":"config/inputs","event":"$click","x":1028,"y":248,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:43.738Z","t_ms":152056,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:44.484Z","t_ms":152801,"view":"config/inputs","event":"$click","x":1028,"y":248,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:44.485Z","t_ms":152803,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:46.133Z","t_ms":154450,"view":"config/inputs","event":"$click","x":1030,"y":253,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:46.135Z","t_ms":154452,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:46.568Z","t_ms":154885,"view":"config/inputs","event":"$click","x":1030,"y":253,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:46.569Z","t_ms":154887,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:46.769Z","t_ms":155086,"view":"config/inputs","event":"rage_click","x":1030,"y":253,"target":"sim_paw_1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:46.770Z","t_ms":155088,"view":"config/inputs","event":"$click","x":1030,"y":253,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:46.771Z","t_ms":155089,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:47.201Z","t_ms":155519,"view":"config/inputs","event":"dead_click","x":938,"y":238,"tag":"SECTION","id":null,"track_key":null,"label":"Preview BoopPaw 1Paw 2Paw 3"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:47.730Z","t_ms":156048,"view":"config/inputs","event":"dead_click","x":970,"y":238,"tag":"SECTION","id":null,"track_key":null,"label":"Preview BoopPaw 1Paw 2Paw 3"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.094Z","t_ms":156412,"view":"config/inputs","event":"$click","x":970,"y":238,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.095Z","t_ms":156412,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.282Z","t_ms":156600,"view":"config/inputs","event":"rage_click","x":970,"y":238,"target":"sim_boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.284Z","t_ms":156602,"view":"config/inputs","event":"$click","x":970,"y":238,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.285Z","t_ms":156603,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.482Z","t_ms":156800,"view":"config/inputs","event":"$click","x":970,"y":238,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.484Z","t_ms":156801,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.662Z","t_ms":156980,"view":"config/inputs","event":"$click","x":970,"y":238,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:48.664Z","t_ms":156981,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:49.615Z","t_ms":157933,"view":"config/inputs","event":"$click","x":1029,"y":238,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:49.616Z","t_ms":157933,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:50.038Z","t_ms":158356,"view":"config/inputs","event":"$click","x":1029,"y":238,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:50.040Z","t_ms":158358,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:50.275Z","t_ms":158593,"view":"config/inputs","event":"rage_click","x":1029,"y":238,"target":"sim_paw_1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:50.277Z","t_ms":158595,"view":"config/inputs","event":"$click","x":1029,"y":238,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:50.278Z","t_ms":158596,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:51.380Z","t_ms":159698,"view":"config/inputs","event":"$click","x":1035,"y":237,"tag":"BUTTON","id":null,"track_key":"sim_paw_1","label":"Paw 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:51.382Z","t_ms":159699,"view":"config/inputs","event":"sim_paw_pressed","paw":1,"action":"Happy","result_face":"Happy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:53.006Z","t_ms":161324,"view":"config/inputs","event":"$click","x":958,"y":244,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:53.008Z","t_ms":161325,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:53.780Z","t_ms":162098,"view":"config/inputs","event":"$click","x":958,"y":244,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:53.782Z","t_ms":162100,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:53.960Z","t_ms":162278,"view":"config/inputs","event":"$click","x":958,"y":244,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:53.962Z","t_ms":162279,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Sleepy"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:55.250Z","t_ms":163568,"view":"config/inputs","event":"boop_cm_changed","cm":13}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:56.563Z","t_ms":164880,"view":"config/inputs","event":"dead_click","x":802,"y":410,"tag":"DIV","id":null,"track_key":null,"label":"Boop Sensor Distance 13 cm Face IdleHapp"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:57.473Z","t_ms":165790,"view":"config/inputs","event":"boop_cm_changed","cm":6}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:58.663Z","t_ms":166981,"view":"config/inputs","event":"boop_cm_changed","cm":14}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:58:59.516Z","t_ms":167834,"view":"config/inputs","event":"boop_cm_changed","cm":8}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:02.207Z","t_ms":170524,"view":"config/inputs","event":"boop_face_changed","face":"Starry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:03.660Z","t_ms":171978,"view":"config/inputs","event":"boop_cm_changed","cm":15}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:05.940Z","t_ms":174258,"view":"config/inputs","event":"boop_cm_changed","cm":2}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:11.317Z","t_ms":179634,"view":"config/inputs","event":"$click","x":961,"y":244,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:11.319Z","t_ms":179637,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Starry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:14.514Z","t_ms":182832,"view":"config/inputs","event":"$click","x":961,"y":244,"tag":"BUTTON","id":"tBoop","track_key":"sim_boop","label":"Boop"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:14.516Z","t_ms":182833,"view":"config/inputs","event":"sim_boop_triggered","boop_on":true,"face":"Starry"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:17.704Z","t_ms":186022,"view":"config/inputs","event":"$click","x":516,"y":219,"tag":"BUTTON","id":null,"track_key":"nav_config_reset","label":"System"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:17.706Z","t_ms":186023,"view":"config/reset","event":"$pageview","from":"config/inputs","prev_dwell_ms":35328}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:24.265Z","t_ms":192582,"view":"config/reset","event":"$click","x":1428,"y":337,"tag":"BUTTON","id":"restBtn","track_key":"restore_factory","label":"Restore"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:25.964Z","t_ms":194281,"view":"config/reset","event":"$click","x":1139,"y":568,"tag":"BUTTON","id":"mConfirm","track_key":"confirm_restore","label":"Restore"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:25.966Z","t_ms":194283,"view":"config/reset","event":"factory_restored"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:29.899Z","t_ms":198217,"view":"config/reset","event":"$click","x":1353,"y":375,"tag":"BUTTON","id":"expBtn","track_key":"export_profile","label":"Export"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:31.383Z","t_ms":199700,"view":"config/reset","event":"$click","x":1353,"y":375,"tag":"BUTTON","id":"expBtn","track_key":"export_profile","label":"Export"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:33.813Z","t_ms":202131,"view":"config/reset","event":"$click","x":1402,"y":425,"tag":"BUTTON","id":"goBuilderBtn","track_key":"open_builder","label":"Open Builder"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:33.815Z","t_ms":202133,"view":"builder/flash","event":"$pageview","from":"config/reset","prev_dwell_ms":16108}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:38.939Z","t_ms":207257,"view":"builder/flash","event":"$click","x":1335,"y":380,"tag":"BUTTON","id":"snapBtn","track_key":"save_factory_snapshot","label":"Save Factory"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:38.942Z","t_ms":207259,"view":"builder/flash","event":"factory_snapshot_saved"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:39.742Z","t_ms":208060,"view":"builder/flash","event":"$click","x":1335,"y":380,"tag":"BUTTON","id":"snapBtn","track_key":"save_factory_snapshot","label":"Save Factory"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:39.744Z","t_ms":208062,"view":"builder/flash","event":"factory_snapshot_saved"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:40.301Z","t_ms":208619,"view":"builder/flash","event":"$click","x":1335,"y":380,"tag":"BUTTON","id":"snapBtn","track_key":"save_factory_snapshot","label":"Save Factory"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:40.303Z","t_ms":208621,"view":"builder/flash","event":"factory_snapshot_saved"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:42.280Z","t_ms":210598,"view":"builder/flash","event":"$click","x":535,"y":129,"tag":"BUTTON","id":null,"track_key":"nav_builder_panels","label":"Panels"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:42.282Z","t_ms":210599,"view":"builder/panels","event":"$pageview","from":"builder/flash","prev_dwell_ms":8465}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:46.999Z","t_ms":215317,"view":"builder/panels","event":"preset_changed","val":"Coela Delta"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:49.055Z","t_ms":217373,"view":"builder/panels","event":"dead_click","x":1402,"y":373,"tag":"DIV","id":null,"track_key":null,"label":"HUB75 Panels2 x 64x32 Board Preset Smart"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:51.673Z","t_ms":219991,"view":"builder/panels","event":"preset_changed","val":"SmartLED V5"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:56.468Z","t_ms":224786,"view":"builder/panels","event":"$click","x":1417,"y":387,"tag":"SELECT","id":"bDriver","track_key":"panel_driver","label":"FM6126AStandard"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T17:59:58.239Z","t_ms":226557,"view":"builder/panels","event":"$click","x":1437,"y":442,"tag":"SELECT","id":"bOrder","track_key":"color_order","label":"RGBRBGBGR"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:00.441Z","t_ms":228758,"view":"builder/panels","event":"$click","x":1303,"y":491,"tag":"BUTTON","id":"id1","track_key":"identify_p1","label":"Test Panel 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:00.443Z","t_ms":228760,"view":"builder/panels","event":"panel_identify","panel":1}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:00.942Z","t_ms":229260,"view":"builder/panels","event":"$click","x":1303,"y":491,"tag":"BUTTON","id":"id1","track_key":"identify_p1","label":"Test Panel 1"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:00.944Z","t_ms":229262,"view":"builder/panels","event":"panel_identify","panel":1}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:02.039Z","t_ms":230357,"view":"builder/panels","event":"$click","x":1413,"y":496,"tag":"BUTTON","id":"id2","track_key":"identify_p2","label":"Test Panel 2"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:02.041Z","t_ms":230359,"view":"builder/panels","event":"panel_identify","panel":2}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:03.396Z","t_ms":231714,"view":"builder/panels","event":"$click","x":1413,"y":496,"tag":"BUTTON","id":"id2","track_key":"identify_p2","label":"Test Panel 2"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:03.398Z","t_ms":231716,"view":"builder/panels","event":"panel_identify","panel":2}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:05.481Z","t_ms":233798,"view":"builder/panels","event":"$click","x":535,"y":173,"tag":"BUTTON","id":null,"track_key":"nav_builder_wiring","label":"Wiring"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:05.482Z","t_ms":233800,"view":"builder/wiring","event":"$pageview","from":"builder/panels","prev_dwell_ms":23199}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:07.567Z","t_ms":235885,"view":"builder/wiring","event":"$click","x":1424,"y":335,"tag":"BUTTON","id":"scanBtn","track_key":"scan_i2c","label":"Scan Bus"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:07.569Z","t_ms":235887,"view":"builder/wiring","event":"i2c_scanned","paw_count":3}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:13.318Z","t_ms":241636,"view":"builder/wiring","event":"boop_hw_changed","val":"Digital Pin 21"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:16.678Z","t_ms":244996,"view":"builder/wiring","event":"dead_click","x":1461,"y":407,"tag":"DIV","id":null,"track_key":null,"label":"Wired InputsScan Bus Boop APDS9960 (I2C)"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:16.858Z","t_ms":245175,"view":"builder/wiring","event":"dead_click","x":1461,"y":407,"tag":"DIV","id":null,"track_key":null,"label":"Wired InputsScan Bus Boop APDS9960 (I2C)"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:17.230Z","t_ms":245547,"view":"builder/wiring","event":"rage_click","x":1457,"y":407,"target":"DIV"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:17.232Z","t_ms":245549,"view":"builder/wiring","event":"dead_click","x":1457,"y":407,"tag":"DIV","id":null,"track_key":null,"label":"Wired InputsScan Bus Boop APDS9960 (I2C)"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:18.112Z","t_ms":246430,"view":"builder/wiring","event":"$click","x":1428,"y":407,"tag":"BUTTON","id":"incP","track_key":"paw_inc","label":"+"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:18.114Z","t_ms":246432,"view":"builder/wiring","event":"paw_count_changed","count":4}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:18.500Z","t_ms":246817,"view":"builder/wiring","event":"$click","x":1428,"y":407,"tag":"BUTTON","id":"incP","track_key":"paw_inc","label":"+"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:18.502Z","t_ms":246819,"view":"builder/wiring","event":"paw_count_changed","count":5}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:19.984Z","t_ms":248301,"view":"builder/wiring","event":"dead_click","x":929,"y":359,"tag":"DIV","id":null,"track_key":null,"label":"Boop APDS9960 (I2C)Digital Pin 21"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:20.951Z","t_ms":249269,"view":"builder/wiring","event":"$click","x":582,"y":220,"tag":"BUTTON","id":null,"track_key":"nav_builder_back","label":"Config"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:20.954Z","t_ms":249271,"view":"config/faces","event":"$pageview","from":"builder/wiring","prev_dwell_ms":15470}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:23.963Z","t_ms":252280,"view":"config/faces","event":"$click","x":565,"y":217,"tag":"BUTTON","id":null,"track_key":"nav_config_reset","label":"System"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:23.964Z","t_ms":252282,"view":"config/reset","event":"$pageview","from":"config/faces","prev_dwell_ms":3009}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:27.296Z","t_ms":255614,"view":"config/reset","event":"$click","x":1434,"y":449,"tag":"BUTTON","id":"goBuilderBtn","track_key":"open_builder","label":"Open Builder"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:27.298Z","t_ms":255616,"view":"builder/flash","event":"$pageview","from":"config/reset","prev_dwell_ms":3332}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:30.064Z","t_ms":258381,"view":"builder/flash","event":"$click","x":541,"y":144,"tag":"BUTTON","id":null,"track_key":"nav_builder_panels","label":"Panels"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:30.066Z","t_ms":258384,"view":"builder/panels","event":"$pageview","from":"builder/flash","prev_dwell_ms":2766}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:31.181Z","t_ms":259499,"view":"builder/panels","event":"$click","x":537,"y":161,"tag":"BUTTON","id":null,"track_key":"nav_builder_wiring","label":"Wiring"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:31.182Z","t_ms":259500,"view":"builder/wiring","event":"$pageview","from":"builder/panels","prev_dwell_ms":1114}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:33.641Z","t_ms":261959,"view":"builder/wiring","event":"$click","x":544,"y":212,"tag":"BUTTON","id":null,"track_key":"nav_builder_back","label":"Config"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:33.644Z","t_ms":261961,"view":"config/faces","event":"$pageview","from":"builder/wiring","prev_dwell_ms":2461}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:36.502Z","t_ms":264819,"view":"config/faces","event":"$click","x":1452,"y":29,"tag":"BUTTON","id":"saveBtn","track_key":"save_head","label":"Save"}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:36.504Z","t_ms":264822,"view":"config/faces","event":"save_committed","usb_connected":true}
+{"session_id":"wf_2026-11-26T17-56-11-682Z","ts":"2026-11-26T18:00:41.814Z","t_ms":270132,"view":"config/faces","event":"session_finish","total_events":220,"duration_ms":270132}

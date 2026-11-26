@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ProtoStack — Wireframe Usability Test</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #161920;
+    --surface-2: #1d212a;
+    --line: #2d3340;
+    --line-strong: #525b6e;
+    --ink: #eceff4;
+    --muted: #8a93a6;
+    --accent: #e5e9f0;
+    --radius: 8px;
+    --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Clean app shell */
+  .shell {
+    max-width: 1040px;
+    margin: 0 auto;
+    min-height: 680px;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  /* Top Bar (56px, zero clutter) */
+  .topbar {
+    height: 56px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-box {
+    width: 26px;
+    height: 26px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .brand-title {
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 99px;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pill-btn {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+  }
+  .pill-btn:hover { border-color: var(--line-strong); }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1.5px solid var(--muted);
+    background: transparent;
+  }
+  .dot.on {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .metric {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    padding: 0 6px;
+  }
+  .metric.warn {
+    color: var(--ink);
+    border: 1px dashed var(--ink);
+    border-radius: 4px;
+    padding: 3px 7px;
+  }
+  .btn {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn.primary {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+    font-weight: 600;
+  }
+  .btn.primary:hover { opacity: 0.9; }
+  .btn.sm { height: 28px; padding: 0 10px; font-size: 11.5px; }
+
+  /* Body */
+  .body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 168px 1fr;
+  }
+
+  /* Minimal sidebar */
+  .sidebar {
+    border-right: 1px solid var(--line);
+    padding: 16px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nav-item {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .nav-item:hover { color: var(--ink); background: var(--surface-2); }
+  .nav-item.active {
+    color: var(--ink);
+    background: var(--surface-2);
+    border-color: var(--line-strong);
+  }
+  .nav-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+
+  /* Main content column */
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Visor Stage (clean, airy, zero clutter) */
+  .stage {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+  }
+  .visor-frame {
+    width: 100%;
+    max-width: 580px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 14px;
+    padding: 12px;
+    background: #0a0c10;
+    position: relative;
+  }
+  .ram-dot {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .ram-dot.dirty { color: var(--ink); }
+  .visor-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .panel-canvas {
+    width: 100%;
+    height: 112px;
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    background: #07090d;
+  }
+  .panel-canvas svg {
+    width: 140px;
+    height: 70px;
+    stroke: var(--ink);
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .sim-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sim-chip {
+    height: 28px;
+    padding: 0 11px;
+    border-radius: 99px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 11.5px;
+    cursor: pointer;
+  }
+  .sim-chip:hover { color: var(--ink); border-color: var(--line-strong); }
+  .sim-chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  /* Workspace panel */
+  .panel {
+    padding: 22px 24px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .grid-faces {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .face-tile {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+    padding: 14px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .face-tile:hover { border-color: var(--line-strong); color: var(--ink); }
+  .face-tile.active { border: 1.5px solid var(--ink); color: var(--ink); background: var(--surface-2); }
+  .face-tile.import-tile { border-style: dashed; }
+  .face-tile svg { width: 52px; height: 28px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+  .face-tile span { font-size: 12px; font-weight: 500; }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+  }
+  .swatches { display: flex; align-items: center; gap: 7px; }
+  .swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+  }
+  .swatch.active::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .field label { color: var(--muted); font-size: 12px; }
+  .mono { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+  select {
+    height: 30px;
+    padding: 0 8px;
+    border-radius: 5px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 12px;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--ink);
+  }
+  .meter {
+    height: 8px;
+    border-radius: 99px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .meter-bar { height: 100%; background: var(--ink); transition: width 0.1s; }
+  .meter-cut { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--muted); }
+
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .seg button {
+    height: 30px;
+    border: 0;
+    border-right: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .seg button:last-child { border-right: 0; }
+  .seg button.active { background: var(--ink); color: var(--bg); font-weight: 600; }
+
+  .list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+  }
+  .list-row:first-of-type { border-top: 0; padding-top: 0; }
+
+  .tag-warn {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 8px;
+    border: 1px dashed var(--ink);
+    border-radius: 5px;
+    color: var(--ink);
+  }
+
+  /* Clean entry screen (Wootility style, zero clutter) */
+  .entry {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+    background: var(--bg);
+  }
+  .entry-visor {
+    width: 260px;
+    height: 86px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px;
+  }
+  .entry-half {
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+  }
+  .entry-title {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .entry-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  /* Modal (for Import / Confirm / USB picker) */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    place-items: center;
+    z-index: 50;
+  }
+  .modal-bg.open { display: grid; }
+  .modal {
+    width: 380px;
+    max-width: 92vw;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .drop-box {
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 8px;
+    padding: 24px 14px;
+    text-align: center;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Discrete PostHog Session Recorder pill (tiny, bottom-right, collapsible) */
+  .rec-dock {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
+    border-radius: 99px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    z-index: 40;
+  }
+  .rec-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ef4444;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .rec-dock button {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    border-radius: 99px;
+    padding: 2px 8px;
+    font-family: inherit;
+    font-size: 10px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 720px) {
+    .body { grid-template-columns: 1fr; }
+    .sidebar { flex-direction: row; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+    .grid-faces { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-box">LOGO</div>
+      <span class="brand-title">ProtoStack</span>
+      <span class="badge" id="siteBadge">Config</span>
+    </div>
+    <div class="top-actions" id="topActions" style="display:none">
+      <button class="pill-btn" id="connBtn" data-track="connect_usb">
+        <span class="dot" id="connDot"></span>
+        <span id="connLabel">Simulator</span>
+      </button>
+      <span class="metric" id="pwrMetric">2.4A / 3.0A</span>
+      <button class="btn" id="undoBtn" data-track="undo" disabled>Undo</button>
+      <button class="btn primary" id="saveBtn" data-track="save_head">Save</button>
+    </div>
+  </header>
+
+  <div class="entry" id="entryScreen">
+    <div class="entry-visor">
+      <div class="entry-half"></div>
+      <div class="entry-half"></div>
+    </div>
+    <div class="entry-title">Connect your Protogen</div>
+    <div class="entry-actions">
+      <button class="btn primary" id="entryConnectBtn" data-track="entry_connect">Connect USB</button>
+      <button class="btn" id="entrySimBtn" data-track="entry_simulate">Simulate</button>
+    </div>
+  </div>
+
+  <div class="body" id="appBody" style="display:none">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <section class="stage">
+        <div class="visor-frame">
+          <span class="ram-dot" id="ramDot">Saved</span>
+          <div class="visor-panels">
+            <div class="panel-canvas" id="leftPanel"></div>
+            <div class="panel-canvas" id="rightPanel"></div>
+          </div>
+        </div>
+        <div class="sim-strip" id="simStrip"></div>
+      </section>
+      <main class="panel" id="panel"></main>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<!-- Silent PostHog-style Session Recorder indicator -->
+<div class="rec-dock" title="Recording usability session events">
+  <span class="rec-dot"></span>
+  <span id="recCount">REC 0</span>
+  <button id="exportRecBtn">Finish Test</button>
+</div>
+
+<script>
+// ===== SILENT POSTHOG-STYLE TELEMETRY ENGINE =====
+const SESSION_ID = "wf_" + new Date().toISOString().replace(/[:.]/g, "-");
+const SESSION_START = performance.now();
+const events = [];
+let recentClicks = [];
+let viewEnteredAt = performance.now();
+let currentView = "config/connect";
+let hesitationTimer = null;
+
+function track(eventName, props = {}) {
+  const entry = {
+    session_id: SESSION_ID,
+    ts: new Date().toISOString(),
+    t_ms: Math.round(performance.now() - SESSION_START),
+    view: currentView,
+    event: eventName,
+    ...props
+  };
+  events.push(entry);
+  document.getElementById("recCount").textContent = `REC ${events.length}`;
+  try { localStorage.setItem("protostack_wf_events", JSON.stringify(events)); } catch (_) {}
+  if (location.hostname === "127.0.0.1" || location.hostname === "localhost") {
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(entry)
+    }).catch(() => {});
+  }
+  resetHesitation();
+}
+
+function resetHesitation() {
+  clearTimeout(hesitationTimer);
+  hesitationTimer = setTimeout(() => {
+    track("hesitation", { idle_ms: 8000 });
+  }, 8000);
+}
+
+// Autocapture all clicks (including dead clicks & rage clicks)
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".rec-dock")) return;
+  const interactive = e.target.closest("button, input, select, a, label, [role=button]");
+  const now = performance.now();
+  const pt = { t: now, x: Math.round(e.clientX), y: Math.round(e.clientY) };
+  recentClicks = recentClicks.filter(c => now - c.t < 800);
+  recentClicks.push(pt);
+  const near = recentClicks.filter(c => Math.hypot(c.x - pt.x, c.y - pt.y) < 40);
+  if (near.length >= 3) {
+    track("rage_click", { x: pt.x, y: pt.y, target: interactive ? (interactive.dataset.track || interactive.id || interactive.textContent.trim().slice(0, 32)) : e.target.tagName });
+    recentClicks = [];
+  }
+  track(interactive ? "$click" : "dead_click", {
+    x: pt.x,
+    y: pt.y,
+    tag: (interactive || e.target).tagName,
+    id: (interactive || e.target).id || null,
+    track_key: interactive?.dataset?.track || null,
+    label: (interactive || e.target).textContent.trim().replace(/\s+/g, " ").slice(0, 40)
+  });
+}, true);
+
+document.getElementById("exportRecBtn").onclick = () => {
+  track("session_finish", { total_events: events.length, duration_ms: Math.round(performance.now() - SESSION_START) });
+  const jsonl = events.map(e => JSON.stringify(e)).join("\n") + "\n";
+  const blob = new Blob([jsonl], { type: "application/x-ndjson" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${SESSION_ID}.jsonl`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// ===== MINIMAL WIREFRAME STATE =====
+const INITIAL = {
+  face: "Idle",
+  colorIdx: 0,
+  mirror: true,
+  brightness: 80,
+  limitA: 3.0,
+  fan: 65,
+  boopOn: true,
+  boopCm: 6,
+  boopFace: "Blush",
+  boopSec: 3,
+  paws: [
+    { id: 1, pin: 14, mode: "Tap", action: "Happy" },
+    { id: 2, pin: 15, mode: "Tap", action: "Angry" },
+    { id: 3, pin: 16, mode: "Tap", action: "Cycle" }
+  ],
+  customFaces: [],
+  preset: "SmartLED V5",
+  driver: "FM6126A",
+  order: "RGB",
+  boopHw: "APDS9960 (I2C)"
+};
+
+let factory = structuredClone(INITIAL);
+let saved = structuredClone(INITIAL);
+let state = structuredClone(INITIAL);
+let undoStack = [];
+let site = "config"; // config | builder
+let tab = "faces";
+let entered = false;
+let usb = false;
+let boopLiveCm = 14;
+let boopTimer = null;
+let idPanel = 0;
+let flashPct = 0;
+let flashing = false;
+let scanResult = null;
+
+function setView(newSite, newTab) {
+  const prev = currentView;
+  const dur = Math.round(performance.now() - viewEnteredAt);
+  site = newSite;
+  tab = newTab;
+  currentView = `${site}/${tab}`;
+  if (prev !== currentView) {
+    track("$pageview", { from: prev, prev_dwell_ms: dur });
+    viewEnteredAt = performance.now();
+  }
+  render();
+}
+
+function mutate(fn, eventName, props) {
+  undoStack.push(structuredClone(state));
+  if (undoStack.length > 20) undoStack.shift();
+  fn();
+  if (eventName) track(eventName, props);
+  render();
+}
+
+function isDirty() { return JSON.stringify(state) !== JSON.stringify(saved); }
+
+function calcPower() {
+  const raw = 0.35 + (state.brightness / 100) * 2.85;
+  const capped = raw > state.limitA;
+  const draw = Math.min(raw, state.limitA);
+  const eff = capped ? Math.round(((state.limitA - 0.35) / 2.85) * 100) : state.brightness;
+  return { raw, draw, capped, eff };
+}
+
+function faceSvg(name) {
+  const map = {
+    Idle: `<path d="M26 26 Q48 16 70 26 Q48 34 26 26 Z"/><path d="M28 52 Q65 56 108 46"/>`,
+    Happy: `<path d="M24 32 Q48 12 72 32"/><path d="M22 48 Q68 62 114 44"/>`,
+    Blush: `<circle cx="48" cy="26" r="11"/><path d="M22 42 L26 50 M30 42 L34 50"/><path d="M62 48 Q74 58 84 48 Q94 58 106 48"/>`,
+    Angry: `<path d="M24 18 L74 30 L28 34 Z"/><path d="M26 50 L44 44 L62 52 L80 44 L102 52"/>`,
+    Sleepy: `<path d="M24 28 L72 28"/><path d="M90 14 L104 14 L90 26 L104 26"/><path d="M40 50 L96 50"/>`,
+    Starry: `<path d="M48 10 L53 23 L66 28 L53 33 L48 46 L43 33 L30 28 L43 23 Z"/><path d="M26 52 Q68 60 110 46"/>`,
+    "Cyber Heart": `<path d="M48 42 C32 30 26 16 38 14 C44 13 48 19 48 19 C48 19 52 13 58 14 C70 16 64 30 48 42 Z"/><path d="M30 54 Q68 60 106 50"/>`
+  };
+  return `<svg viewBox="0 0 140 70">${map[name] || map.Idle}</svg>`;
+}
+
+function idSvg(n) {
+  return `<svg viewBox="0 0 140 70"><path d="M52 54 L52 18 M38 30 L52 16 L66 30"/><text x="86" y="48" fill="currentColor" stroke="none" font-family="monospace" font-size="34" font-weight="700">${n}</text></svg>`;
+}
+
+function openModal(html, bindFn) {
+  const bg = document.getElementById("modalBg");
+  const box = document.getElementById("modalBox");
+  box.innerHTML = html;
+  bg.classList.add("open");
+  if (bindFn) bindFn(box);
+}
+function closeModal() {
+  document.getElementById("modalBg").classList.remove("open");
+}
+document.getElementById("modalBg").onclick = (e) => {
+  if (e.target.id === "modalBg") closeModal();
+};
+
+function enterApp(withUsb) {
+  entered = true;
+  usb = withUsb;
+  document.getElementById("entryScreen").style.display = "none";
+  document.getElementById("topActions").style.display = "flex";
+  document.getElementById("appBody").style.display = "grid";
+  setView("config", "faces");
+}
+
+document.getElementById("entrySimBtn").onclick = () => {
+  track("entered_simulator");
+  enterApp(false);
+};
+
+function openUsbPicker(onConnected) {
+  openModal(`
+    <div class="card-head"><span>Connect USB Device</span><button class="btn sm" id="mClose">X</button></div>
+    <button class="list-row" style="width:100%;background:var(--bg);border:1px solid var(--line-strong);border-radius:6px;padding:10px 12px;color:var(--ink);cursor:pointer" id="pickTeensy" data-track="webhid_pick_teensy">
+      <span><strong>ProtoStack Visor</strong></span>
+      <span class="mono">Teensy 4.1 · HID</span>
+    </button>
+  `, (box) => {
+    box.querySelector("#mClose").onclick = closeModal;
+    box.querySelector("#pickTeensy").onclick = () => {
+      track("usb_connected", { device: "Teensy 4.1" });
+      closeModal();
+      onConnected();
+    };
+  });
+}
+
+document.getElementById("entryConnectBtn").onclick = () => {
+  openUsbPicker(() => enterApp(true));
+};
+
+// Topbar bindings
+document.getElementById("connBtn").onclick = () => {
+  if (usb) {
+    usb = false;
+    track("usb_disconnect");
+    render();
+    return;
+  }
+  openUsbPicker(() => {
+    if (!entered) enterApp(true);
+    else { usb = true; render(); }
+  });
+};
+
+document.getElementById("undoBtn").onclick = () => {
+  if (!undoStack.length) return;
+  state = undoStack.pop();
+  track("undo_clicked");
+  render();
+};
+
+document.getElementById("saveBtn").onclick = () => {
+  saved = structuredClone(state);
+  undoStack = [];
+  track("save_committed", { usb_connected: usb });
+  render();
+};
+
+function render() {
+  document.getElementById("siteBadge").textContent = site === "config" ? "Config" : "Builder";
+  document.getElementById("connDot").classList.toggle("on", usb);
+  document.getElementById("connLabel").textContent = usb ? "Teensy 4.1" : "Simulator";
+
+  const pwr = calcPower();
+  const pm = document.getElementById("pwrMetric");
+  pm.textContent = `${pwr.draw.toFixed(1)}A / ${state.limitA.toFixed(1)}A`;
+  pm.classList.toggle("warn", pwr.capped);
+
+  document.getElementById("undoBtn").disabled = undoStack.length === 0;
+  const dirty = isDirty();
+  const rd = document.getElementById("ramDot");
+  rd.textContent = dirty ? "Preview" : "Saved";
+  rd.classList.toggle("dirty", dirty);
+
+  // Visor stage
+  const lp = document.getElementById("leftPanel");
+  const rp = document.getElementById("rightPanel");
+  const opacity = Math.max(0.25, pwr.eff / 100);
+  lp.style.opacity = opacity;
+  rp.style.opacity = opacity;
+  if (idPanel === 1) {
+    lp.innerHTML = idSvg(1);
+    rp.innerHTML = "";
+  } else if (idPanel === 2) {
+    lp.innerHTML = "";
+    rp.innerHTML = idSvg(2);
+  } else {
+    lp.innerHTML = faceSvg(state.face);
+    rp.innerHTML = faceSvg(state.face);
+    rp.querySelector("svg").style.transform = state.mirror ? "scaleX(-1)" : "none";
+  }
+
+  // Virtual test strip
+  const sim = document.getElementById("simStrip");
+  sim.innerHTML = `<button class="sim-chip" id="tBoop" data-track="sim_boop">Boop</button>` +
+    state.paws.map(p => `<button class="sim-chip" data-tpaw="${p.id}" data-track="sim_paw_${p.id}">Paw ${p.id}</button>`).join("");
+  document.getElementById("tBoop").onclick = () => {
+    boopLiveCm = Math.max(1, state.boopCm - 2);
+    const prevFace = state.face;
+    if (state.boopOn) state.face = state.boopFace;
+    track("sim_boop_triggered", { boop_on: state.boopOn, face: state.boopFace });
+    render();
+    clearTimeout(boopTimer);
+    boopTimer = setTimeout(() => {
+      boopLiveCm = 14;
+      state.face = prevFace;
+      render();
+    }, 1400);
+  };
+  sim.querySelectorAll("[data-tpaw]").forEach(el => {
+    el.onclick = () => {
+      const p = state.paws.find(x => x.id === Number(el.dataset.tpaw));
+      if (!p) return;
+      const faces = ["Idle", "Happy", "Blush", "Angry", "Sleepy", "Starry", ...state.customFaces];
+      if (p.action === "Cycle") {
+        state.face = faces[(faces.indexOf(state.face) + 1) % faces.length];
+      } else {
+        state.face = p.action;
+      }
+      track("sim_paw_pressed", { paw: p.id, action: p.action, result_face: state.face });
+      render();
+    };
+  });
+
+  // Sidebar
+  const sb = document.getElementById("sidebar");
+  const nav = site === "config"
+    ? [
+        { id: "faces", label: "Faces", icon: `<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M8 15c1.5 2 6.5 2 8 0"/>` },
+        { id: "inputs", label: "Inputs", icon: `<rect x="3" y="6" width="18" height="12" rx="3"/><path d="M8 12h4M16 12h.01"/>` },
+        { id: "power", label: "Power", icon: `<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>` },
+        { id: "reset", label: "System", icon: `<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>` }
+      ]
+    : [
+        { id: "flash", label: "Flash", icon: `<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>` },
+        { id: "panels", label: "Panels", icon: `<rect x="2" y="5" width="9" height="14" rx="1"/><rect x="13" y="5" width="9" height="14" rx="1"/>` },
+        { id: "wiring", label: "Wiring", icon: `<path d="M4 7h6M14 7h6M4 17h6M14 17h6M10 7l4 10"/>` },
+        { id: "back", label: "Config", icon: `<path d="M19 12H5M12 19l-7-7 7-7"/>` }
+      ];
+
+  sb.innerHTML = nav.map(n => `
+    <button class="nav-item ${tab === n.id ? "active" : ""}" data-nav="${n.id}" data-track="nav_${site}_${n.id}">
+      <svg viewBox="0 0 24 24">${n.icon}</svg>
+      <span>${n.label}</span>
+    </button>
+  `).join("");
+  sb.querySelectorAll("[data-nav]").forEach(el => {
+    el.onclick = () => {
+      if (el.dataset.nav === "back") setView("config", "faces");
+      else setView(site, el.dataset.nav);
+    };
+  });
+
+  // Main Panel
+  const panel = document.getElementById("panel");
+  const faces = ["Idle", "Happy", "Blush", "Angry", "Sleepy", "Starry", ...state.customFaces];
+
+  if (site === "config" && tab === "faces") {
+    panel.innerHTML = `
+      <div class="grid-faces">
+        ${faces.map(f => `
+          <button class="face-tile ${state.face === f ? "active" : ""}" data-face="${f}" data-track="face_${f}">
+            ${faceSvg(f)}
+            <span>${f}</span>
+          </button>
+        `).join("")}
+        <button class="face-tile import-tile" id="openImportBtn" data-track="open_import">
+          <svg viewBox="0 0 52 28"><path d="M26 6v16M18 14h16"/></svg>
+          <span>Import</span>
+        </button>
+      </div>
+      <div class="bar-row">
+        <div class="swatches">
+          <span class="mono" style="margin-right:4px">Tint</span>
+          ${[0,1,2,3,4,5].map(i => `<button class="swatch ${state.colorIdx === i ? "active" : ""}" data-sw="${i}" data-track="tint_${i}"></button>`).join("")}
+        </div>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer">
+          <input type="checkbox" id="mirrorChk" ${state.mirror ? "checked" : ""} data-track="mirror_toggle"/>
+          <span>Mirror</span>
+        </label>
+      </div>
+    `;
+    panel.querySelectorAll("[data-face]").forEach(el => {
+      el.onclick = () => mutate(() => { state.face = el.dataset.face; }, "face_selected", { face: el.dataset.face });
+    });
+    panel.querySelectorAll("[data-sw]").forEach(el => {
+      el.onclick = () => mutate(() => { state.colorIdx = Number(el.dataset.sw); }, "tint_selected", { swatch: Number(el.dataset.sw) });
+    });
+    document.getElementById("mirrorChk").onchange = e => mutate(() => { state.mirror = e.target.checked; }, "mirror_changed", { mirror: e.target.checked });
+    document.getElementById("openImportBtn").onclick = () => {
+      openModal(`
+        <div class="card-head"><span>Import Animation</span><button class="btn sm" id="mClose">X</button></div>
+        <div class="drop-box">
+          <span class="mono">64x32 per panel · 128x32 full</span>
+          <span class="mono">PNG · GIF · Sprite Strip · <= 30 FPS</span>
+          <button class="btn primary sm" id="impSampleBtn" data-track="import_sample">Load Sample ("Cyber Heart")</button>
+        </div>
+      `, (box) => {
+        box.querySelector("#mClose").onclick = closeModal;
+        box.querySelector("#impSampleBtn").onclick = () => {
+          mutate(() => {
+            if (!state.customFaces.includes("Cyber Heart")) state.customFaces.push("Cyber Heart");
+            state.face = "Cyber Heart";
+          }, "animation_imported", { name: "Cyber Heart" });
+          closeModal();
+        };
+      });
+    };
+    return;
+  }
+
+  if (site === "config" && tab === "inputs") {
+    const proxPct = Math.max(5, Math.min(100, ((20 - boopLiveCm) / 20) * 100));
+    const cutPct = Math.max(5, Math.min(100, ((20 - state.boopCm) / 20) * 100));
+    panel.innerHTML = `
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head">
+            <span>Boop Sensor</span>
+            <input type="checkbox" id="boopOn" ${state.boopOn ? "checked" : ""} data-track="boop_toggle"/>
+          </div>
+          <div class="meter">
+            <div class="meter-bar" style="width:${proxPct}%"></div>
+            <div class="meter-cut" style="left:${cutPct}%"></div>
+          </div>
+          <div class="field">
+            <label>Distance</label>
+            <span class="mono">${state.boopCm} cm</span>
+          </div>
+          <input type="range" id="boopRange" min="2" max="15" value="${state.boopCm}" data-track="boop_threshold"/>
+          <div class="field">
+            <label>Face</label>
+            <select id="boopFace" data-track="boop_face">
+              ${faces.map(f => `<option ${state.boopFace === f ? "selected" : ""}>${f}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <label>Duration</label>
+            <select id="boopSec" data-track="boop_duration">
+              ${[2,3,5].map(s => `<option value="${s}" ${state.boopSec === s ? "selected" : ""}>${s}s</option>`).join("")}
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span>Paw Buttons</span>
+            <span class="mono">${state.paws.length} wired</span>
+          </div>
+          ${state.paws.map(p => `
+            <div class="list-row">
+              <span>Btn ${p.id}</span>
+              <select data-pmode="${p.id}" data-track="paw_${p.id}_mode">
+                <option ${p.mode === "Tap" ? "selected" : ""}>Tap</option>
+                <option ${p.mode === "Hold" ? "selected" : ""}>Hold</option>
+              </select>
+              <select data-pact="${p.id}" data-track="paw_${p.id}_action">
+                <option ${p.action === "Cycle" ? "selected" : ""}>Cycle</option>
+                ${faces.map(f => `<option ${p.action === f ? "selected" : ""}>${f}</option>`).join("")}
+              </select>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+    document.getElementById("boopOn").onchange = e => mutate(() => { state.boopOn = e.target.checked; }, "boop_toggled", { on: e.target.checked });
+    document.getElementById("boopRange").onchange = e => mutate(() => { state.boopCm = Number(e.target.value); }, "boop_cm_changed", { cm: Number(e.target.value) });
+    document.getElementById("boopFace").onchange = e => mutate(() => { state.boopFace = e.target.value; }, "boop_face_changed", { face: e.target.value });
+    document.getElementById("boopSec").onchange = e => mutate(() => { state.boopSec = Number(e.target.value); }, "boop_sec_changed", { sec: Number(e.target.value) });
+    panel.querySelectorAll("[data-pmode]").forEach(el => {
+      el.onchange = e => mutate(() => { state.paws.find(x => x.id === Number(el.dataset.pmode)).mode = e.target.value; }, "paw_mode_changed");
+    });
+    panel.querySelectorAll("[data-pact]").forEach(el => {
+      el.onchange = e => mutate(() => { state.paws.find(x => x.id === Number(el.dataset.pact)).action = e.target.value; }, "paw_action_changed", { paw: Number(el.dataset.pact), action: e.target.value });
+    });
+    return;
+  }
+
+  if (site === "config" && tab === "power") {
+    panel.innerHTML = `
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head">
+            <span>Power</span>
+            <span class="mono">${pwr.draw.toFixed(1)}A / ${state.limitA.toFixed(1)}A</span>
+          </div>
+          <div class="field"><label>Brightness</label><span class="mono">${state.brightness}%</span></div>
+          <input type="range" id="brRange" min="10" max="100" value="${state.brightness}" data-track="brightness"/>
+          <div class="field"><label>5V Limit</label><span class="mono">${state.limitA.toFixed(1)}A</span></div>
+          <input type="range" id="limRange" min="1.5" max="5.0" step="0.1" value="${state.limitA}" data-track="power_limit"/>
+          ${pwr.capped ? `<div class="tag-warn">Capped at ${pwr.eff}%</div>` : ""}
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span>Cooling Fan</span>
+            <span class="mono">${state.fan}%</span>
+          </div>
+          <div class="seg">
+            ${[40, 65, 100].map(v => `<button class="${state.fan === v ? "active" : ""}" data-fan="${v}" data-track="fan_${v}">${v}%</button>`).join("")}
+          </div>
+          <input type="range" id="fanRange" min="0" max="100" value="${state.fan}" data-track="fan_slider"/>
+          ${state.fan < 20 ? `<div class="tag-warn">Low airflow</div>` : ""}
+        </div>
+      </div>
+    `;
+    document.getElementById("brRange").onchange = e => mutate(() => { state.brightness = Number(e.target.value); }, "brightness_changed", { val: Number(e.target.value) });
+    document.getElementById("limRange").onchange = e => mutate(() => { state.limitA = Number(e.target.value); }, "power_limit_changed", { val: Number(e.target.value) });
+    document.getElementById("fanRange").onchange = e => mutate(() => { state.fan = Number(e.target.value); }, "fan_changed", { val: Number(e.target.value) });
+    panel.querySelectorAll("[data-fan]").forEach(el => {
+      el.onclick = () => mutate(() => { state.fan = Number(el.dataset.fan); }, "fan_preset", { val: Number(el.dataset.fan) });
+    });
+    return;
+  }
+
+  if (site === "config" && tab === "reset") {
+    panel.innerHTML = `
+      <div class="card">
+        <div class="list-row">
+          <span>Factory Snapshot</span>
+          <button class="btn sm" id="restBtn" data-track="restore_factory">Restore</button>
+        </div>
+        <div class="list-row">
+          <span>Profile File</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn sm" id="expBtn" data-track="export_profile">Export</button>
+            <button class="btn sm" id="impProfBtn" data-track="import_profile">Import</button>
+          </div>
+        </div>
+        <div class="list-row">
+          <span>Hardware &amp; Firmware</span>
+          <button class="btn sm" id="goBuilderBtn" data-track="open_builder">Open Builder</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("restBtn").onclick = () => {
+      openModal(`
+        <div class="card-head"><span>Restore Factory Snapshot?</span><button class="btn sm" id="mClose">X</button></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn sm" id="mCancel">Cancel</button>
+          <button class="btn primary sm" id="mConfirm" data-track="confirm_restore">Restore</button>
+        </div>
+      `, (box) => {
+        box.querySelector("#mClose").onclick = closeModal;
+        box.querySelector("#mCancel").onclick = closeModal;
+        box.querySelector("#mConfirm").onclick = () => {
+          mutate(() => { state = structuredClone(factory); }, "factory_restored");
+          closeModal();
+        };
+      });
+    };
+    document.getElementById("goBuilderBtn").onclick = () => setView("builder", "flash");
+    return;
+  }
+
+  // ===== BUILDER SITE =====
+  if (site === "builder" && tab === "flash") {
+    panel.innerHTML = `
+      <div class="card">
+        <div class="card-head">
+          <span>Teensy 4.1 Firmware</span>
+          <span class="mono">v1.0.0</span>
+        </div>
+        <div class="meter"><div class="meter-bar" style="width:${flashPct}%"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="mono">${flashing ? `Flashing ${flashPct}%` : flashPct === 100 ? "Done" : "HalfKay WebHID"}</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn sm" id="snapBtn" data-track="save_factory_snapshot">Save Factory</button>
+            <button class="btn primary sm" id="flashBtn" data-track="flash_firmware" ${flashing ? "disabled" : ""}>Flash</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById("flashBtn").onclick = () => {
+      flashing = true; flashPct = 15; track("flash_started"); render();
+      setTimeout(() => { flashPct = 65; render(); }, 500);
+      setTimeout(() => { flashPct = 100; flashing = false; usb = true; track("flash_completed"); render(); }, 1100);
+    };
+    document.getElementById("snapBtn").onclick = () => {
+      factory = structuredClone(state);
+      saved = structuredClone(state);
+      track("factory_snapshot_saved");
+      render();
+    };
+    return;
+  }
+
+  if (site === "builder" && tab === "panels") {
+    panel.innerHTML = `
+      <div class="card">
+        <div class="card-head"><span>HUB75 Panels</span><span class="mono">2 x 64x32</span></div>
+        <div class="field">
+          <label>Board Preset</label>
+          <select id="bPreset" data-track="board_preset">
+            ${["SmartLED V5", "Coela Delta", "Custom"].map(x => `<option ${state.preset === x ? "selected" : ""}>${x}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label>Driver</label>
+          <select id="bDriver" data-track="panel_driver">
+            ${["FM6126A", "Standard"].map(x => `<option ${state.driver === x ? "selected" : ""}>${x}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label>Color Order</label>
+          <select id="bOrder" data-track="color_order">
+            ${["RGB", "RBG", "BGR"].map(x => `<option ${state.order === x ? "selected" : ""}>${x}</option>`).join("")}
+          </select>
+        </div>
+        <div class="list-row">
+          <span>Orientation</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn sm" id="id1" data-track="identify_p1">Test Panel 1</button>
+            <button class="btn sm" id="id2" data-track="identify_p2">Test Panel 2</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById("bPreset").onchange = e => mutate(() => { state.preset = e.target.value; }, "preset_changed", { val: e.target.value });
+    document.getElementById("bDriver").onchange = e => mutate(() => { state.driver = e.target.value; }, "driver_changed", { val: e.target.value });
+    document.getElementById("bOrder").onchange = e => mutate(() => { state.order = e.target.value; }, "order_changed", { val: e.target.value });
+    document.getElementById("id1").onclick = () => { idPanel = 1; track("panel_identify", { panel: 1 }); render(); setTimeout(() => { idPanel = 0; render(); }, 1800); };
+    document.getElementById("id2").onclick = () => { idPanel = 2; track("panel_identify", { panel: 2 }); render(); setTimeout(() => { idPanel = 0; render(); }, 1800); };
+    return;
+  }
+
+  if (site === "builder" && tab === "wiring") {
+    panel.innerHTML = `
+      <div class="card">
+        <div class="card-head"><span>Wired Inputs</span><button class="btn sm" id="scanBtn" data-track="scan_i2c">Scan Bus</button></div>
+        <div class="field">
+          <label>Boop</label>
+          <select id="bHw" data-track="boop_hw">
+            ${["APDS9960 (I2C)", "Digital Pin 21"].map(x => `<option ${state.boopHw === x ? "selected" : ""}>${x}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label>Paw Buttons</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn sm" id="decP" data-track="paw_dec" ${state.paws.length <= 0 ? "disabled" : ""}>-</button>
+            <span class="mono">${state.paws.length}</span>
+            <button class="btn sm" id="incP" data-track="paw_inc" ${state.paws.length >= 8 ? "disabled" : ""}>+</button>
+          </div>
+        </div>
+        <div class="mono">${state.paws.map(p => `P${p.pin}`).join(" · ") || "None"}</div>
+        ${scanResult ? `<div class="tag-warn">${scanResult}</div>` : ""}
+      </div>
+    `;
+    document.getElementById("bHw").onchange = e => mutate(() => { state.boopHw = e.target.value; }, "boop_hw_changed", { val: e.target.value });
+    document.getElementById("decP").onclick = () => mutate(() => { state.paws.pop(); }, "paw_count_changed", { count: state.paws.length - 1 });
+    document.getElementById("incP").onclick = () => mutate(() => { const n = state.paws.length + 1; state.paws.push({ id: n, pin: 13 + n, mode: "Tap", action: "Cycle" }); }, "paw_count_changed", { count: state.paws.length + 1 });
+    document.getElementById("scanBtn").onclick = () => {
+      scanResult = `0x39 APDS9960 OK · 0x40 INA219 OK · ${state.paws.length} Paw Pins OK`;
+      track("i2c_scanned", { paw_count: state.paws.length });
+      render();
+    };
+  }
+}
+
+track("session_start", { viewport: `${window.innerWidth}x${window.innerHeight}`, ua: navigator.userAgent });
+render();
+</script>
+</body>
+</html>

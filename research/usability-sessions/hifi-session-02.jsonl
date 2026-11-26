@@ -1,0 +1,128 @@
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:14:52.663Z","t_ms":12,"view":"config/entry","event":"session_start","prototype":"hifi-v2-wootility","viewport":"1956x1087"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:14:55.062Z","t_ms":2410,"view":"config/entry","event":"$click","x":1066,"y":367,"tag":"BUTTON","track_key":"entry_usb","label":"Connect Protogen"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:14:57.979Z","t_ms":5327,"view":"config/entry","event":"$click","x":1134,"y":573,"tag":"BUTTON","track_key":"webhid_pick_t41","label":"WebHID · Zero Drivers ProtoStack Vis"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:14:57.980Z","t_ms":5329,"view":"config/entry","event":"usb_connected","device":"Teensy 4.1"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:14:57.981Z","t_ms":5330,"view":"config/faces","event":"$pageview","from":"config/entry","prev_dwell_ms":5330}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:05.458Z","t_ms":12806,"view":"config/faces","event":"$click","x":1575,"y":590,"tag":"BUTTON","track_key":"mirror_toggle","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:05.459Z","t_ms":12808,"view":"config/faces","event":"mirror_toggled","mirror":false}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:07.393Z","t_ms":14742,"view":"config/faces","event":"$click","x":1575,"y":590,"tag":"BUTTON","track_key":"mirror_toggle","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:07.394Z","t_ms":14743,"view":"config/faces","event":"mirror_toggled","mirror":true}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:09.230Z","t_ms":16579,"view":"config/faces","event":"$click","x":791,"y":578,"tag":"BUTTON","track_key":"tint_#34d399","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:09.232Z","t_ms":16580,"view":"config/faces","event":"tint_selected","color":"#34d399"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:10.806Z","t_ms":18154,"view":"config/faces","event":"$click","x":831,"y":574,"tag":"BUTTON","track_key":"tint_#f472b6","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:10.807Z","t_ms":18156,"view":"config/faces","event":"tint_selected","color":"#f472b6"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:12.268Z","t_ms":19617,"view":"config/faces","event":"$click","x":863,"y":574,"tag":"BUTTON","track_key":"tint_#fbbf24","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:12.269Z","t_ms":19618,"view":"config/faces","event":"tint_selected","color":"#fbbf24"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:15.107Z","t_ms":22456,"view":"config/faces","event":"$click","x":1013,"y":579,"tag":"INPUT","track_key":"tint_custom","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:17.434Z","t_ms":24783,"view":"config/faces","event":"tint_custom"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:20.613Z","t_ms":27962,"view":"config/faces","event":"$click","x":1013,"y":588,"tag":"INPUT","track_key":"tint_custom","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:23.606Z","t_ms":30955,"view":"config/faces","event":"tint_custom"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:26.127Z","t_ms":33475,"view":"config/faces","event":"$click","x":1264,"y":440,"tag":"BUTTON","track_key":"face_Blush","label":"Blush"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:26.128Z","t_ms":33477,"view":"config/faces","event":"face_selected","face":"Blush"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:30.119Z","t_ms":37468,"view":"config/faces","event":"$click","x":1219,"y":489,"tag":"BUTTON","track_key":"open_import","label":"Import"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:31.575Z","t_ms":38924,"view":"config/faces","event":"$click","x":999,"y":585,"tag":"BUTTON","track_key":"import_sample","label":"Load Sample (\"Cyber Heart\")"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:31.576Z","t_ms":38925,"view":"config/faces","event":"animation_imported","name":"Cyber Heart"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:38.155Z","t_ms":45504,"view":"config/faces","event":"$click","x":1534,"y":39,"tag":"BUTTON","track_key":"save_head","label":"Save to Head"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:38.156Z","t_ms":45505,"view":"config/faces","event":"save_committed","usb":true}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:42.263Z","t_ms":49612,"view":"config/faces","event":"sim_paw","paw":1,"gesture":"tap","action":"Happy","result_face":"Happy"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:44.465Z","t_ms":51813,"view":"config/faces","event":"sim_paw","paw":2,"gesture":"tap","action":"Angry","result_face":"Angry"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:46.335Z","t_ms":53684,"view":"config/faces","event":"sim_paw","paw":3,"gesture":"tap","action":"Cycle","result_face":"Sleepy"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:51.619Z","t_ms":58968,"view":"config/faces","event":"$click","x":1006,"y":289,"tag":"BUTTON","track_key":"sim_boop","label":"Boop Nose"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:51.620Z","t_ms":58969,"view":"config/faces","event":"sim_boop","on":true,"face":"Blush"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:15:58.552Z","t_ms":65900,"view":"config/faces","event":"$click","x":273,"y":103,"tag":"BUTTON","track_key":"device_dropdown","label":"USB HID Teensy 4.1 ▾"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:01.083Z","t_ms":68431,"view":"config/faces","event":"$click","x":273,"y":103,"tag":"BUTTON","track_key":"device_dropdown","label":"USB HID Teensy 4.1 ▾"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:05.322Z","t_ms":72670,"view":"config/faces","event":"$click","x":161,"y":223,"tag":"BUTTON","track_key":"nav_power","label":"Power & Fan"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:05.324Z","t_ms":72673,"view":"config/power","event":"$pageview","from":"config/faces","prev_dwell_ms":67341}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:09.451Z","t_ms":76799,"view":"config/power","event":"limit_changed","val":3.1}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:14.489Z","t_ms":81838,"view":"config/power","event":"brightness_changed","val":100}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:17.922Z","t_ms":85271,"view":"config/power","event":"limit_changed","val":3}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:21.286Z","t_ms":88635,"view":"config/power","event":"limit_changed","val":4.1}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:24.814Z","t_ms":92162,"view":"config/power","event":"$click","x":1522,"y":22,"tag":"BUTTON","track_key":"save_head","label":"Save to Head"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:24.815Z","t_ms":92164,"view":"config/power","event":"save_committed","usb":true}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:27.279Z","t_ms":94628,"view":"config/power","event":"$click","x":1244,"y":444,"tag":"BUTTON","track_key":"fan_40","label":"Quiet 40%"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:27.280Z","t_ms":94629,"view":"config/power","event":"fan_preset","val":40}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:28.721Z","t_ms":96070,"view":"config/power","event":"$click","x":1367,"y":430,"tag":"BUTTON","track_key":"fan_65","label":"Balanced 65%"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:28.723Z","t_ms":96072,"view":"config/power","event":"fan_preset","val":65}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:30.047Z","t_ms":97396,"view":"config/power","event":"$click","x":1495,"y":419,"tag":"BUTTON","track_key":"fan_100","label":"Con 100%"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:30.049Z","t_ms":97397,"view":"config/power","event":"fan_preset","val":100}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:33.065Z","t_ms":100414,"view":"config/power","event":"dead_click","x":1360,"y":444,"tag":"DIV","track_key":null,"label":"Cooling Fan100% Quiet 40%Balanced 65"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:33.438Z","t_ms":100787,"view":"config/power","event":"$click","x":1360,"y":444,"tag":"BUTTON","track_key":"fan_65","label":"Balanced 65%"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:33.440Z","t_ms":100789,"view":"config/power","event":"fan_preset","val":65}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:37.258Z","t_ms":104607,"view":"config/power","event":"$click","x":154,"y":323,"tag":"BUTTON","track_key":"nav_boop","label":"Boop Sensor"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:37.259Z","t_ms":104608,"view":"config/boop","event":"$pageview","from":"config/power","prev_dwell_ms":31934}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:41.862Z","t_ms":109210,"view":"config/boop","event":"boop_cm_changed","cm":10}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:43.287Z","t_ms":110636,"view":"config/boop","event":"boop_cm_changed","cm":13}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:44.349Z","t_ms":111698,"view":"config/boop","event":"boop_cm_changed","cm":15}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:48.400Z","t_ms":115749,"view":"config/boop","event":"$click","x":1092,"y":412,"tag":"BUTTON","track_key":"boop_toggle","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:48.403Z","t_ms":115751,"view":"config/boop","event":"boop_toggled","on":false}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:49.131Z","t_ms":116479,"view":"config/boop","event":"$click","x":1092,"y":412,"tag":"BUTTON","track_key":"boop_toggle","label":""}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:49.132Z","t_ms":116481,"view":"config/boop","event":"boop_toggled","on":true}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:50.607Z","t_ms":117956,"view":"config/boop","event":"boop_cm_changed","cm":7}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:53.396Z","t_ms":120745,"view":"config/boop","event":"boop_cm_changed","cm":14}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:55.452Z","t_ms":122801,"view":"config/boop","event":"boop_cm_changed","cm":7}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:57.783Z","t_ms":125131,"view":"config/boop","event":"$click","x":1558,"y":342,"tag":"BUTTON","track_key":"boop_test_inline","label":"Test Boop"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:16:57.784Z","t_ms":125133,"view":"config/boop","event":"sim_boop","on":true,"face":"Blush"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:01.222Z","t_ms":128571,"view":"config/boop","event":"boop_cm_changed","cm":9}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:02.148Z","t_ms":129497,"view":"config/boop","event":"boop_cm_changed","cm":13}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:03.718Z","t_ms":131067,"view":"config/boop","event":"$click","x":1567,"y":361,"tag":"BUTTON","track_key":"boop_test_inline","label":"Test Boop"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:03.720Z","t_ms":131069,"view":"config/boop","event":"sim_boop","on":true,"face":"Blush"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:09.711Z","t_ms":137060,"view":"config/boop","event":"$click","x":188,"y":359,"tag":"BUTTON","track_key":"nav_paws","label":"Paw Buttons"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:09.711Z","t_ms":137060,"view":"config/paws","event":"$pageview","from":"config/boop","prev_dwell_ms":32452}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:17.712Z","t_ms":145061,"view":"config/paws","event":"hesitation","idle_ms":8000}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:21.670Z","t_ms":149019,"view":"config/paws","event":"$click","x":1210,"y":399,"tag":"BUTTON","track_key":"select_paw_2","label":"Paw 2P15 Tap: Angry Hold: Sleepy"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:21.672Z","t_ms":149021,"view":"config/paws","event":"paw_selected","paw":2}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:24.933Z","t_ms":152282,"view":"config/paws","event":"$click","x":1086,"y":510,"tag":"BUTTON","track_key":"test_tap","label":"Test Tap"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:24.935Z","t_ms":152284,"view":"config/paws","event":"sim_paw","paw":2,"gesture":"tap","action":"Angry","result_face":"Angry"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:30.049Z","t_ms":157398,"view":"config/paws","event":"$click","x":1568,"y":495,"tag":"BUTTON","track_key":"test_hold","label":"Test Hold"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:30.051Z","t_ms":157400,"view":"config/paws","event":"sim_paw","paw":2,"gesture":"hold","action":"Sleepy","result_face":"Sleepy"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:36.652Z","t_ms":164001,"view":"config/paws","event":"$click","x":1352,"y":390,"tag":"BUTTON","track_key":"select_paw_3","label":"Paw 3P16 Tap: Cycle Hold: Starry"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:36.654Z","t_ms":164003,"view":"config/paws","event":"paw_selected","paw":3}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:38.444Z","t_ms":165793,"view":"config/paws","event":"$click","x":1097,"y":514,"tag":"BUTTON","track_key":"test_tap","label":"Test Tap"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:38.446Z","t_ms":165795,"view":"config/paws","event":"sim_paw","paw":3,"gesture":"tap","action":"Cycle","result_face":"Starry"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:40.086Z","t_ms":167434,"view":"config/paws","event":"$click","x":1097,"y":514,"tag":"BUTTON","track_key":"test_tap","label":"Test Tap"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:40.087Z","t_ms":167436,"view":"config/paws","event":"sim_paw","paw":3,"gesture":"tap","action":"Cycle","result_face":"Cyber Heart"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:41.017Z","t_ms":168366,"view":"config/paws","event":"$click","x":1097,"y":514,"tag":"BUTTON","track_key":"test_tap","label":"Test Tap"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:41.019Z","t_ms":168368,"view":"config/paws","event":"sim_paw","paw":3,"gesture":"tap","action":"Cycle","result_face":"Idle"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:43.842Z","t_ms":171191,"view":"config/paws","event":"$click","x":1549,"y":508,"tag":"BUTTON","track_key":"test_hold","label":"Test Hold"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:43.844Z","t_ms":171193,"view":"config/paws","event":"sim_paw","paw":3,"gesture":"hold","action":"Starry","result_face":"Starry"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:48.293Z","t_ms":175642,"view":"config/paws","event":"$click","x":20,"y":170,"tag":"BUTTON","track_key":"rail_settings","label":"Settings"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:48.295Z","t_ms":175644,"view":"config/settings","event":"$pageview","from":"config/paws","prev_dwell_ms":38583}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:50.910Z","t_ms":178259,"view":"config/settings","event":"$click","x":953,"y":479,"tag":"BUTTON","track_key":"restore_factory","label":"Restore Factory Snapshot"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:52.503Z","t_ms":179851,"view":"config/settings","event":"$click","x":1114,"y":592,"tag":"BUTTON","track_key":"confirm_restore","label":"Restore"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:52.505Z","t_ms":179853,"view":"config/settings","event":"factory_restored"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:55.349Z","t_ms":182698,"view":"config/settings","event":"$click","x":1228,"y":467,"tag":"BUTTON","track_key":"export_profile","label":"Export JSON"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:17:55.355Z","t_ms":182703,"view":"config/settings","event":"profile_exported"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:03.356Z","t_ms":190705,"view":"config/settings","event":"hesitation","idle_ms":8000}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:08.187Z","t_ms":195535,"view":"config/settings","event":"$click","x":1520,"y":573,"tag":"BUTTON","track_key":"launch_builder","label":"Launch Builder ↗"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:08.188Z","t_ms":195536,"view":"builder/flash","event":"$pageview","from":"config/settings","prev_dwell_ms":19891}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:16.188Z","t_ms":203537,"view":"builder/flash","event":"hesitation","idle_ms":8000}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:18.589Z","t_ms":205938,"view":"builder/flash","event":"$click","x":1060,"y":546,"tag":"BUTTON","track_key":"flash_firmware","label":"Flash Teensy 4.1"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:18.590Z","t_ms":205939,"view":"builder/flash","event":"flash_started"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:19.646Z","t_ms":206995,"view":"builder/flash","event":"flash_completed"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:22.532Z","t_ms":209881,"view":"builder/flash","event":"$click","x":1311,"y":551,"tag":"BUTTON","track_key":"save_factory_snapshot","label":"Save as Factory Snapshot"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:22.535Z","t_ms":209883,"view":"builder/flash","event":"factory_snapshot_saved"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:26.719Z","t_ms":214068,"view":"builder/flash","event":"$click","x":149,"y":225,"tag":"BUTTON","track_key":"nav_b_panels","label":"Board & Panels"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:26.721Z","t_ms":214070,"view":"builder/panels","event":"$pageview","from":"builder/flash","prev_dwell_ms":18533}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:32.203Z","t_ms":219552,"view":"builder/panels","event":"preset_changed","val":"Coela Delta"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:34.973Z","t_ms":222321,"view":"builder/panels","event":"preset_changed","val":"Custom"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:37.237Z","t_ms":224586,"view":"builder/panels","event":"driver_changed","val":"Standard"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:39.311Z","t_ms":226660,"view":"builder/panels","event":"order_changed","val":"BGR"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:41.359Z","t_ms":228707,"view":"builder/panels","event":"$click","x":1421,"y":642,"tag":"BUTTON","track_key":"identify_p1","label":"Test Panel 1"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:41.361Z","t_ms":228710,"view":"builder/panels","event":"panel_identify","panel":1}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:44.190Z","t_ms":231539,"view":"builder/panels","event":"$click","x":1498,"y":631,"tag":"BUTTON","track_key":"identify_p2","label":"Test Panel 2"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:44.191Z","t_ms":231540,"view":"builder/panels","event":"panel_identify","panel":2}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:47.682Z","t_ms":235031,"view":"builder/panels","event":"$click","x":209,"y":264,"tag":"BUTTON","track_key":"nav_b_wiring","label":"Wiring & Scan"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:47.684Z","t_ms":235033,"view":"builder/wiring","event":"$pageview","from":"builder/panels","prev_dwell_ms":20962}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:50.809Z","t_ms":238158,"view":"builder/wiring","event":"$click","x":1550,"y":537,"tag":"BUTTON","track_key":"paw_inc","label":"+"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:50.812Z","t_ms":238160,"view":"builder/wiring","event":"paw_count_changed","count":4}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:51.962Z","t_ms":239311,"view":"builder/wiring","event":"$click","x":1460,"y":531,"tag":"BUTTON","track_key":"paw_dec","label":"−"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:51.964Z","t_ms":239313,"view":"builder/wiring","event":"paw_count_changed","count":3}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:53.001Z","t_ms":240350,"view":"builder/wiring","event":"$click","x":1570,"y":410,"tag":"BUTTON","track_key":"scan_i2c","label":"Scan I2C Bus"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:53.004Z","t_ms":240353,"view":"builder/wiring","event":"i2c_scanned","paw_count":3}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:56.233Z","t_ms":243582,"view":"builder/wiring","event":"$click","x":125,"y":203,"tag":"BUTTON","track_key":"nav_b_flash","label":"Firmware Flash"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:56.234Z","t_ms":243583,"view":"builder/flash","event":"$pageview","from":"builder/wiring","prev_dwell_ms":8549}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:59.690Z","t_ms":247038,"view":"builder/flash","event":"$click","x":1557,"y":114,"tag":"BUTTON","track_key":"save_head","label":"Save to Head"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:18:59.692Z","t_ms":247040,"view":"builder/flash","event":"save_committed","usb":true}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:19:00.478Z","t_ms":247827,"view":"builder/flash","event":"$click","x":1529,"y":25,"tag":"BUTTON","track_key":"exit_builder","label":"Exit to Config ↗"}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:19:00.481Z","t_ms":247829,"view":"config/faces","event":"$pageview","from":"builder/flash","prev_dwell_ms":4246}
+{"session_id":"hifi02_2026-11-26T18-14-52-651Z","ts":"2026-11-26T18:19:04.766Z","t_ms":252114,"view":"config/faces","event":"session_finish","total_events":127,"duration_ms":252114}

@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ProtoUI v1 Low-Fidelity Wireframe</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    color: var(--foreground, #e5e7eb);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* Wireframe toolbar (meta controls outside the app frame) */
+  .wf-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .wf-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+  }
+  .wf-chip {
+    background: var(--card, #16181d);
+    border: 1px dashed var(--border, rgba(255,255,255,0.22));
+    color: var(--muted-foreground, #9ca3af);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .wf-chip.active {
+    border-style: solid;
+    border-color: var(--foreground, #e5e7eb);
+    color: var(--foreground, #e5e7eb);
+    background: var(--secondary, rgba(255,255,255,0.08));
+    font-weight: 700;
+  }
+
+  /* Pure monochrome low-fi frame */
+  .frame {
+    background: var(--card, #14161a);
+    border: 2px solid var(--border, rgba(255,255,255,0.25));
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .browser-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border, rgba(255,255,255,0.18));
+    background: var(--secondary, rgba(255,255,255,0.04));
+    font-size: 11px;
+    color: var(--muted-foreground, #9ca3af);
+  }
+  .url-box {
+    border: 1px solid var(--border, rgba(255,255,255,0.18));
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: var(--foreground, #e5e7eb);
+  }
+
+  /* Wireframe boxes */
+  .wf-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px dashed var(--border, rgba(255,255,255,0.22));
+  }
+  .wf-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .wf-between {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .wf-btn {
+    border: 1px solid var(--border, rgba(255,255,255,0.28));
+    background: transparent;
+    color: var(--foreground, #e5e7eb);
+    padding: 4px 9px;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .wf-btn:hover { background: var(--secondary, rgba(255,255,255,0.08)); }
+  .wf-btn.solid {
+    background: var(--foreground, #e5e7eb);
+    color: var(--background, #0d0f12);
+    font-weight: 700;
+  }
+  .wf-btn.dashed { border-style: dashed; color: var(--muted-foreground, #9ca3af); }
+  .wf-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .wf-tag {
+    border: 1px dashed var(--border, rgba(255,255,255,0.22));
+    padding: 2px 6px;
+    font-size: 10.5px;
+    color: var(--muted-foreground, #9ca3af);
+  }
+
+  /* Banner for onboarding / browser fallback states */
+  .wf-banner {
+    padding: 10px 12px;
+    border-bottom: 1px dashed var(--border, rgba(255,255,255,0.22));
+    background: var(--secondary, rgba(255,255,255,0.05));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Stage placeholder */
+  .wf-stage {
+    padding: 12px;
+    border-bottom: 1px dashed var(--border, rgba(255,255,255,0.22));
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .visor-box {
+    border: 2px dashed var(--border, rgba(255,255,255,0.28));
+    padding: 18px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    text-align: center;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0.015),
+      rgba(255,255,255,0.015) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+  .visor-half {
+    border: 1px solid var(--border, rgba(255,255,255,0.2));
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+  }
+  .visor-ascii {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  /* Main body layout */
+  .wf-body {
+    display: grid;
+    grid-template-columns: 168px 1fr;
+    min-height: 330px;
+  }
+  .wf-nav {
+    border-right: 1px dashed var(--border, rgba(255,255,255,0.22));
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .wf-nav-item {
+    text-align: left;
+    padding: 7px 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted-foreground, #9ca3af);
+    font-family: inherit;
+    font-size: 11.5px;
+    cursor: pointer;
+  }
+  .wf-nav-item:hover { border-color: var(--border, rgba(255,255,255,0.2)); color: var(--foreground, #e5e7eb); }
+  .wf-nav-item.active {
+    border: 1px solid var(--foreground, #e5e7eb);
+    color: var(--foreground, #e5e7eb);
+    font-weight: 700;
+    background: var(--secondary, rgba(255,255,255,0.06));
+  }
+  .wf-nav-foot {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border, rgba(255,255,255,0.18));
+  }
+
+  .wf-main {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .wf-box {
+    border: 1px solid var(--border, rgba(255,255,255,0.2));
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .wf-box.dashed { border-style: dashed; }
+  .wf-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+  }
+  .wf-card {
+    border: 1px solid var(--border, rgba(255,255,255,0.2));
+    padding: 10px 8px;
+    text-align: center;
+    background: transparent;
+    color: var(--foreground, #e5e7eb);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .wf-card.active {
+    border-width: 2px;
+    border-color: var(--foreground, #e5e7eb);
+    font-weight: 700;
+    background: var(--secondary, rgba(255,255,255,0.07));
+  }
+  .wf-slider-mock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .wf-track {
+    flex: 1;
+    height: 8px;
+    border: 1px solid var(--border, rgba(255,255,255,0.28));
+    position: relative;
+  }
+  .wf-fill {
+    height: 100%;
+    background: var(--muted-foreground, #9ca3af);
+  }
+  .wf-mark {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    width: 2px;
+    background: var(--foreground, #e5e7eb);
+  }
+
+  /* Optional UX annotation callout */
+  .note {
+    display: none;
+    font-size: 10.5px;
+    padding: 5px 8px;
+    border-left: 3px solid var(--foreground, #e5e7eb);
+    background: var(--secondary, rgba(255,255,255,0.05));
+    color: var(--muted-foreground, #cbd5e1);
+  }
+  body.show-notes .note { display: block; }
+
+  @media (max-width: 580px) {
+    .wf-body { grid-template-columns: 1fr; }
+    .wf-nav { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px dashed var(--border, rgba(255,255,255,0.22)); }
+    .wf-nav-foot { margin-top: 0; border-top: 0; padding-top: 0; }
+    .visor-box { grid-template-columns: 1fr; }
+    .wf-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body class="show-notes">
+
+<!-- Wireframe Test Controls (outside app frame) -->
+<div class="wf-controls">
+  <div class="wf-group">
+    <span style="color:var(--muted-foreground,#9ca3af);font-size:11px">Site:</span>
+    <button class="wf-chip active" id="btnSiteConfig">1. Config Site</button>
+    <button class="wf-chip" id="btnSiteBuilder">2. Builder Site</button>
+  </div>
+  <div class="wf-group">
+    <span style="color:var(--muted-foreground,#9ca3af);font-size:11px">State:</span>
+    <button class="wf-chip active" id="stFirst">First Visit</button>
+    <button class="wf-chip" id="stUsb">USB Live</button>
+    <button class="wf-chip" id="stNoHid">Firefox/Safari</button>
+    <button class="wf-chip active" id="btnNotes">UX Notes: ON</button>
+  </div>
+</div>
+
+<div class="frame">
+  <div class="browser-bar">
+    <span class="url-box" id="urlText">https://config.protostack.dev</span>
+    <span>LOW-FI WIREFRAME | MONOCHROME IA CHECK</span>
+  </div>
+
+  <!-- Zone A: Global Top Bar -->
+  <div class="wf-topbar">
+    <div class="wf-row">
+      <span class="wf-tag">[LOGO]</span>
+      <strong>ProtoStack</strong>
+      <span class="wf-tag" id="siteBadge">CONFIG</span>
+    </div>
+    <div class="wf-row">
+      <button class="wf-btn" id="connActionBtn">[ Connect USB ]</button>
+      <span class="wf-tag" id="powerTag">Power: 1.4A / 3.0A</span>
+      <span class="wf-tag" id="fanTag">Fan: 65%</span>
+      <button class="wf-btn" id="wfUndoBtn" disabled>Undo</button>
+      <button class="wf-btn solid" id="wfSaveBtn">Save to Head</button>
+    </div>
+  </div>
+  <div class="note">Zone A (Global Bar): Always shows connection state, power/fan health, and RAM vs Saved status so users never guess if edits are permanent.</div>
+
+  <!-- Conditional Banner for First Visit or Unsupported Browser -->
+  <div id="bannerSlot"></div>
+
+  <!-- Zone B: Persistent Dual-Visor Stage -->
+  <div class="wf-stage">
+    <div class="wf-between">
+      <span><strong>[ LIVE VISOR STAGE ]</strong> Active: <span id="activeFaceTxt">Idle</span></span>
+      <span class="wf-tag" id="saveStatusTxt">STATUS: SAVED ON HEAD</span>
+    </div>
+    <div class="visor-box">
+      <div class="visor-half">
+        <div class="visor-ascii" id="leftAscii">(  o _ o  )</div>
+        <span style="font-size:10px;color:var(--muted-foreground,#9ca3af)">LEFT PANEL 64x32</span>
+      </div>
+      <div class="visor-half">
+        <div class="visor-ascii" id="rightAscii">(  o _ o  )</div>
+        <span style="font-size:10px;color:var(--muted-foreground,#9ca3af)">RIGHT PANEL 64x32</span>
+      </div>
+    </div>
+    <div class="wf-row" id="simStrip"></div>
+    <div class="note">Zone B (Persistent Stage): Stays pinned above the tabs so every face switch, boop test, paw press, or Builder panel-identify action gives instant feedback.</div>
+  </div>
+
+  <!-- Zone C + Zone D -->
+  <div class="wf-body">
+    <aside class="wf-nav" id="wfNav"></aside>
+    <section class="wf-main" id="wfMain"></section>
+  </div>
+</div>
+
+<script>
+let site = "config"; // config | builder
+let connState = "first"; // first | usb | nohid
+let tab = "faces";
+let showNotes = true;
+let dirty = false;
+let face = "Idle";
+let pawCount = 3;
+let boopThresh = 4;
+let powerLimit = 3.0;
+let restoreConfirm = false;
+let flashStep = 0;
+
+const FACE_ASCII = {
+  "Idle": "(  o _ o  )",
+  "Happy": "(  ^ u ^  )",
+  "Blush": "( //o_o// )",
+  "Angry": "(  > _ <  )",
+  "Sleepy": "(  - _ - z)",
+  "Imported": "[ CUSTOM GIF ]"
+};
+
+function markDirty() {
+  dirty = true;
+  render();
+}
+
+function setConnState(s) {
+  connState = s;
+  render();
+}
+
+document.getElementById("btnSiteConfig").onclick = () => { site = "config"; tab = "faces"; restoreConfirm = false; render(); };
+document.getElementById("btnSiteBuilder").onclick = () => { site = "builder"; tab = "flash"; restoreConfirm = false; render(); };
+document.getElementById("stFirst").onclick = () => setConnState("first");
+document.getElementById("stUsb").onclick = () => setConnState("usb");
+document.getElementById("stNoHid").onclick = () => setConnState("nohid");
+document.getElementById("btnNotes").onclick = () => {
+  showNotes = !showNotes;
+  document.body.classList.toggle("show-notes", showNotes);
+  document.getElementById("btnNotes").textContent = `UX Notes: ${showNotes ? "ON" : "OFF"}`;
+  document.getElementById("btnNotes").classList.toggle("active", showNotes);
+};
+
+document.getElementById("connActionBtn").onclick = () => {
+  connState = (connState === "usb") ? "first" : "usb";
+  render();
+};
+document.getElementById("wfUndoBtn").onclick = () => { dirty = false; face = "Idle"; render(); };
+document.getElementById("wfSaveBtn").onclick = () => { dirty = false; render(); };
+
+function render() {
+  // Meta chips
+  document.getElementById("btnSiteConfig").classList.toggle("active", site === "config");
+  document.getElementById("btnSiteBuilder").classList.toggle("active", site === "builder");
+  document.getElementById("stFirst").classList.toggle("active", connState === "first");
+  document.getElementById("stUsb").classList.toggle("active", connState === "usb");
+  document.getElementById("stNoHid").classList.toggle("active", connState === "nohid");
+
+  document.getElementById("urlText").textContent = site === "config"
+    ? "https://config.protostack.dev"
+    : "https://builder.protostack.dev";
+  document.getElementById("siteBadge").textContent = site === "config" ? "CONFIG" : "BUILDER";
+
+  const connBtn = document.getElementById("connActionBtn");
+  connBtn.textContent = connState === "usb"
+    ? "[ USB: Teensy 4.1 ]"
+    : connState === "nohid"
+      ? "[ Simulator Only ]"
+      : "[ Connect USB ]";
+
+  document.getElementById("wfUndoBtn").disabled = !dirty;
+  document.getElementById("saveStatusTxt").textContent = dirty
+    ? "STATUS: PREVIEWING IN RAM (UNSAVED)"
+    : "STATUS: SAVED ON HEAD";
+
+  document.getElementById("activeFaceTxt").textContent = face;
+  document.getElementById("leftAscii").textContent = FACE_ASCII[face] || "[ FACE ]";
+  document.getElementById("rightAscii").textContent = FACE_ASCII[face] || "[ FACE ]";
+
+  // Banner
+  const banner = document.getElementById("bannerSlot");
+  if (connState === "first") {
+    banner.innerHTML = `
+      <div class="wf-banner">
+        <span><strong>Simulator Mode Active:</strong> Plug in your Protogen over USB to edit live, or explore freely right now.</span>
+        <button class="wf-btn solid" id="bannerConnBtn">Connect Teensy 4.1</button>
+      </div>
+    `;
+    document.getElementById("bannerConnBtn").onclick = () => setConnState("usb");
+  } else if (connState === "nohid") {
+    banner.innerHTML = `
+      <div class="wf-banner">
+        <span><strong>Browser Notice:</strong> Firefox/Safari do not support WebHID USB. Simulator Mode works here; open Chrome, Edge, or Brave to connect hardware.</span>
+      </div>
+    `;
+  } else {
+    banner.innerHTML = "";
+  }
+
+  // Virtual test strip
+  const sim = document.getElementById("simStrip");
+  let pawHtml = "";
+  for (let i = 1; i <= pawCount; i++) {
+    pawHtml += `<button class="wf-btn" data-p="${i}">[ Paw ${i} ]</button>`;
+  }
+  sim.innerHTML = `
+    <span style="color:var(--muted-foreground,#9ca3af)">Virtual test:</span>
+    <button class="wf-btn" id="wfBoopBtn">[ Boop Nose ]</button>
+    ${pawHtml}
+  `;
+  document.getElementById("wfBoopBtn").onclick = () => { face = "Blush"; render(); };
+  sim.querySelectorAll("[data-p]").forEach(b => {
+    b.onclick = () => {
+      const idx = Number(b.dataset.p);
+      face = idx === 1 ? "Happy" : idx === 2 ? "Angry" : "Sleepy";
+      render();
+    };
+  });
+
+  // Left nav
+  const nav = document.getElementById("wfNav");
+  const items = site === "config"
+    ? [
+        { id: "faces", label: "1. Faces" },
+        { id: "inputs", label: "2. Boop & Buttons" },
+        { id: "power", label: "3. Power & Fan" },
+        { id: "profile", label: "4. Profile & Reset" }
+      ]
+    : [
+        { id: "flash", label: "1. Firmware Flash" },
+        { id: "panels", label: "2. Board & Panels" },
+        { id: "wiring", label: "3. Inputs & Scan" }
+      ];
+
+  nav.innerHTML = items.map(it =>
+    `<button class="wf-nav-item ${tab === it.id ? "active" : ""}" data-t="${it.id}">${it.label}</button>`
+  ).join("") + `
+    <div class="wf-nav-foot">
+      <button class="wf-btn dashed" style="width:100%" id="switchSiteFoot">
+        ${site === "config" ? "Open Builder Site" : "Back to Config Site"}
+      </button>
+    </div>
+  `;
+  nav.querySelectorAll("[data-t]").forEach(el => {
+    el.onclick = () => { tab = el.dataset.t; restoreConfirm = false; render(); };
+  });
+  document.getElementById("switchSiteFoot").onclick = () => {
+    site = site === "config" ? "builder" : "config";
+    tab = site === "config" ? "faces" : "flash";
+    render();
+  };
+
+  // Main panel
+  const main = document.getElementById("wfMain");
+
+  if (site === "config" && tab === "faces") {
+    main.innerHTML = `
+      <div class="wf-between">
+        <strong>FACES &amp; ANIMATION IMPORT</strong>
+        <span class="wf-tag">Target: Dual 64x32 HUB75</span>
+      </div>
+      <div class="wf-grid-3">
+        ${["Idle", "Happy", "Blush", "Angry", "Sleepy", "Imported"].map(f =>
+          `<button class="wf-card ${face === f ? "active" : ""}" data-f="${f}">[ ${f} ]</button>`
+        ).join("")}
+      </div>
+      <div class="wf-box">
+        <div class="wf-between">
+          <span><strong>Color Tint:</strong> [Swatch 1] [Swatch 2] [Swatch 3] [Custom Hex]</span>
+          <span>[x] Mirror L/R</span>
+        </div>
+      </div>
+      <div class="wf-box dashed">
+        <div class="wf-between">
+          <div>
+            <strong>[ DROPZONE: IMPORT PNG / GIF / SPRITE ]</strong>
+            <div style="color:var(--muted-foreground,#9ca3af)">Required: 64x32 per panel or 128x32 combined | max 30 FPS</div>
+          </div>
+          <button class="wf-btn" id="wfImportBtn">Simulate Import</button>
+        </div>
+      </div>
+      <div class="note">Wireframe Check: Is it obvious how to switch a face vs import a custom animation without a pixel editor?</div>
+    `;
+    main.querySelectorAll("[data-f]").forEach(el => {
+      el.onclick = () => { face = el.dataset.f; markDirty(); };
+    });
+    document.getElementById("wfImportBtn").onclick = () => { face = "Imported"; markDirty(); };
+    return;
+  }
+
+  if (site === "config" && tab === "inputs") {
+    main.innerHTML = `
+      <strong>BOOP SENSOR &amp; WIRED PAW BUTTONS</strong>
+      <div class="wf-box">
+        <div class="wf-between">
+          <span><strong>Boop Sensor</strong> [x] Enabled</span>
+          <span class="wf-tag">Trigger under: ${boopThresh} cm</span>
+        </div>
+        <div class="wf-slider-mock">
+          <span>Live:</span>
+          <div class="wf-track">
+            <div class="wf-fill" style="width:32%"></div>
+            <div class="wf-mark" style="left:${Math.max(10, 100 - boopThresh * 7)}%"></div>
+          </div>
+          <button class="wf-btn" id="boopTightBtn">Tighter (-1cm)</button>
+          <button class="wf-btn" id="boopLooseBtn">Wider (+1cm)</button>
+        </div>
+        <div>Action: When booped -> Play [ Blush v ] for [ 3s v ]</div>
+      </div>
+      <div class="wf-box">
+        <div class="wf-between">
+          <strong>Wired Paw Buttons (${pawCount} active)</strong>
+          <span style="color:var(--muted-foreground,#9ca3af)">Pin count set in Builder site</span>
+        </div>
+        ${Array.from({ length: pawCount }, (_, i) => `
+          <div class="wf-between" style="border-top:1px dashed var(--border,rgba(255,255,255,0.12));padding-top:5px">
+            <span>Button ${i + 1} (Pin ${14 + i})</span>
+            <span>[ Tap v ] -> [ ${i === 0 ? "Happy" : i === 1 ? "Angry" : "Cycle Next"} v ]</span>
+          </div>
+        `).join("")}
+      </div>
+      <div class="note">Wireframe Check: Should Boop and Paw Buttons share one "Inputs" tab like this, or be two separate tabs?</div>
+    `;
+    document.getElementById("boopTightBtn").onclick = () => { boopThresh = Math.max(2, boopThresh - 1); markDirty(); };
+    document.getElementById("boopLooseBtn").onclick = () => { boopThresh = Math.min(12, boopThresh + 1); markDirty(); };
+    return;
+  }
+
+  if (site === "config" && tab === "power") {
+    main.innerHTML = `
+      <strong>POWER BUDGET &amp; COOLING FAN</strong>
+      <div class="wf-box">
+        <div class="wf-between">
+          <span><strong>Master Brightness:</strong> 80%</span>
+          <span><strong>5V Bank Limit:</strong> ${powerLimit.toFixed(1)}A</span>
+        </div>
+        <div class="wf-row">
+          <button class="wf-btn" id="lim2Btn">Set 2.0A (Shows Cap)</button>
+          <button class="wf-btn" id="lim3Btn">Set 3.0A (Normal)</button>
+        </div>
+        <div class="wf-tag">${powerLimit < 2.5 ? "[!] POWER CAP ACTIVE: Scaled brightness to avoid 5V brownout" : "[OK] Draw within battery limit"}</div>
+      </div>
+      <div class="wf-box">
+        <div class="wf-between">
+          <strong>Cooling Fan Speed</strong>
+          <div class="wf-row">
+            <button class="wf-btn">Quiet 40%</button>
+            <button class="wf-btn solid">Balanced 65%</button>
+            <button class="wf-btn">Con Cool 100%</button>
+          </div>
+        </div>
+        <div style="color:var(--muted-foreground,#9ca3af)">Soft warning if set under 20% (never locked).</div>
+      </div>
+      <div class="note">Wireframe Check: Does grouping Brightness, Battery Limit, and Cooling Fan together feel intuitive?</div>
+    `;
+    document.getElementById("lim2Btn").onclick = () => { powerLimit = 2.0; markDirty(); };
+    document.getElementById("lim3Btn").onclick = () => { powerLimit = 3.0; markDirty(); };
+    return;
+  }
+
+  if (site === "config" && tab === "profile") {
+    main.innerHTML = `
+      <strong>PROFILE BACKUP &amp; SAFE RECOVERY</strong>
+      <div class="wf-box">
+        <div class="wf-between">
+          <div>
+            <strong>Builder Factory Snapshot</strong>
+            <div style="color:var(--muted-foreground,#9ca3af)">Loads known-good builder preset into RAM preview.</div>
+          </div>
+          ${restoreConfirm
+            ? `<div class="wf-row"><button class="wf-btn solid" id="confirmRestBtn">Confirm Restore</button><button class="wf-btn" id="cancelRestBtn">Cancel</button></div>`
+            : `<button class="wf-btn" id="askRestBtn">Restore Factory Snapshot</button>`}
+        </div>
+      </div>
+      <div class="wf-box">
+        <div class="wf-between">
+          <span><strong>Portable Profile (.protoprofile)</strong></span>
+          <div class="wf-row">
+            <button class="wf-btn">Export File</button>
+            <button class="wf-btn">Import File</button>
+          </div>
+        </div>
+      </div>
+      <div class="wf-box dashed">
+        <div class="wf-between">
+          <span>Need firmware flashing, pinouts, or panel wiring?</span>
+          <button class="wf-btn" id="goBuilderInline">Open builder.protostack.dev -></button>
+        </div>
+      </div>
+      <div class="note">Wireframe Check: Keeping the Builder link tucked down here prevents accidental owner exploration while keeping full right-to-repair.</div>
+    `;
+    if (restoreConfirm) {
+      document.getElementById("confirmRestBtn").onclick = () => { face = "Idle"; dirty = true; restoreConfirm = false; render(); };
+      document.getElementById("cancelRestBtn").onclick = () => { restoreConfirm = false; render(); };
+    } else {
+      document.getElementById("askRestBtn").onclick = () => { restoreConfirm = true; render(); };
+    }
+    document.getElementById("goBuilderInline").onclick = () => { site = "builder"; tab = "flash"; render(); };
+    return;
+  }
+
+  // ===== BUILDER SITE WIREFRAMES =====
+  if (site === "builder" && tab === "flash") {
+    main.innerHTML = `
+      <strong>WEBHID TEENSY 4.1 FIRMWARE FLASHER</strong>
+      <div class="wf-box">
+        <div class="wf-between">
+          <div>
+            <strong>Release: protostack-teensy41-v1.0.hex</strong>
+            <div style="color:var(--muted-foreground,#9ca3af)">Flow: BOOTLOADER_JUMP -> HalfKay 0x16C0:0x0479 -> 1088B HID pages</div>
+          </div>
+          <button class="wf-btn solid" id="wfFlashBtn">Step Flash Flow (${flashStep}/3)</button>
+        </div>
+        <div class="wf-tag">${
+          flashStep === 0 ? "State: Idle (ready to flash)" :
+          flashStep === 1 ? "Step 1: Rebooting Teensy into HalfKay via bkpt #251..." :
+          flashStep === 2 ? "Step 2: Writing 1088-byte WebHID flash pages (72%)..." :
+          "Step 3: Flash complete! Teensy rebooted & reconnected."
+        }</div>
+      </div>
+      <div class="wf-box">
+        <div class="wf-between">
+          <span><strong>Studio Handoff:</strong> Save current tested state as Factory Snapshot</span>
+          <button class="wf-btn">Save Factory Snapshot</button>
+        </div>
+      </div>
+      <div class="note">Wireframe Check: Having Firmware Flash as Tab 1 in Builder matches a maker's chronological order (Flash -> Panels -> Wiring/Scan).</div>
+    `;
+    document.getElementById("wfFlashBtn").onclick = () => { flashStep = (flashStep + 1) % 4; render(); };
+    return;
+  }
+
+  if (site === "builder" && tab === "panels") {
+    main.innerHTML = `
+      <strong>BOARD PRESET &amp; DUAL 64x32 PANEL SETUP</strong>
+      <div class="wf-box">
+        <div class="wf-between">
+          <span>Board Preset: [ SmartLED Shield V5 v ]</span>
+          <span class="wf-tag">Teensy 4.1 FlexIO</span>
+        </div>
+        <div class="wf-between">
+          <span>Panel Driver: [ FM6126A 100ns v ]</span>
+          <span>Color Order: [ RGB / RBG / BGR v ]</span>
+        </div>
+        <div class="wf-between" style="border-top:1px dashed var(--border,rgba(255,255,255,0.15));padding-top:6px">
+          <span>Verify physical panel wiring &amp; orientation:</span>
+          <div class="wf-row">
+            <button class="wf-btn" id="wfId1">[ Identify Panel 1 ]</button>
+            <button class="wf-btn" id="wfId2">[ Identify Panel 2 ]</button>
+          </div>
+        </div>
+      </div>
+      <div class="note">Wireframe Check: Panel Identify triggers an orientation arrow right onto the physical visor (and simulated stage above).</div>
+    `;
+    document.getElementById("wfId1").onclick = () => { document.getElementById("leftAscii").textContent = "[ UP ARROW #1 ]"; };
+    document.getElementById("wfId2").onclick = () => { document.getElementById("rightAscii").textContent = "[ UP ARROW #2 ]"; };
+    return;
+  }
+
+  if (site === "builder" && tab === "wiring") {
+    main.innerHTML = `
+      <strong>WIRED INPUTS &amp; BUS DIAGNOSTICS</strong>
+      <div class="wf-box">
+        <div class="wf-between">
+          <span>Boop Hardware: [ APDS9960 I2C v ]</span>
+          <div class="wf-row">
+            <span>Paw Buttons (N): <strong>${pawCount}</strong></span>
+            <button class="wf-btn" id="wfDecP">-</button>
+            <button class="wf-btn" id="wfIncP">+</button>
+          </div>
+        </div>
+        <div class="wf-row">
+          ${Array.from({ length: pawCount }, (_, i) => `<span class="wf-tag">Btn${i + 1}: Pin ${14 + i}</span>`).join("")}
+        </div>
+      </div>
+      <div class="wf-box dashed">
+        <div class="wf-between">
+          <strong>Hardware Scan (SENSOR_SCAN 0x0031)</strong>
+          <button class="wf-btn">[ Run I2C Scan ]</button>
+        </div>
+        <div style="color:var(--muted-foreground,#9ca3af)">Output: 0x39 APDS9960 [OK] | 0x40 INA219 [OK] | ${pawCount} Paw Pins [OK]</div>
+      </div>
+      <div class="note">Wireframe Check: Pin counts and sensor drivers live only here in Builder; Owners only see named buttons in Config.</div>
+    `;
+    document.getElementById("wfDecP").onclick = () => { pawCount = Math.max(0, pawCount - 1); markDirty(); };
+    document.getElementById("wfIncP").onclick = () => { pawCount = Math.min(8, pawCount + 1); markDirty(); };
+  }
+}
+
+render();
+</script>
+</body>
+</html>

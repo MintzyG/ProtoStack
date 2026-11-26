@@ -1,0 +1,93 @@
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:14.875Z","t_ms":7,"view":"config/entry","event":"session_start","prototype":"final-v3-pcb-builder-rename","viewport":"1956x1087"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:16.364Z","t_ms":1495,"view":"config/entry","event":"$click","x":1012,"y":349,"tag":"BUTTON","track_key":"entry_usb","label":"Connect Protogen"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:17.631Z","t_ms":2762,"view":"config/entry","event":"$click","x":1129,"y":565,"tag":"BUTTON","track_key":"webhid_pick_t41","label":"WebHID · Zero Drivers Nova Protogen "}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:17.632Z","t_ms":2763,"view":"config/entry","event":"usb_connected","device":"Teensy 4.1"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:17.634Z","t_ms":2765,"view":"config/faces","event":"$pageview","from":"config/entry","prev_dwell_ms":2765}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:23.187Z","t_ms":8318,"view":"config/faces","event":"$click","x":231,"y":75,"tag":"BUTTON","track_key":"device_dropdown","label":"USB HID Nova Protogen ▾"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:28.938Z","t_ms":14069,"view":"config/faces","event":"dead_click","x":402,"y":155,"tag":"DIV","track_key":null,"label":"LOGO Visor Settings Visor Config USB"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:30.166Z","t_ms":15297,"view":"config/faces","event":"$click","x":802,"y":41,"tag":"INPUT","track_key":"rename_helmet","label":""}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:31.325Z","t_ms":16457,"view":"config/faces","event":"dead_click","x":693,"y":45,"tag":"HEADER","track_key":null,"label":"NP Saved 2.6A / 3.0A Save to Head"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:33.442Z","t_ms":18574,"view":"config/faces","event":"helmet_renamed","name":"Mintzy"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:33.505Z","t_ms":18636,"view":"config/faces","event":"dead_click","x":751,"y":148,"tag":"SECTION","track_key":null,"label":"Boop Nose Thumb Happy Index Angry Mi"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:35.297Z","t_ms":20429,"view":"config/faces","event":"$click","x":1519,"y":50,"tag":"BUTTON","track_key":"save_head","label":"Save to Head"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:35.298Z","t_ms":20430,"view":"config/faces","event":"save_committed","usb":true}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:37.012Z","t_ms":22143,"view":"config/faces","event":"$click","x":791,"y":573,"tag":"BUTTON","track_key":"tint_#34d399","label":""}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:37.013Z","t_ms":22145,"view":"config/faces","event":"tint_selected","color":"#34d399"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:38.998Z","t_ms":24129,"view":"config/faces","event":"$click","x":1055,"y":417,"tag":"BUTTON","track_key":"face_happy","label":"Happy"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:38.999Z","t_ms":24131,"view":"config/faces","event":"face_selected","id":"happy"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:42.024Z","t_ms":27156,"view":"config/faces","event":"sim_paw","paw":"Thumb","gesture":"tap","action":"happy"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:45.582Z","t_ms":30713,"view":"config/faces","event":"$click","x":180,"y":360,"tag":"BUTTON","track_key":"nav_paws","label":"Paw Buttons"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:45.583Z","t_ms":30715,"view":"config/paws","event":"$pageview","from":"config/faces","prev_dwell_ms":27947}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:49.030Z","t_ms":34162,"view":"config/paws","event":"$click","x":773,"y":385,"tag":"BUTTON","track_key":"select_paw_1","label":"ThumbP14 Tap: Happy Hold: Blush"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:49.032Z","t_ms":34163,"view":"config/paws","event":"paw_selected","paw":1}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:51.674Z","t_ms":36806,"view":"config/paws","event":"$click","x":1504,"y":333,"tag":"INPUT","track_key":"rename_paw","label":""}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:34:59.675Z","t_ms":44807,"view":"config/paws","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:07.677Z","t_ms":52808,"view":"config/paws","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:10.037Z","t_ms":55169,"view":"config/paws","event":"paw_renamed","id":1,"name":"HABBY"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:18.038Z","t_ms":63170,"view":"config/paws","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:18.642Z","t_ms":63773,"view":"config/paws","event":"$click","x":162,"y":302,"tag":"BUTTON","track_key":"nav_boop","label":"Boop Sensor"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:18.643Z","t_ms":63775,"view":"config/boop","event":"$pageview","from":"config/paws","prev_dwell_ms":33057}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:21.862Z","t_ms":66994,"view":"config/boop","event":"boop_cm_changed","cm":6}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:22.644Z","t_ms":67776,"view":"config/boop","event":"boop_cm_changed","cm":13}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:23.505Z","t_ms":68636,"view":"config/boop","event":"boop_cm_changed","cm":14}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:24.586Z","t_ms":69718,"view":"config/boop","event":"boop_cm_changed","cm":15}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:25.763Z","t_ms":70895,"view":"config/boop","event":"boop_cm_changed","cm":8}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:27.154Z","t_ms":72286,"view":"config/boop","event":"boop_cm_changed","cm":6}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:33.485Z","t_ms":78617,"view":"config/boop","event":"$click","x":1531,"y":39,"tag":"BUTTON","track_key":"save_head","label":"Save to Head"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:33.487Z","t_ms":78618,"view":"config/boop","event":"save_committed","usb":true}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:35.464Z","t_ms":80596,"view":"config/boop","event":"$click","x":188,"y":195,"tag":"BUTTON","track_key":"nav_faces","label":"Faces"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:35.466Z","t_ms":80597,"view":"config/faces","event":"$pageview","from":"config/boop","prev_dwell_ms":16822}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:39.329Z","t_ms":84461,"view":"config/faces","event":"sim_paw","paw":"Middle","gesture":"tap","action":"cycle"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:45.273Z","t_ms":90405,"view":"config/faces","event":"$click","x":166,"y":310,"tag":"BUTTON","track_key":"nav_boop","label":"Boop Sensor"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:45.275Z","t_ms":90406,"view":"config/boop","event":"$pageview","from":"config/faces","prev_dwell_ms":9808}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:47.704Z","t_ms":92836,"view":"config/boop","event":"$click","x":243,"y":368,"tag":"BUTTON","track_key":"nav_paws","label":"Paw Buttons"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:47.706Z","t_ms":92837,"view":"config/paws","event":"$pageview","from":"config/boop","prev_dwell_ms":2430}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:49.547Z","t_ms":94678,"view":"config/paws","event":"$click","x":40,"y":173,"tag":"BUTTON","track_key":"rail_settings","label":"Settings"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:49.549Z","t_ms":94681,"view":"config/settings","event":"$pageview","from":"config/paws","prev_dwell_ms":1842}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:52.565Z","t_ms":97697,"view":"config/settings","event":"$click","x":1420,"y":554,"tag":"BUTTON","track_key":"launch_builder","label":"Open Builder Workbench ↗"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:35:52.567Z","t_ms":97699,"view":"builder/workbench","event":"$pageview","from":"config/settings","prev_dwell_ms":3017}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:00.569Z","t_ms":105701,"view":"builder/workbench","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:08.571Z","t_ms":113702,"view":"builder/workbench","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:09.057Z","t_ms":114188,"view":"builder/workbench","event":"$click","x":139,"y":565,"tag":"BUTTON","track_key":"b_id_p1","label":"Test Panel 1"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:09.058Z","t_ms":114189,"view":"builder/workbench","event":"panel_identify","panel":1}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:11.279Z","t_ms":116411,"view":"builder/workbench","event":"$click","x":234,"y":558,"tag":"BUTTON","track_key":"b_id_p2","label":"Test Panel 2"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:11.281Z","t_ms":116412,"view":"builder/workbench","event":"panel_identify","panel":2}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:19.282Z","t_ms":124413,"view":"builder/workbench","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:20.623Z","t_ms":125755,"view":"builder/workbench","event":"$click","x":602,"y":173,"tag":"g","track_key":"pcb_pin_22","label":"22 FAN"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:20.625Z","t_ms":125756,"view":"builder/workbench","event":"pcb_pin_inspected","pin":22,"signal":"Cooling Fan PWM"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:23.140Z","t_ms":128271,"view":"builder/workbench","event":"$click","x":680,"y":172,"tag":"g","track_key":"pcb_pin_19","label":"19 BOOP"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:23.142Z","t_ms":128273,"view":"builder/workbench","event":"pcb_pin_inspected","pin":19,"signal":"I2C0 SCL (APDS9960 + INA219)"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:24.939Z","t_ms":130070,"view":"builder/workbench","event":"$click","x":711,"y":172,"tag":"g","track_key":"pcb_pin_18","label":"18 BOOP"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:24.939Z","t_ms":130071,"view":"builder/workbench","event":"pcb_pin_inspected","pin":18,"signal":"I2C0 SDA (APDS9960 + INA219)"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:28.073Z","t_ms":133205,"view":"builder/workbench","event":"$click","x":759,"y":177,"tag":"g","track_key":"pcb_pin_16","label":"16 PAW"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:28.075Z","t_ms":133206,"view":"builder/workbench","event":"pcb_pin_inspected","pin":16,"signal":"Paw \"Middle\" (INPUT_PULLUP)"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:29.894Z","t_ms":135025,"view":"builder/workbench","event":"$click","x":780,"y":177,"tag":"g","track_key":"pcb_pin_15","label":"15 PAW"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:29.894Z","t_ms":135026,"view":"builder/workbench","event":"pcb_pin_inspected","pin":15,"signal":"Paw \"Index\" (INPUT_PULLUP)"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:31.552Z","t_ms":136683,"view":"builder/workbench","event":"$click","x":815,"y":174,"tag":"g","track_key":"pcb_pin_14","label":"14 PAW"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:31.553Z","t_ms":136685,"view":"builder/workbench","event":"pcb_pin_inspected","pin":14,"signal":"Paw \"HABBY\" (INPUT_PULLUP)"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:39.482Z","t_ms":144613,"view":"builder/workbench","event":"$click","x":847,"y":180,"tag":"g","track_key":"pcb_pin_13","label":"13 B1"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:39.484Z","t_ms":144615,"view":"builder/workbench","event":"pcb_pin_inspected","pin":13,"signal":"HUB75 B1"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:42.580Z","t_ms":147711,"view":"builder/workbench","event":"$click","x":627,"y":312,"tag":"g","track_key":"pcb_pin_2","label":"2 OE"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:42.581Z","t_ms":147713,"view":"builder/workbench","event":"pcb_pin_inspected","pin":2,"signal":"HUB75 OE"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:44.387Z","t_ms":149518,"view":"builder/workbench","event":"$click","x":645,"y":312,"tag":"g","track_key":"pcb_pin_3","label":"3 LATC"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:44.388Z","t_ms":149520,"view":"builder/workbench","event":"pcb_pin_inspected","pin":3,"signal":"HUB75 LATCH"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:46.825Z","t_ms":151957,"view":"builder/workbench","event":"$click","x":812,"y":310,"tag":"g","track_key":"pcb_pin_9","label":"9 G0"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:46.827Z","t_ms":151959,"view":"builder/workbench","event":"pcb_pin_inspected","pin":9,"signal":"HUB75 G0"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:48.646Z","t_ms":153777,"view":"builder/workbench","event":"$click","x":842,"y":310,"tag":"g","track_key":"pcb_pin_10","label":"10 B0"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:48.647Z","t_ms":153779,"view":"builder/workbench","event":"pcb_pin_inspected","pin":10,"signal":"HUB75 B0"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:49.925Z","t_ms":155056,"view":"builder/workbench","event":"dead_click","x":879,"y":310,"tag":"rect","track_key":null,"label":""}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:51.758Z","t_ms":156890,"view":"builder/workbench","event":"$click","x":892,"y":309,"tag":"g","track_key":"pcb_pin_12","label":"12 R1"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:51.760Z","t_ms":156891,"view":"builder/workbench","event":"pcb_pin_inspected","pin":12,"signal":"HUB75 R1"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:36:59.761Z","t_ms":164893,"view":"builder/workbench","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:02.816Z","t_ms":167948,"view":"builder/workbench","event":"b_preset_changed","val":"Coela Delta"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:06.930Z","t_ms":172062,"view":"builder/workbench","event":"b_preset_changed","val":"Custom"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:11.341Z","t_ms":176472,"view":"builder/workbench","event":"$click","x":923,"y":307,"tag":"g","track_key":"pcb_pin_24","label":"24"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:11.343Z","t_ms":176475,"view":"builder/workbench","event":"pcb_pin_inspected","pin":24,"signal":"Unused"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:13.177Z","t_ms":178308,"view":"builder/workbench","event":"dead_click","x":842,"y":401,"tag":"DIV","track_key":null,"label":"Pin 24: Unassigned GPIO (Available) "}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:15.083Z","t_ms":180215,"view":"builder/workbench","event":"dead_click","x":257,"y":382,"tag":"SPAN","track_key":null,"label":"Pin 24: Unassigned GPIO (Available)"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:23.086Z","t_ms":188217,"view":"builder/workbench","event":"hesitation","idle_ms":8000}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:23.718Z","t_ms":188849,"view":"builder/workbench","event":"$click","x":1888,"y":34,"tag":"BUTTON","track_key":"b_exit_to_config","label":"Exit to Config ↗"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:23.720Z","t_ms":188852,"view":"config/faces","event":"$pageview","from":"builder/workbench","prev_dwell_ms":91151}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:26.514Z","t_ms":191646,"view":"config/faces","event":"$click","x":42,"y":187,"tag":"BUTTON","track_key":"rail_settings","label":"Settings"}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:26.515Z","t_ms":191647,"view":"config/settings","event":"$pageview","from":"config/faces","prev_dwell_ms":2794}
+{"session_id":"final03_2026-11-26T18-34-14-868Z","ts":"2026-11-26T18:37:29.706Z","t_ms":194838,"view":"config/settings","event":"session_finish","total_events":92,"duration_ms":194838}

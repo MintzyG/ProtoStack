@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Usability Session 01 vs Session 02</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+    color: var(--foreground, #eef2f8);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .card {
+    background: var(--card, #141923);
+    border: 1px solid var(--border, rgba(255,255,255,0.1));
+    border-radius: var(--radius, 10px);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .title { font-size: 14px; font-weight: 600; margin: 0; }
+  .sub { font-size: 11.5px; color: var(--muted-foreground, #8b95a8); margin: 2px 0 0; }
+  .legend { display: flex; gap: 12px; font-size: 11px; color: var(--muted-foreground, #8b95a8); }
+  .leg { display: inline-flex; align-items: center; gap: 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 2px; }
+  .rows { display: flex; flex-direction: column; gap: 10px; }
+  .row {
+    display: grid;
+    grid-template-columns: 185px 1fr 90px;
+    align-items: center;
+    gap: 10px;
+  }
+  .lbl { font-size: 12px; }
+  .bars { display: flex; flex-direction: column; gap: 4px; }
+  .track {
+    height: 7px;
+    border-radius: 99px;
+    background: var(--muted, rgba(255,255,255,0.07));
+    overflow: hidden;
+  }
+  .fill { height: 100%; border-radius: 99px; }
+  .s1 { background: var(--destructive, #ef4444); opacity: 0.85; }
+  .s2 { background: var(--success, #22c55e); }
+  .val {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    text-align: right;
+    white-space: nowrap;
+    color: var(--muted-foreground, #8b95a8);
+  }
+  .val strong { color: var(--success, #22c55e); }
+  @media (max-width: 560px) {
+    .row { grid-template-columns: 125px 1fr 76px; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <div>
+      <h2 class="title">Measured Usability Improvement: Session 01 vs. Session 02</h2>
+      <p class="sub">Real browser PostHog telemetry (lower friction is better)</p>
+    </div>
+    <div class="legend">
+      <span class="leg"><span class="dot" style="background:var(--destructive,#ef4444)"></span>Session 01 (Wireframe)</span>
+      <span class="leg"><span class="dot" style="background:var(--success,#22c55e)"></span>Session 02 (Wootility Hi-Fi)</span>
+    </div>
+  </div>
+  <div class="rows">
+    <div class="row">
+      <div class="lbl">Dead Clicks</div>
+      <div class="bars">
+        <div class="track"><div class="fill s1" style="width:100%"></div></div>
+        <div class="track"><div class="fill s2" style="width:10%"></div></div>
+      </div>
+      <div class="val">10 -> <strong>1 (-90%)</strong></div>
+    </div>
+    <div class="row">
+      <div class="lbl">Rage Clicks</div>
+      <div class="bars">
+        <div class="track"><div class="fill s1" style="width:100%"></div></div>
+        <div class="track"><div class="fill s2" style="width:2%"></div></div>
+      </div>
+      <div class="val">4 -> <strong>0 (-100%)</strong></div>
+    </div>
+    <div class="row">
+      <div class="lbl">Silent-Action Reclicks</div>
+      <div class="bars">
+        <div class="track"><div class="fill s1" style="width:100%"></div></div>
+        <div class="track"><div class="fill s2" style="width:2%"></div></div>
+      </div>
+      <div class="val">7 -> <strong>0 (-100%)</strong></div>
+    </div>
+    <div class="row">
+      <div class="lbl">Entry to Connected (sec)</div>
+      <div class="bars">
+        <div class="track"><div class="fill s1" style="width:100%"></div></div>
+        <div class="track"><div class="fill s2" style="width:44%"></div></div>
+      </div>
+      <div class="val">12.1s -> <strong>5.3s</strong></div>
+    </div>
+    <div class="row">
+      <div class="lbl">Accidental Disconnects</div>
+      <div class="bars">
+        <div class="track"><div class="fill s1" style="width:100%"></div></div>
+        <div class="track"><div class="fill s2" style="width:2%"></div></div>
+      </div>
+      <div class="val">1 -> <strong>0 (-100%)</strong></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

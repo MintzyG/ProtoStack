@@ -1,0 +1,1760 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ProtoStack — Final Verification Prototype (Session 03)</title>
+<style>
+  :root {
+    --ps-accent: #38bdf8;
+    --ps-accent-ink: #07131c;
+    --ps-accent-soft: rgba(56, 189, 248, 0.14);
+
+    /* Config (Wootility dark) */
+    --bg: #111316;
+    --panel: #1a1c20;
+    --card: #21242a;
+    --card-hover: #282c34;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --ink: #f1f5f9;
+    --muted: #8b95a7;
+    --ok: #22c55e;
+    --ok-soft: rgba(34, 197, 94, 0.14);
+    --warn: #f59e0b;
+    --warn-soft: rgba(245, 158, 11, 0.14);
+
+    /* Builder Engineering Workbench palette (distinct dark slate + blueprint grid) */
+    --b-bg: #0a0e14;
+    --b-panel: #10161f;
+    --b-card: #151d29;
+    --b-line: rgba(148, 163, 184, 0.16);
+    --b-amber: #f59e0b;
+    --b-cyan: #38bdf8;
+    --b-green: #22c55e;
+    --b-purple: #a78bfa;
+
+    --radius: 12px;
+    --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 13.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, select { font-family: inherit; }
+
+  /* ===== ENTRY SCREEN ===== */
+  .entry-wrap {
+    min-height: 680px;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 32px;
+  }
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    border: 1.5px dashed var(--border-strong);
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .entry-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 40px 0;
+  }
+  .entry-center h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.025em; }
+  .entry-center p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+  .entry-btns { display: flex; gap: 12px; margin-top: 6px; }
+  .entry-preview {
+    margin-top: 22px;
+    opacity: 0.75;
+    width: 340px;
+    height: 92px;
+    border-radius: 16px;
+    background: #090b0e;
+    border: 1px solid var(--border);
+    padding: 8px;
+  }
+  .entry-preview canvas { width: 100%; height: 100%; image-rendering: pixelated; border-radius: 10px; }
+
+  /* ===== SHARED CONTROLS ===== */
+  .btn {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 550;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: transform 0.08s, background 0.12s, border-color 0.12s;
+  }
+  .btn:hover { background: var(--card-hover); border-color: rgba(255,255,255,0.26); }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+  .btn.primary { background: var(--ps-accent); color: var(--ps-accent-ink); border-color: transparent; font-weight: 650; }
+  .btn.primary:hover { filter: brightness(1.08); background: var(--ps-accent); }
+  .btn.amber { background: var(--b-amber); color: #1a1102; border-color: transparent; font-weight: 650; }
+  .btn.amber:hover { filter: brightness(1.08); background: var(--b-amber); }
+  .btn.pulse-saved { background: var(--ok) !important; color: #06180d !important; }
+  .btn.sm { height: 30px; padding: 0 10px; font-size: 12px; }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .icon-btn:hover { background: var(--card); color: var(--ink); }
+  .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+
+  /* Inline rename input (clean, seamless) */
+  .rename-input {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: inherit;
+    padding: 3px 6px;
+    outline: none;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .rename-input:hover { border-color: var(--border-strong); background: rgba(255,255,255,0.03); }
+  .rename-input:focus { border-color: var(--ps-accent); background: var(--bg); }
+  .edit-hint { font-size: 11px; color: var(--muted); opacity: 0.7; }
+
+  /* ===== SITE 1: CONFIG WORKBENCH (WOOTILITY V5) ===== */
+  .config-app {
+    display: none;
+    min-height: 680px;
+    grid-template-columns: 74px 256px 1fr;
+  }
+  .config-app.open { display: grid; }
+
+  .rail {
+    padding: 18px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+  }
+  .rail-item {
+    width: 58px;
+    padding: 9px 4px;
+    border-radius: 10px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .rail-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .rail-item:hover { background: var(--panel); color: var(--ink); }
+  .rail-item.active { background: var(--panel); color: var(--ps-accent); }
+
+  .sidebar-wrap { padding: 14px 0 14px 4px; }
+  .sidebar {
+    height: 100%;
+    min-height: 650px;
+    background: var(--panel);
+    border-radius: 14px;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border: 1px solid var(--border);
+  }
+  .sb-title { font-size: 14px; font-weight: 650; padding: 0 2px; }
+
+  .dev-wrap { position: relative; }
+  .dev-card {
+    width: 100%;
+    padding: 10px 11px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .dev-card:hover { border-color: var(--border-strong); background: var(--card-hover); }
+  .dev-thumb {
+    width: 44px; height: 28px; border-radius: 6px; background: #0a0c10;
+    border: 1px solid var(--border); display: grid; place-items: center; flex-shrink: 0;
+  }
+  .dev-thumb-dots { display: flex; gap: 4px; }
+  .dev-thumb-dots span { width: 12px; height: 6px; border-radius: 2px; background: var(--ps-accent); opacity: 0.85; }
+  .dev-info { flex: 1; min-width: 0; }
+  .dev-sub { font-size: 10.5px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .dev-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warn); }
+  .dev-dot.live { background: var(--ok); }
+  .dev-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dev-menu {
+    position: absolute; left: 0; right: 0; top: calc(100% + 6px);
+    background: var(--card); border: 1px solid var(--border-strong); border-radius: 10px;
+    padding: 6px; display: none; flex-direction: column; gap: 2px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55); z-index: 30;
+  }
+  .dev-menu.open { display: flex; }
+  .dev-menu button {
+    width: 100%; text-align: left; padding: 8px 10px; border-radius: 7px; border: 0;
+    background: transparent; color: var(--ink); font-size: 12.5px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .dev-menu button:hover { background: var(--card-hover); }
+  .dev-menu .sep { height: 1px; background: var(--border); margin: 4px 2px; }
+
+  .sb-section { font-size: 11px; font-weight: 600; color: var(--muted); padding: 4px 8px 2px; }
+  .sb-nav { display: flex; flex-direction: column; gap: 3px; }
+  .sb-btn {
+    height: 38px; padding: 0 11px; border-radius: 9px; border: 0;
+    background: transparent; color: var(--muted); font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+  }
+  .sb-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; flex-shrink: 0; }
+  .sb-btn:hover { background: rgba(255,255,255,0.04); color: var(--ink); }
+  .sb-btn.active { background: var(--card-hover); color: var(--ink); font-weight: 600; }
+  .sb-btn.active svg { color: var(--ps-accent); }
+  .sb-foot { margin-top: auto; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); padding-top: 8px; }
+
+  .canvas-col {
+    padding: 14px 24px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .top-pill {
+    height: 54px; padding: 0 12px 0 14px; border-radius: 12px;
+    background: var(--panel); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .pill-left, .pill-right { display: flex; align-items: center; gap: 10px; }
+  .profile-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--ps-accent-soft); color: var(--ps-accent);
+    display: grid; place-items: center; font-family: var(--mono); font-size: 11px; font-weight: 700;
+  }
+  .status-pill { font-family: var(--mono); font-size: 11px; padding: 4px 9px; border-radius: 99px; background: var(--ok-soft); color: var(--ok); }
+  .status-pill.dirty { background: var(--warn-soft); color: var(--warn); }
+  .metric-pill { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding: 4px 8px; border-radius: 7px; background: var(--card); }
+  .metric-pill.warn { background: var(--warn-soft); color: var(--warn); }
+
+  .hero-stage { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .visor-shell {
+    width: 100%; max-width: 620px; background: #080a0e; border-radius: 18px; padding: 12px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  #visorCanvas { width: 100%; height: 150px; display: block; border-radius: 10px; background: #040608; image-rendering: pixelated; }
+  .sim-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .sim-btn {
+    height: 34px; padding: 0 13px; border-radius: 99px; border: 1px solid var(--border);
+    background: var(--panel); color: var(--ink); font-size: 12px; font-weight: 500;
+    cursor: pointer; user-select: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .sim-btn:hover { border-color: var(--ps-accent); background: var(--card); }
+  .sim-btn.firing { background: var(--ps-accent); color: var(--ps-accent-ink); border-color: var(--ps-accent); transform: scale(0.95); font-weight: 650; }
+  .sim-sub { font-size: 10.5px; opacity: 0.7; font-family: var(--mono); }
+
+  .view-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .view-title { margin: 0; font-size: 18px; font-weight: 650; display: inline-flex; align-items: center; gap: 8px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-faces { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .card-title { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .muted { color: var(--muted); font-size: 12.5px; }
+  .mono { font-family: var(--mono); font-size: 12px; }
+
+  .face-tile {
+    background: var(--panel); border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 12px 10px; color: var(--ink); cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative;
+  }
+  .face-tile:hover { background: var(--card); border-color: var(--border-strong); }
+  .face-tile.active { border-color: var(--ps-accent); background: var(--ps-accent-soft); }
+  .face-tile.dashed { border-style: dashed; color: var(--muted); }
+  .face-tile svg { width: 58px; height: 28px; stroke: currentColor; fill: none; stroke-width: 2.3; stroke-linecap: round; }
+  .face-tile span { font-size: 12.5px; font-weight: 550; }
+
+  .swatches { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+  .swatch.active { border-color: #ffffff; box-shadow: 0 0 0 2px rgba(255,255,255,0.22); }
+
+  .toggle {
+    width: 44px; height: 24px; border-radius: 99px; border: 1px solid var(--border-strong);
+    background: var(--card); position: relative; cursor: pointer; padding: 0;
+  }
+  .toggle::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px;
+    border-radius: 50%; background: var(--muted); transition: transform 0.15s, background 0.15s;
+  }
+  .toggle.on { background: var(--ps-accent-soft); border-color: var(--ps-accent); }
+  .toggle.on::after { transform: translateX(20px); background: var(--ps-accent); }
+
+  input[type="range"] { width: 100%; height: 26px; accent-color: var(--ps-accent); cursor: pointer; }
+  select {
+    height: 38px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--border-strong);
+    background: var(--card); color: var(--ink); font-size: 13px; cursor: pointer;
+  }
+  .meter { height: 14px; border-radius: 99px; background: #0c0e12; border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .meter-fill { height: 100%; background: var(--ps-accent); transition: width 0.1s ease; }
+  .meter-cut { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--warn); }
+
+  .paw-strip { display: flex; gap: 10px; flex-wrap: wrap; }
+  .paw-key {
+    min-width: 130px; flex: 1; padding: 12px 14px; border-radius: 10px;
+    border: 1.5px solid var(--border); background: var(--panel); color: var(--ink);
+    text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 5px;
+  }
+  .paw-key:hover { background: var(--card); border-color: var(--border-strong); }
+  .paw-key.active { border-color: var(--ps-accent); background: var(--ps-accent-soft); }
+  .paw-bind { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .paw-bind strong { color: var(--ink); }
+
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .seg button {
+    height: 36px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--card); color: var(--muted); font-size: 12.5px; font-weight: 550; cursor: pointer;
+  }
+  .seg button.active { background: var(--ps-accent); color: var(--ps-accent-ink); border-color: transparent; font-weight: 650; }
+  .alert { padding: 10px 12px; border-radius: 8px; font-size: 12px; background: var(--warn-soft); border: 1px solid rgba(245, 158, 11, 0.35); color: var(--warn); }
+  .alert.ok { background: var(--ok-soft); border-color: rgba(34, 197, 94, 0.35); color: var(--ok); }
+
+  /* ===== SITE 2: DEDICATED BUILDER HARDWARE WORKBENCH (COMPLETELY DISTINCT!) ===== */
+  .builder-app {
+    display: none;
+    min-height: 680px;
+    flex-direction: column;
+    background:
+      radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+      var(--b-bg);
+    background-size: 20px 20px;
+    font-family: var(--font);
+  }
+  .builder-app.open { display: flex; }
+
+  .b-topbar {
+    height: 54px;
+    padding: 0 20px;
+    background: var(--b-panel);
+    border-bottom: 1px solid var(--b-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .b-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+  }
+  .b-tag {
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--warn-soft);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    color: var(--b-amber);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .b-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 370px;
+    gap: 0;
+  }
+
+  /* Left/Center PCB Canvas */
+  .pcb-stage {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pcb-card {
+    background: rgba(16, 22, 31, 0.92);
+    border: 1px solid var(--b-line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pcb-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pcb-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .leg-item { display: inline-flex; align-items: center; gap: 5px; }
+  .leg-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* Interactive Teensy 4.1 PCB Graphic */
+  .teensy-svg-wrap {
+    width: 100%;
+    overflow-x: auto;
+    padding: 6px 0;
+  }
+  .teensy-svg {
+    width: 100%;
+    min-width: 540px;
+    height: 228px;
+    display: block;
+  }
+  .pin-g { cursor: pointer; }
+  .pin-g:hover rect { stroke: #ffffff; stroke-width: 1.8; }
+
+  .pin-detail-bar {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #080b10;
+    border: 1px solid var(--b-line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--ink);
+  }
+
+  /* Builder Bottom Split: Mini Panel Test + Diagnostics Console */
+  .b-subgrid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 14px;
+  }
+  .b-mini-visor {
+    background: #040608;
+    border: 1px solid var(--b-line);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #builderCanvas { width: 100%; height: 68px; image-rendering: pixelated; border-radius: 4px; background: #020305; }
+  .console-box {
+    background: #06090e;
+    border: 1px solid var(--b-line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #94a3b8;
+    white-space: pre-line;
+    line-height: 1.5;
+    min-height: 116px;
+  }
+
+  /* Right-hand Engineering Inspector */
+  .b-inspector {
+    background: var(--b-panel);
+    border-left: 1px solid var(--b-line);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .b-sec {
+    background: var(--b-card);
+    border: 1px solid var(--b-line);
+    border-radius: 9px;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+  .b-sec-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .stepper { display: inline-flex; align-items: center; gap: 10px; }
+  .step-btn {
+    width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--border-strong);
+    background: var(--b-panel); color: var(--ink); font-size: 18px; font-weight: 600; cursor: pointer;
+  }
+  .step-btn:hover { border-color: var(--b-amber); }
+  .step-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Toast & Modal & Recorder */
+  .toast-stack {
+    position: fixed; top: 18px; right: 18px; display: flex; flex-direction: column;
+    gap: 8px; z-index: 60; pointer-events: none;
+  }
+  .toast {
+    padding: 10px 14px; border-radius: 10px; background: var(--card); border: 1px solid var(--ok);
+    color: var(--ink); font-size: 12.5px; font-weight: 550; box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: none; place-items: center; z-index: 50; }
+  .modal-bg.open { display: grid; }
+  .modal {
+    width: 420px; max-width: 92vw; background: var(--panel); border: 1px solid var(--border-strong);
+    border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .drop-box {
+    border: 1.5px dashed var(--border-strong); border-radius: 10px; padding: 22px 16px;
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--bg);
+  }
+  .rec-dock {
+    position: fixed; right: 14px; bottom: 14px; background: var(--panel); border: 1px solid var(--border-strong);
+    border-radius: 99px; padding: 5px 10px; display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 10.5px; color: var(--muted); z-index: 45;
+  }
+  .rec-dot { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; animation: recPulse 1.6s infinite; }
+  @keyframes recPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .rec-dock button {
+    background: var(--card); border: 1px solid var(--border-strong); color: var(--ink);
+    border-radius: 99px; padding: 3px 9px; font-family: inherit; font-size: 10.5px; cursor: pointer;
+  }
+
+  @media (max-width: 960px) {
+    .config-app.open { grid-template-columns: 1fr; }
+    .rail { flex-direction: row; justify-content: center; }
+    .b-grid { grid-template-columns: 1fr; }
+    .b-inspector { border-left: 0; border-top: 1px solid var(--b-line); }
+    .b-subgrid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Entry Screen -->
+<div class="entry-wrap" id="entryWrap">
+  <div class="logo-mark">LOGO</div>
+  <div class="entry-center">
+    <h1>Welcome to ProtoStack</h1>
+    <p>Configure your Protogen visor over USB with no drivers. Save directly to the helmet, unplug, and go.</p>
+    <div class="entry-btns">
+      <button class="btn" id="entrySimBtn" data-track="entry_sim">Try Simulator</button>
+      <button class="btn primary" id="entryUsbBtn" data-track="entry_usb">Connect Protogen</button>
+    </div>
+    <div class="entry-preview">
+      <canvas id="entryCanvas" width="128" height="32"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- SITE 1: CONFIG MICRO-FRONTEND (WOOTILITY V5) -->
+<div class="config-app" id="configApp">
+  <nav class="rail" id="rail"></nav>
+  <div class="sidebar-wrap"><aside class="sidebar" id="sidebar"></aside></div>
+  <main class="canvas-col">
+    <header class="top-pill">
+      <div class="pill-left">
+        <span class="profile-icon" id="pillInitials">NP</span>
+        <input class="rename-input" id="helmetNameInput" value="Nova Protogen" maxlength="24" style="width:155px;font-size:13.5px" title="Click to rename your helmet" data-track="rename_helmet" />
+        <span class="status-pill" id="statusPill">Saved</span>
+        <span class="metric-pill" id="pwrPill">2.4A / 3.0A</span>
+      </div>
+      <div class="pill-right">
+        <button class="icon-btn" id="undoBtn" title="Undo" data-track="undo" disabled>
+          <svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+        </button>
+        <button class="icon-btn" id="redoBtn" title="Redo" data-track="redo" disabled>
+          <svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>
+        </button>
+        <button class="btn primary" id="saveBtn" data-track="save_head">Save to Head</button>
+      </div>
+    </header>
+
+    <section class="hero-stage">
+      <div class="visor-shell"><canvas id="visorCanvas" width="128" height="32"></canvas></div>
+      <div class="sim-bar" id="simBar"></div>
+    </section>
+
+    <section id="viewContent" style="display:flex;flex-direction:column;gap:14px"></section>
+  </main>
+</div>
+
+<!-- SITE 2: DEDICATED BUILDER HARDWARE WORKBENCH (COMPLETELY DISTINCT!) -->
+<div class="builder-app" id="builderApp">
+  <header class="b-topbar">
+    <div class="b-brand">
+      <span class="b-tag">HARDWARE BUILDER</span>
+      <strong style="font-size:13.5px">builder.protostack.dev</strong>
+      <span class="muted" style="font-family:var(--mono);font-size:11px" id="bConnText">| Teensy 4.1 (i.MX RT1062)</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn sm" id="bSnapBtn" data-track="b_save_factory">Save Factory Snapshot</button>
+      <button class="btn sm amber" id="bFlashTopBtn" data-track="b_flash_top">Flash Firmware</button>
+      <button class="btn sm" id="bExitBtn" data-track="b_exit_to_config">Exit to Config ↗</button>
+    </div>
+  </header>
+
+  <div class="b-grid">
+    <!-- Main PCB Canvas + Live Hardware Console -->
+    <section class="pcb-stage">
+      <div class="pcb-card">
+        <div class="pcb-head">
+          <div>
+            <strong style="font-size:14px">Teensy 4.1 Live Pinout &amp; Harness Map</strong>
+            <span class="muted" style="margin-left:8px;font-family:var(--mono);font-size:11px" id="pcbPresetLbl">Preset: SmartLED V5</span>
+          </div>
+          <div class="pcb-legend">
+            <span class="leg-item"><span class="leg-dot" style="background:var(--b-cyan)"></span>HUB75</span>
+            <span class="leg-item"><span class="leg-dot" style="background:var(--b-purple)"></span>Boop / I2C</span>
+            <span class="leg-item"><span class="leg-dot" style="background:var(--b-green)"></span>Paw Buttons</span>
+            <span class="leg-item"><span class="leg-dot" style="background:var(--b-amber)"></span>PWM Fan</span>
+          </div>
+        </div>
+
+        <div class="teensy-svg-wrap" id="teensySvgWrap"></div>
+
+        <div class="pin-detail-bar" id="pinDetailBar">
+          <span>Click any Teensy 4.1 pin above to inspect its assignment</span>
+          <span style="color:var(--ok)">0 pin conflicts</span>
+        </div>
+      </div>
+
+      <div class="b-subgrid">
+        <div class="b-mini-visor">
+          <div class="row" style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">
+            <span>PANEL TEST (2 x 64x32)</span>
+            <span id="bOrderTag">RGB · FM6126A</span>
+          </div>
+          <canvas id="builderCanvas" width="128" height="32"></canvas>
+          <div style="display:flex;gap:6px">
+            <button class="btn sm" style="flex:1" id="bId1" data-track="b_id_p1">Test Panel 1</button>
+            <button class="btn sm" style="flex:1" id="bId2" data-track="b_id_p2">Test Panel 2</button>
+          </div>
+        </div>
+
+        <div class="console-box" id="bConsole">[builder] Teensy 4.1 harness ready.
+[manifest] SmartLED V5 · Dual 64x32 HUB75 · 18.462 MHz FlexIO
+[usb] WebHID HalfKay (0x16C0:0x0479) standby.</div>
+      </div>
+    </section>
+
+    <!-- Right-hand Engineering Inspector -->
+    <aside class="b-inspector" id="bInspector"></aside>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modalBox"></div></div>
+
+<div class="rec-dock" title="Recording Session 03 events">
+  <span class="rec-dot"></span>
+  <span id="recCount">REC 0</span>
+  <button id="exportRecBtn">Finish Test</button>
+</div>
+
+<script>
+// ===== POSTHOG-STYLE SESSION RECORDER (SESSION 03) =====
+const SESSION_ID = "final03_" + new Date().toISOString().replace(/[:.]/g, "-");
+const SESSION_START = performance.now();
+const events = [];
+let recentClicks = [];
+let viewEnteredAt = performance.now();
+let currentView = "config/entry";
+let hesitationTimer = null;
+
+function track(eventName, props = {}) {
+  const entry = {
+    session_id: SESSION_ID,
+    ts: new Date().toISOString(),
+    t_ms: Math.round(performance.now() - SESSION_START),
+    view: currentView,
+    event: eventName,
+    ...props
+  };
+  events.push(entry);
+  document.getElementById("recCount").textContent = `REC ${events.length}`;
+  try { localStorage.setItem("protostack_final03_events", JSON.stringify(events)); } catch (_) {}
+  if (location.hostname === "127.0.0.1" || location.hostname === "localhost") {
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(entry)
+    }).catch(() => {});
+  }
+  clearTimeout(hesitationTimer);
+  hesitationTimer = setTimeout(() => track("hesitation", { idle_ms: 8000 }), 8000);
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".rec-dock")) return;
+  const interactive = e.target.closest("button, input, select, a, label, .pin-g, [role=button]");
+  const now = performance.now();
+  const pt = { t: now, x: Math.round(e.clientX), y: Math.round(e.clientY) };
+  recentClicks = recentClicks.filter(c => now - c.t < 800);
+  recentClicks.push(pt);
+  if (recentClicks.filter(c => Math.hypot(c.x - pt.x, c.y - pt.y) < 40).length >= 3) {
+    track("rage_click", { x: pt.x, y: pt.y, target: interactive?.dataset?.track || interactive?.id || e.target.tagName });
+    recentClicks = [];
+  }
+  track(interactive ? "$click" : "dead_click", {
+    x: pt.x, y: pt.y,
+    tag: (interactive || e.target).tagName,
+    track_key: interactive?.dataset?.track || null,
+    label: (interactive || e.target).textContent.trim().replace(/\s+/g, " ").slice(0, 36)
+  });
+}, true);
+
+document.getElementById("exportRecBtn").onclick = () => {
+  track("session_finish", { total_events: events.length, duration_ms: Math.round(performance.now() - SESSION_START) });
+  const blob = new Blob([events.map(e => JSON.stringify(e)).join("\n") + "\n"], { type: "application/x-ndjson" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `${SESSION_ID}.jsonl`; a.click();
+  URL.revokeObjectURL(url);
+};
+
+function toast(msg) {
+  const stack = document.getElementById("toastStack");
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = `<span style="color:var(--ok)">✓</span><span>${msg}</span>`;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 2200);
+}
+
+// ===== STATE (WITH CUSTOM NAMING FOR HELMET, FACES, PAW BUTTONS) =====
+const INITIAL = {
+  helmetName: "Nova Protogen",
+  activeFaceId: "idle",
+  color: "#38bdf8",
+  mirror: true,
+  brightness: 80,
+  limitA: 3.0,
+  fan: 65,
+  boopOn: true,
+  boopCm: 5,
+  boopFaceId: "blush",
+  boopSec: 3,
+  faces: [
+    { id: "idle", name: "Idle", glyph: "idle" },
+    { id: "happy", name: "Happy", glyph: "happy" },
+    { id: "blush", name: "Blush", glyph: "blush" },
+    { id: "angry", name: "Angry", glyph: "angry" },
+    { id: "sleepy", name: "Sleepy", glyph: "sleepy" },
+    { id: "starry", name: "Starry", glyph: "starry" }
+  ],
+  paws: [
+    { id: 1, name: "Thumb", pin: 14, tap: "happy", hold: "blush", holdMs: 500 },
+    { id: 2, name: "Index", pin: 15, tap: "angry", hold: "sleepy", holdMs: 500 },
+    { id: 3, name: "Middle", pin: 16, tap: "cycle", hold: "starry", holdMs: 500 }
+  ],
+  preset: "SmartLED V5",
+  driver: "FM6126A",
+  order: "RGB",
+  boopHw: "APDS9960 (I2C)"
+};
+
+let factory = structuredClone(INITIAL);
+let saved = structuredClone(INITIAL);
+let state = structuredClone(INITIAL);
+let undoStack = [];
+let redoStack = [];
+
+let site = "config"; // config | builder
+let railMode = "visor"; // visor | settings
+let tab = "faces";
+let usb = false;
+let devMenuOpen = false;
+let selectedPawId = 1;
+let boopLiveCm = 14;
+let boopOverrideUntil = 0;
+let identifyPanel = 0;
+let identifyUntil = 0;
+let flashPct = 0;
+let flashing = false;
+let firingChip = null;
+let selectedPin = null;
+let bLogs = [
+  "[builder] Teensy 4.1 harness ready.",
+  "[manifest] SmartLED V5 · Dual 64x32 HUB75 · 18.462 MHz FlexIO",
+  "[usb] WebHID HalfKay (0x16C0:0x0479) standby."
+];
+
+const SWATCHES = ["#38bdf8", "#34d399", "#f472b6", "#fbbf24", "#a78bfa", "#f87171", "#f8fafc"];
+
+function getFace(id) { return state.faces.find(f => f.id === id) || state.faces[0]; }
+function faceLabel(id) {
+  if (id === "none") return "None";
+  if (id === "cycle") return "Cycle Next";
+  return getFace(id).name;
+}
+function isDirty() { return JSON.stringify(state) !== JSON.stringify(saved); }
+
+function mutate(fn, evt, props) {
+  undoStack.push(structuredClone(state));
+  if (undoStack.length > 30) undoStack.shift();
+  redoStack = [];
+  fn();
+  if (evt) track(evt, props);
+  render();
+}
+
+function logBuilder(line) {
+  bLogs.push(line);
+  if (bLogs.length > 6) bLogs.shift();
+  const c = document.getElementById("bConsole");
+  if (c) c.textContent = bLogs.join("\n");
+}
+
+function setView(newSite, newRail, newTab) {
+  const prev = currentView;
+  const dur = Math.round(performance.now() - viewEnteredAt);
+  site = newSite;
+  railMode = newRail;
+  tab = newTab;
+  devMenuOpen = false;
+  document.getElementById("configApp").classList.toggle("open", site === "config");
+  document.getElementById("builderApp").classList.toggle("open", site === "builder");
+  currentView = site === "builder" ? "builder/workbench" : `config/${railMode === "settings" ? "settings" : tab}`;
+  if (prev !== currentView) {
+    track("$pageview", { from: prev, prev_dwell_ms: dur });
+    viewEnteredAt = performance.now();
+  }
+  render();
+}
+
+function calcPower() {
+  const raw = 0.35 + (state.brightness / 100) * 2.85;
+  const capped = raw > state.limitA;
+  const draw = Math.min(raw, state.limitA);
+  const effScale = capped ? Math.max(0.15, (state.limitA - 0.35) / 2.85) : (state.brightness / 100);
+  return { raw, draw, capped, effPct: Math.round(effScale * 100), effScale };
+}
+
+// ===== MODAL =====
+function openModal(html, bind) {
+  document.getElementById("modalBox").innerHTML = html;
+  document.getElementById("modalBg").classList.add("open");
+  if (bind) bind(document.getElementById("modalBox"));
+}
+function closeModal() { document.getElementById("modalBg").classList.remove("open"); }
+document.getElementById("modalBg").onclick = e => { if (e.target.id === "modalBg") closeModal(); };
+
+function openUsbPicker(onConnect) {
+  openModal(`
+    <div class="card-title"><span>Connect USB Device</span><button class="icon-btn" id="mX">✕</button></div>
+    <button class="dev-card" id="pickT41" data-track="webhid_pick_t41">
+      <div class="dev-thumb"><div class="dev-thumb-dots"><span></span><span></span></div></div>
+      <div class="dev-info">
+        <div class="dev-sub"><span class="dev-dot live"></span>WebHID · Zero Drivers</div>
+        <div class="dev-name">${state.helmetName} (Teensy 4.1)</div>
+      </div>
+      <span class="mono" style="color:var(--ps-accent)">Connect</span>
+    </button>
+  `, (box) => {
+    box.querySelector("#mX").onclick = closeModal;
+    box.querySelector("#pickT41").onclick = () => {
+      usb = true;
+      track("usb_connected", { device: "Teensy 4.1" });
+      closeModal();
+      toast(`Connected to ${state.helmetName}`);
+      onConnect();
+    };
+  });
+}
+
+function enterApp(withUsb) {
+  usb = withUsb;
+  document.getElementById("entryWrap").style.display = "none";
+  setView("config", "visor", "faces");
+}
+
+document.getElementById("entrySimBtn").onclick = () => { track("enter_simulator"); enterApp(false); };
+document.getElementById("entryUsbBtn").onclick = () => openUsbPicker(() => enterApp(true));
+
+// Helmet inline rename
+document.getElementById("helmetNameInput").onchange = (e) => {
+  const v = e.target.value.trim() || "My Protogen";
+  mutate(() => { state.helmetName = v; }, "helmet_renamed", { name: v });
+  toast(`Renamed helmet to "${v}"`);
+};
+
+document.getElementById("undoBtn").onclick = () => { if (!undoStack.length) return; redoStack.push(structuredClone(state)); state = undoStack.pop(); track("undo"); render(); };
+document.getElementById("redoBtn").onclick = () => { if (!redoStack.length) return; undoStack.push(structuredClone(state)); state = redoStack.pop(); track("redo"); render(); };
+
+document.getElementById("saveBtn").onclick = () => {
+  saved = structuredClone(state);
+  undoStack = []; redoStack = [];
+  track("save_committed", { usb });
+  const btn = document.getElementById("saveBtn");
+  btn.classList.add("pulse-saved");
+  btn.textContent = "Saved ✓";
+  toast(usb ? `Saved to ${state.helmetName} flash` : "Saved in simulator");
+  render();
+  setTimeout(() => { btn.classList.remove("pulse-saved"); btn.textContent = "Save to Head"; }, 1100);
+};
+
+// Builder Topbar Actions
+function runFlash() {
+  if (flashing) return;
+  flashing = true; flashPct = 15;
+  track("flash_started");
+  logBuilder("[flash] Sending ProtoSpeak BOOTLOADER_JUMP (bkpt #251)...");
+  render();
+  setTimeout(() => {
+    flashPct = 65;
+    logBuilder("[flash] HalfKay 0x16C0:0x0479 detected. Writing 1088B pages...");
+    render();
+  }, 450);
+  setTimeout(() => {
+    flashPct = 100; flashing = false; usb = true;
+    track("flash_completed");
+    logBuilder("[flash] Reboot magic sent. Teensy 4.1 online (v1.0.0)!");
+    toast("Teensy 4.1 flashed & reconnected");
+    render();
+  }, 1100);
+}
+
+document.getElementById("bFlashTopBtn").onclick = runFlash;
+document.getElementById("bSnapBtn").onclick = () => {
+  factory = structuredClone(state);
+  saved = structuredClone(state);
+  track("factory_snapshot_saved");
+  logBuilder("[snapshot] Saved current hardware + face state as Factory Snapshot.");
+  toast("Factory Snapshot saved to Teensy 4.1");
+  render();
+};
+document.getElementById("bExitBtn").onclick = () => {
+  toast("Returned to Owner Config site");
+  setView("config", "visor", "faces");
+};
+document.getElementById("bId1").onclick = () => {
+  identifyPanel = 1; identifyUntil = performance.now() + 2200;
+  track("panel_identify", { panel: 1 });
+  logBuilder("[panel] Sent PANEL_IDENTIFY (0x0030) -> Panel 1 (Left)");
+  toast("Flashing ▲ 1 on Panel 1");
+};
+document.getElementById("bId2").onclick = () => {
+  identifyPanel = 2; identifyUntil = performance.now() + 2200;
+  track("panel_identify", { panel: 2 });
+  logBuilder("[panel] Sent PANEL_IDENTIFY (0x0030) -> Panel 2 (Right)");
+  toast("Flashing ▲ 2 on Panel 2");
+};
+
+// Triggers
+function fireBoop() {
+  boopLiveCm = Math.max(1, state.boopCm - 2);
+  firingChip = "boop";
+  if (state.boopOn) {
+    boopOverrideUntil = performance.now() + state.boopSec * 1000;
+    toast(`Boop -> ${faceLabel(state.boopFaceId)} (${state.boopSec}s)`);
+  } else {
+    toast("Boop sensor is disabled");
+  }
+  track("sim_boop", { on: state.boopOn, face: state.boopFaceId });
+  render();
+  setTimeout(() => { firingChip = null; render(); }, 280);
+  setTimeout(() => { boopLiveCm = 14; if (tab === "boop") render(); }, 900);
+}
+
+function firePaw(paw, gesture) {
+  const act = gesture === "hold" ? paw.hold : paw.tap;
+  firingChip = `paw_${paw.id}`;
+  boopOverrideUntil = 0;
+  if (act === "none") {
+    toast(`${paw.name} (${gesture}): None`);
+  } else if (act === "cycle") {
+    const idx = state.faces.findIndex(f => f.id === state.activeFaceId);
+    const next = state.faces[(idx + 1) % state.faces.length];
+    state.activeFaceId = next.id;
+    toast(`${paw.name} (${gesture}) -> ${next.name}`);
+  } else {
+    state.activeFaceId = act;
+    toast(`${paw.name} (${gesture}) -> ${faceLabel(act)}`);
+  }
+  track("sim_paw", { paw: paw.name, gesture, action: act });
+  render();
+  setTimeout(() => { firingChip = null; render(); }, 280);
+}
+
+function faceMiniSvg(glyph) {
+  const m = {
+    idle: `<path d="M10 12 Q18 7 26 12 Q18 16 10 12 Z"/><path d="M12 22 Q29 25 46 21"/>`,
+    happy: `<path d="M10 14 Q19 5 28 14"/><path d="M10 21 Q29 27 48 20"/>`,
+    blush: `<circle cx="19" cy="11" r="5"/><path d="M10 19 L12 23 M15 19 L17 23"/><path d="M24 22 Q29 26 34 22 Q39 26 44 22"/>`,
+    angry: `<path d="M10 8 L28 14 L12 15 Z"/><path d="M12 22 L20 19 L28 23 L36 19 L46 22"/>`,
+    sleepy: `<path d="M10 13 L26 13"/><path d="M36 6 L44 6 L36 13 L44 13"/><path d="M16 22 L42 22"/>`,
+    starry: `<path d="M19 4 L21 10 L27 12 L21 14 L19 20 L17 14 L11 12 L17 10 Z"/><path d="M14 23 Q29 26 44 21"/>`,
+    heart: `<path d="M19 19 C12 14 10 7 15 6 C17 6 19 8 19 8 C19 8 21 6 23 6 C28 7 26 14 19 19 Z"/><path d="M14 24 Q29 26 44 22"/>`
+  };
+  return `<svg viewBox="0 0 58 28">${m[glyph] || m.idle}</svg>`;
+}
+
+// ===== BUILDER INTERACTIVE TEENSY 4.1 PCB MAP =====
+function getPinMap() {
+  const m = {};
+  // HUB75 SmartLED V5 / Coela Delta FlexIO + FlexPWM pins
+  const hub75 = state.preset === "Coela Delta"
+    ? { 2: "HUB75 OE", 3: "HUB75 LATCH", 8: "HUB75 CLK (Alt)", 6: "HUB75 R0", 9: "HUB75 G0", 10: "HUB75 B0", 12: "HUB75 R1", 11: "HUB75 G1", 13: "HUB75 B1" }
+    : { 2: "HUB75 OE", 3: "HUB75 LATCH", 7: "HUB75 CLK", 6: "HUB75 R0", 9: "HUB75 G0", 10: "HUB75 B0", 12: "HUB75 R1", 11: "HUB75 G1", 13: "HUB75 B1" };
+  Object.entries(hub75).forEach(([p, lbl]) => { m[Number(p)] = { kind: "hub75", color: "#38bdf8", label: lbl }; });
+
+  // Boop / I2C
+  if (state.boopHw === "APDS9960 (I2C)") {
+    m[18] = { kind: "boop", color: "#a78bfa", label: "I2C0 SDA (APDS9960 + INA219)" };
+    m[19] = { kind: "boop", color: "#a78bfa", label: "I2C0 SCL (APDS9960 + INA219)" };
+  } else {
+    m[21] = { kind: "boop", color: "#a78bfa", label: "Boop Digital Trigger" };
+  }
+
+  // PWM Fan
+  m[22] = { kind: "fan", color: "#f59e0b", label: "Cooling Fan PWM" };
+
+  // Paw buttons
+  state.paws.forEach(p => {
+    m[p.pin] = { kind: "paw", color: "#22c55e", label: `Paw "${p.name}" (INPUT_PULLUP)` };
+  });
+  return m;
+}
+
+function renderBuilder() {
+  document.getElementById("bConnText").textContent = `| ${state.helmetName} · Teensy 4.1 (${usb ? "USB HID" : "Simulator"})`;
+  document.getElementById("pcbPresetLbl").textContent = `Preset: ${state.preset}`;
+  document.getElementById("bOrderTag").textContent = `${state.order} · ${state.driver}`;
+  document.getElementById("bConsole").textContent = bLogs.join("\n");
+
+  const pinMap = getPinMap();
+  // Bottom edge pins 0..11 + 24..35 (18 pins simplified clean layout), Top edge 12..23 + 36..41
+  const bottomPins = [0,1,2,3,4,5,6,7,8,9,10,11,12,24,25,26,27,28];
+  const topPins    = [23,22,21,20,19,18,17,16,15,14,13,41,40,39,38,37,36,35];
+
+  function renderPinRow(pins, yPin, yLbl) {
+    return pins.map((p, idx) => {
+      const x = 68 + idx * 27;
+      const info = pinMap[p];
+      const fill = info ? info.color : "#273244";
+      const stroke = selectedPin === p ? "#ffffff" : (info ? info.color : "#475569");
+      return `
+        <g class="pin-g" data-pin="${p}" data-track="pcb_pin_${p}">
+          <rect x="${x}" y="${yPin}" width="18" height="14" rx="3" fill="${fill}" fill-opacity="${info ? 0.9 : 0.45}" stroke="${stroke}" stroke-width="${selectedPin === p ? 2 : 1}"/>
+          <text x="${x + 9}" y="${yPin + 10}" text-anchor="middle" fill="${info ? "#061018" : "#94a3b8"}" font-family="monospace" font-size="8.5" font-weight="700">${p}</text>
+          ${info ? `<text x="${x + 9}" y="${yLbl}" text-anchor="middle" fill="${info.color}" font-family="monospace" font-size="7.5">${info.kind === "hub75" ? info.label.replace("HUB75 ","").slice(0,4) : info.kind === "paw" ? "PAW" : info.kind === "fan" ? "FAN" : "BOOP"}</text>` : ""}
+        </g>
+      `;
+    }).join("");
+  }
+
+  document.getElementById("teensySvgWrap").innerHTML = `
+    <svg class="teensy-svg" viewBox="0 0 600 228">
+      <!-- PCB Body -->
+      <rect x="46" y="34" width="516" height="160" rx="10" fill="#0d2318" stroke="#1f5c3e" stroke-width="2"/>
+      <!-- USB-C Port -->
+      <rect x="24" y="88" width="28" height="52" rx="4" fill="#64748b" stroke="#94a3b8" stroke-width="1.5"/>
+      <text x="38" y="118" text-anchor="middle" fill="#0f172a" font-family="monospace" font-size="8" font-weight="700" transform="rotate(-90 38 114)">USB</text>
+      <!-- i.MX RT1062 MCU -->
+      <rect x="220" y="76" width="84" height="76" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+      <text x="262" y="110" text-anchor="middle" fill="#cbd5e1" font-family="monospace" font-size="10" font-weight="700">i.MX RT1062</text>
+      <text x="262" y="125" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="8.5">600 MHz M7</text>
+      <!-- HalfKay Program Button -->
+      <circle cx="432" cy="114" r="11" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>
+      <circle cx="432" cy="114" r="5" fill="#e2e8f0"/>
+      <text x="432" y="138" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="8">PROG</text>
+      <!-- microSD Slot -->
+      <rect x="486" y="74" width="76" height="80" rx="4" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+      <text x="524" y="118" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="9">microSD</text>
+      <!-- Board label -->
+      <text x="115" y="118" fill="#4ade80" fill-opacity="0.55" font-family="monospace" font-size="12" font-weight="700">TEENSY 4.1</text>
+
+      ${renderPinRow(topPins, 42, 26)}
+      ${renderPinRow(bottomPins, 172, 211)}
+    </svg>
+  `;
+
+  document.querySelectorAll(".pin-g").forEach(el => {
+    el.onclick = () => {
+      selectedPin = Number(el.dataset.pin);
+      const info = pinMap[selectedPin];
+      track("pcb_pin_inspected", { pin: selectedPin, signal: info?.label || "Unused" });
+      renderBuilder();
+    };
+  });
+
+  const detail = document.getElementById("pinDetailBar");
+  if (selectedPin !== null) {
+    const info = pinMap[selectedPin];
+    detail.innerHTML = `
+      <span><strong>Pin ${selectedPin}:</strong> ${info ? info.label : "Unassigned GPIO (Available)"}</span>
+      <span style="color:var(--ok)">0 pin conflicts</span>
+    `;
+  }
+
+  // Right Inspector
+  const ins = document.getElementById("bInspector");
+  ins.innerHTML = `
+    <div class="b-sec">
+      <div class="b-sec-title"><span>1. Board &amp; HUB75 Manifest</span><span class="mono">2x 64x32</span></div>
+      <div class="row">
+        <span class="muted">Shield Preset</span>
+        <select id="bPresetSel" data-track="b_preset">
+          ${["SmartLED V5", "Coela Delta", "Custom"].map(x => `<option ${state.preset === x ? "selected" : ""}>${x}</option>`).join("")}
+        </select>
+      </div>
+      <div class="row">
+        <span class="muted">Driver Latch</span>
+        <select id="bDriverSel" data-track="b_driver">
+          ${["FM6126A", "Standard"].map(x => `<option ${state.driver === x ? "selected" : ""}>${x}</option>`).join("")}
+        </select>
+      </div>
+      <div class="row">
+        <span class="muted">Color Order</span>
+        <select id="bOrderSel" data-track="b_order">
+          ${["RGB", "RBG", "BGR"].map(x => `<option ${state.order === x ? "selected" : ""}>${x}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+
+    <div class="b-sec">
+      <div class="b-sec-title"><span>2. Wired Inputs</span><button class="btn sm" id="bScanBtn" data-track="b_scan_i2c">Scan Bus</button></div>
+      <div class="row">
+        <span class="muted">Boop Sensor</span>
+        <select id="bBoopSel" data-track="b_boop_hw">
+          ${["APDS9960 (I2C)", "Digital Pin 21"].map(x => `<option ${state.boopHw === x ? "selected" : ""}>${x}</option>`).join("")}
+        </select>
+      </div>
+      <div class="row">
+        <span class="muted">Paw Buttons (0–8)</span>
+        <div class="stepper">
+          <button class="step-btn" id="bDecP" data-track="b_paw_dec" ${state.paws.length <= 0 ? "disabled" : ""}>−</button>
+          <span class="mono" style="min-width:22px;text-align:center;font-size:15px;font-weight:700">${state.paws.length}</span>
+          <button class="step-btn" id="bIncP" data-track="b_paw_inc" ${state.paws.length >= 8 ? "disabled" : ""}>+</button>
+        </div>
+      </div>
+      <div class="mono" style="color:var(--muted);font-size:11px">
+        ${state.paws.map(p => `${p.name}: P${p.pin}`).join(" · ") || "No paw buttons wired"}
+      </div>
+    </div>
+
+    <div class="b-sec">
+      <div class="b-sec-title"><span>3. WebHID Firmware</span><span class="mono">v1.0.0</span></div>
+      <div class="meter"><div class="meter-fill" style="width:${flashPct}%;background:${flashPct === 100 ? "var(--ok)" : "var(--b-amber)"}"></div></div>
+      <div class="row">
+        <span class="mono" style="color:var(--muted);font-size:11px">${flashing ? `Flashing ${flashPct}%` : flashPct === 100 ? "Verified ✓" : "HalfKay Ready"}</span>
+        <button class="btn sm amber" id="bFlashBtn" data-track="b_flash_side" ${flashing ? "disabled" : ""}>Flash Teensy 4.1</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("bPresetSel").onchange = e => mutate(() => {
+    state.preset = e.target.value;
+    logBuilder(`[manifest] Switched pin preset -> ${state.preset}`);
+  }, "b_preset_changed", { val: e.target.value });
+
+  document.getElementById("bDriverSel").onchange = e => mutate(() => {
+    state.driver = e.target.value;
+    logBuilder(`[manifest] HUB75 latch timing -> ${state.driver}`);
+  }, "b_driver_changed", { val: e.target.value });
+
+  document.getElementById("bOrderSel").onchange = e => mutate(() => {
+    state.order = e.target.value;
+    logBuilder(`[manifest] HUB75 channel order -> ${state.order}`);
+  }, "b_order_changed", { val: e.target.value });
+
+  document.getElementById("bBoopSel").onchange = e => mutate(() => {
+    state.boopHw = e.target.value;
+    logBuilder(`[wiring] Boop sensor -> ${state.boopHw}`);
+  }, "b_boop_changed", { val: e.target.value });
+
+  document.getElementById("bDecP").onclick = () => mutate(() => {
+    const rem = state.paws.pop();
+    logBuilder(`[wiring] Removed paw button "${rem?.name}" (Pin ${rem?.pin})`);
+    toast(`Paw buttons: ${state.paws.length}`);
+  }, "b_paw_dec");
+
+  document.getElementById("bIncP").onclick = () => mutate(() => {
+    const n = state.paws.length + 1;
+    const pinPool = [14, 15, 16, 17, 20, 24, 25, 26];
+    const pin = pinPool[n - 1] || (20 + n);
+    state.paws.push({ id: n, name: `Paw ${n}`, pin, tap: "cycle", hold: "none", holdMs: 500 });
+    logBuilder(`[wiring] Added "Paw ${n}" on Pin ${pin} (INPUT_PULLUP)`);
+    toast(`Added Paw ${n} on Pin ${pin}`);
+  }, "b_paw_inc");
+
+  document.getElementById("bScanBtn").onclick = () => {
+    track("b_scan_i2c");
+    logBuilder(`[scan] I2C0: 0x39 APDS9960 [OK], 0x40 INA219 [OK] · ${state.paws.length} paw pull-ups [OK]`);
+    toast("I2C bus scan OK");
+  };
+
+  document.getElementById("bFlashBtn").onclick = runFlash;
+}
+
+// ===== RENDER CONFIG =====
+function renderConfig() {
+  // Rail
+  document.getElementById("rail").innerHTML = `
+    <div class="logo-mark">LOGO</div>
+    <button class="rail-item ${railMode === "visor" ? "active" : ""}" id="railVisor" data-track="rail_visor">
+      <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M8 12h2M14 12h2"/></svg>
+      <span>Visor</span>
+    </button>
+    <button class="rail-item ${railMode === "settings" ? "active" : ""}" id="railSettings" data-track="rail_settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
+      <span>Settings</span>
+    </button>
+  `;
+  document.getElementById("railVisor").onclick = () => setView("config", "visor", tab === "settings" ? "faces" : tab);
+  document.getElementById("railSettings").onclick = () => setView("config", "settings", "settings");
+
+  // Sidebar
+  const sb = document.getElementById("sidebar");
+  sb.innerHTML = `
+    <div class="sb-title">${railMode === "settings" ? "Settings" : "Visor Config"}</div>
+    <div class="dev-wrap">
+      <button class="dev-card" id="devCardBtn" data-track="device_dropdown">
+        <div class="dev-thumb"><div class="dev-thumb-dots"><span></span><span></span></div></div>
+        <div class="dev-info">
+          <div class="dev-sub"><span class="dev-dot ${usb ? "live" : ""}"></span>${usb ? "USB HID" : "Simulator"}</div>
+          <div class="dev-name">${state.helmetName}</div>
+        </div>
+        <span style="color:var(--muted);font-size:11px">▾</span>
+      </button>
+      <div class="dev-menu ${devMenuOpen ? "open" : ""}" id="devMenu">
+        <button id="dmConnect" data-track="dm_connect"><span>${usb ? "Switch USB Device..." : "Connect Teensy 4.1"}</span><span class="mono" style="color:var(--ps-accent)">HID</span></button>
+        ${usb ? `<button id="dmSim" data-track="dm_sim"><span>Switch to Simulator</span><span class="muted">Offline</span></button>` : ""}
+        <div class="sep"></div>
+        <button id="dmExit" data-track="dm_exit"><span style="color:var(--muted)">Back to Welcome Screen</span></button>
+      </div>
+    </div>
+
+    ${railMode === "visor" ? `
+      <div class="sb-section">Display</div>
+      <div class="sb-nav">
+        <button class="sb-btn ${tab === "faces" ? "active" : ""}" data-tab="faces" data-track="nav_faces">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M8 15c1.5 2 6.5 2 8 0"/></svg><span>Faces</span>
+        </button>
+        <button class="sb-btn ${tab === "power" ? "active" : ""}" data-tab="power" data-track="nav_power">
+          <svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span>Power &amp; Fan</span>
+        </button>
+      </div>
+      <div class="sb-section">Inputs</div>
+      <div class="sb-nav">
+        <button class="sb-btn ${tab === "boop" ? "active" : ""}" data-tab="boop" data-track="nav_boop">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3"/></svg><span>Boop Sensor</span>
+        </button>
+        <button class="sb-btn ${tab === "paws" ? "active" : ""}" data-tab="paws" data-track="nav_paws">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg><span>Paw Buttons</span>
+        </button>
+      </div>
+    ` : `
+      <div class="sb-section">Helmet</div>
+      <div class="sb-nav">
+        <button class="sb-btn active" data-tab="settings" data-track="nav_settings">
+          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Backup &amp; Reset</span>
+        </button>
+      </div>
+    `}
+    <div class="sb-foot">ProtoStack v1.0</div>
+  `;
+
+  document.getElementById("devCardBtn").onclick = (e) => { e.stopPropagation(); devMenuOpen = !devMenuOpen; render(); };
+  document.getElementById("dmConnect").onclick = () => { devMenuOpen = false; openUsbPicker(() => render()); };
+  const dmSim = document.getElementById("dmSim");
+  if (dmSim) dmSim.onclick = () => { usb = false; devMenuOpen = false; toast("Switched to Simulator Mode"); render(); };
+  document.getElementById("dmExit").onclick = () => {
+    devMenuOpen = false;
+    document.getElementById("configApp").classList.remove("open");
+    document.getElementById("entryWrap").style.display = "flex";
+    currentView = "config/entry";
+  };
+  sb.querySelectorAll("[data-tab]").forEach(el => { el.onclick = () => setView("config", railMode, el.dataset.tab); });
+
+  // Top Pill
+  const pwr = calcPower();
+  const dirty = isDirty();
+  const initials = state.helmetName.split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase() || "PS";
+  document.getElementById("pillInitials").textContent = initials;
+  const hIn = document.getElementById("helmetNameInput");
+  if (document.activeElement !== hIn) hIn.value = state.helmetName;
+
+  const sp = document.getElementById("statusPill");
+  sp.textContent = dirty ? "Preview in RAM" : "Saved";
+  sp.classList.toggle("dirty", dirty);
+
+  const pp = document.getElementById("pwrPill");
+  pp.textContent = `${pwr.draw.toFixed(1)}A / ${state.limitA.toFixed(1)}A${pwr.capped ? " CAP" : ""}`;
+  pp.classList.toggle("warn", pwr.capped);
+  document.getElementById("undoBtn").disabled = undoStack.length === 0;
+  document.getElementById("redoBtn").disabled = redoStack.length === 0;
+
+  // Virtual test bar (shows custom button names!)
+  const simBar = document.getElementById("simBar");
+  simBar.innerHTML = `
+    <button class="sim-btn ${firingChip === "boop" ? "firing" : ""}" id="simBoop" data-track="sim_boop">Boop Nose</button>
+    ${state.paws.map(p => `
+      <button class="sim-btn ${firingChip === "paw_" + p.id ? "firing" : ""}" data-sim-paw="${p.id}" data-track="sim_paw_${p.id}" title="Click = Tap (${faceLabel(p.tap)}), Hold = Hold (${faceLabel(p.hold)})">
+        ${p.name} <span class="sim-sub">${faceLabel(p.tap)}</span>
+      </button>
+    `).join("")}
+  `;
+  document.getElementById("simBoop").onclick = fireBoop;
+  simBar.querySelectorAll("[data-sim-paw]").forEach(el => {
+    const paw = state.paws.find(x => x.id === Number(el.dataset.simPaw));
+    if (!paw) return;
+    let holdTimer = null, held = false;
+    el.onpointerdown = () => { held = false; holdTimer = setTimeout(() => { held = true; firePaw(paw, "hold"); }, 450); };
+    el.onpointerup = () => { clearTimeout(holdTimer); if (!held) firePaw(paw, "tap"); };
+    el.onpointerleave = () => clearTimeout(holdTimer);
+  });
+
+  // View Content
+  const root = document.getElementById("viewContent");
+  const curFace = getFace(state.activeFaceId);
+
+  if (railMode === "visor" && tab === "faces") {
+    root.innerHTML = `
+      <div class="view-head">
+        <h2 class="view-title">Faces</h2>
+        <div class="row" style="gap:6px">
+          <span class="edit-hint">Selected:</span>
+          <input class="rename-input" id="faceRenameIn" value="${curFace.name}" maxlength="20" style="width:140px;font-size:13px" title="Click to rename selected expression" data-track="rename_face" />
+        </div>
+      </div>
+      <div class="grid-faces">
+        ${state.faces.map(f => `
+          <button class="face-tile ${state.activeFaceId === f.id ? "active" : ""}" data-face="${f.id}" data-track="face_${f.id}">
+            ${faceMiniSvg(f.glyph)}
+            <span>${f.name}</span>
+          </button>
+        `).join("")}
+        <button class="face-tile dashed" id="importTile" data-track="open_import">
+          <svg viewBox="0 0 58 28"><path d="M29 6v16M21 14h16"/></svg>
+          <span>Import</span>
+        </button>
+      </div>
+      <div class="card">
+        <div class="row" style="flex-wrap:wrap">
+          <div class="swatches">
+            <span class="muted" style="margin-right:4px">Tint</span>
+            ${SWATCHES.map(c => `<button class="swatch ${state.color.toLowerCase() === c ? "active" : ""}" style="background:${c}" data-col="${c}" data-track="tint_${c}"></button>`).join("")}
+            <input type="color" id="customCol" value="${state.color}" style="width:28px;height:28px;border:0;background:transparent;cursor:pointer" data-track="tint_custom"/>
+          </div>
+          <div class="row">
+            <span class="muted">Mirror Left / Right</span>
+            <button class="toggle ${state.mirror ? "on" : ""}" id="mirrorTgl" data-track="mirror_toggle"></button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById("faceRenameIn").onchange = (e) => {
+      const v = e.target.value.trim() || curFace.name;
+      mutate(() => { getFace(state.activeFaceId).name = v; }, "face_renamed", { id: curFace.id, name: v });
+      toast(`Renamed expression to "${v}"`);
+    };
+    root.querySelectorAll("[data-face]").forEach(el => {
+      el.onclick = () => mutate(() => { state.activeFaceId = el.dataset.face; boopOverrideUntil = 0; }, "face_selected", { id: el.dataset.face });
+    });
+    root.querySelectorAll("[data-col]").forEach(el => {
+      el.onclick = () => mutate(() => { state.color = el.dataset.col; }, "tint_selected", { color: el.dataset.col });
+    });
+    document.getElementById("customCol").oninput = e => mutate(() => { state.color = e.target.value; }, "tint_custom");
+    document.getElementById("mirrorTgl").onclick = () => mutate(() => { state.mirror = !state.mirror; }, "mirror_toggled");
+    document.getElementById("importTile").onclick = () => {
+      openModal(`
+        <div class="card-title"><span>Import Animation</span><button class="icon-btn" id="mX">✕</button></div>
+        <div class="drop-box">
+          <div class="mono" style="color:var(--ink)">64x32 per panel · 128x32 full visor</div>
+          <div class="mono" style="color:var(--muted)">PNG · GIF · Sprite Strip · up to 30 FPS</div>
+          <input class="rename-input" id="impNameIn" value="Cyber Heart" maxlength="20" style="text-align:center;border-color:var(--border-strong);width:200px" placeholder="Expression name"/>
+          <button class="btn primary" id="impSample" data-track="import_sample">Import Sample</button>
+        </div>
+      `, (box) => {
+        box.querySelector("#mX").onclick = closeModal;
+        box.querySelector("#impSample").onclick = () => {
+          const name = box.querySelector("#impNameIn").value.trim() || "Cyber Heart";
+          const id = "custom_" + Date.now();
+          mutate(() => {
+            state.faces.push({ id, name, glyph: "heart" });
+            state.activeFaceId = id;
+          }, "animation_imported", { name });
+          closeModal();
+          toast(`Imported "${name}" (64x32)`);
+        };
+      });
+    };
+    return;
+  }
+
+  if (railMode === "visor" && tab === "boop") {
+    const triggered = boopLiveCm <= state.boopCm;
+    const proxPct = Math.max(5, Math.min(100, ((20 - boopLiveCm) / 20) * 100));
+    const cutPct = Math.max(5, Math.min(100, ((20 - state.boopCm) / 20) * 100));
+    root.innerHTML = `
+      <div class="view-head">
+        <h2 class="view-title">Boop Sensor</h2>
+        <button class="btn" id="boopTestBtn" data-track="boop_test_inline">Test Boop</button>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span>Sensitivity</span><button class="toggle ${state.boopOn ? "on" : ""}" id="boopTgl" data-track="boop_toggle"></button></div>
+          <div class="row"><span class="muted">Live reading</span><span class="mono" style="color:${triggered ? "var(--ok)" : "var(--ink)"}">${boopLiveCm} cm ${triggered ? "· BOOP" : ""}</span></div>
+          <div class="meter"><div class="meter-fill" style="width:${proxPct}%;background:${triggered ? "var(--ok)" : "var(--ps-accent)"}"></div><div class="meter-cut" style="left:${cutPct}%"></div></div>
+          <div class="row"><span class="muted">Trigger under</span><span class="mono" style="color:var(--warn)">${state.boopCm} cm</span></div>
+          <input type="range" id="boopSlider" min="2" max="15" value="${state.boopCm}" data-track="boop_cm"/>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>Reaction</span></div>
+          <div class="row"><span class="muted">Expression</span>
+            <select id="boopFaceSel" data-track="boop_face">
+              ${state.faces.map(f => `<option value="${f.id}" ${state.boopFaceId === f.id ? "selected" : ""}>${f.name}</option>`).join("")}
+            </select>
+          </div>
+          <div class="row"><span class="muted">Hold duration</span>
+            <select id="boopSecSel" data-track="boop_sec">
+              ${[2,3,5].map(s => `<option value="${s}" ${state.boopSec === s ? "selected" : ""}>${s} seconds</option>`).join("")}
+            </select>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById("boopTestBtn").onclick = fireBoop;
+    document.getElementById("boopTgl").onclick = () => mutate(() => { state.boopOn = !state.boopOn; }, "boop_toggled");
+    document.getElementById("boopSlider").oninput = e => mutate(() => { state.boopCm = Number(e.target.value); }, "boop_cm_changed", { cm: Number(e.target.value) });
+    document.getElementById("boopFaceSel").onchange = e => mutate(() => { state.boopFaceId = e.target.value; }, "boop_face_changed");
+    document.getElementById("boopSecSel").onchange = e => mutate(() => { state.boopSec = Number(e.target.value); }, "boop_sec_changed");
+    return;
+  }
+
+  if (railMode === "visor" && tab === "paws") {
+    if (!state.paws.some(p => p.id === selectedPawId) && state.paws.length) selectedPawId = state.paws[0].id;
+    const sel = state.paws.find(p => p.id === selectedPawId);
+    root.innerHTML = `
+      <div class="view-head">
+        <h2 class="view-title">Paw Buttons</h2>
+        ${sel ? `
+          <div class="row" style="gap:6px">
+            <span class="edit-hint">Button name:</span>
+            <input class="rename-input" id="pawRenameIn" value="${sel.name}" maxlength="16" style="width:130px;font-size:13px" title="Click to rename paw button" data-track="rename_paw"/>
+          </div>
+        ` : ""}
+      </div>
+      ${state.paws.length === 0 ? `<div class="card"><span class="muted">No paw buttons wired. Add them in Builder.</span></div>` : `
+        <div class="paw-strip">
+          ${state.paws.map(p => `
+            <button class="paw-key ${p.id === selectedPawId ? "active" : ""}" data-pick-paw="${p.id}" data-track="select_paw_${p.id}">
+              <div class="row"><strong>${p.name}</strong><span class="mono" style="color:var(--muted)">P${p.pin}</span></div>
+              <div class="paw-bind">Tap: <strong>${faceLabel(p.tap)}</strong></div>
+              <div class="paw-bind">Hold: <strong>${faceLabel(p.hold)}</strong></div>
+            </button>
+          `).join("")}
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title"><span>${sel.name} · Tap</span><button class="btn sm" id="testTapBtn" data-track="test_tap">Test Tap</button></div>
+            <div class="row"><span class="muted">Action</span>
+              <select id="tapSel" data-track="paw_tap_action">
+                <option value="none" ${sel.tap === "none" ? "selected" : ""}>None</option>
+                <option value="cycle" ${sel.tap === "cycle" ? "selected" : ""}>Cycle Next</option>
+                ${state.faces.map(f => `<option value="${f.id}" ${sel.tap === f.id ? "selected" : ""}>${f.name}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><span>${sel.name} · Hold</span><button class="btn sm" id="testHoldBtn" data-track="test_hold">Test Hold</button></div>
+            <div class="row"><span class="muted">Action</span>
+              <select id="holdSel" data-track="paw_hold_action">
+                <option value="none" ${sel.hold === "none" ? "selected" : ""}>None</option>
+                <option value="cycle" ${sel.hold === "cycle" ? "selected" : ""}>Cycle Next</option>
+                ${state.faces.map(f => `<option value="${f.id}" ${sel.hold === f.id ? "selected" : ""}>${f.name}</option>`).join("")}
+              </select>
+            </div>
+            <div class="row"><span class="muted">Hold time</span>
+              <select id="holdMsSel" data-track="paw_hold_ms">
+                ${[350,500,800].map(ms => `<option value="${ms}" ${sel.holdMs === ms ? "selected" : ""}>${ms} ms</option>`).join("")}
+              </select>
+            </div>
+          </div>
+        </div>
+      `}
+    `;
+    root.querySelectorAll("[data-pick-paw]").forEach(el => {
+      el.onclick = () => { selectedPawId = Number(el.dataset.pickPaw); track("paw_selected", { paw: selectedPawId }); render(); };
+    });
+    if (sel) {
+      document.getElementById("pawRenameIn").onchange = e => {
+        const v = e.target.value.trim() || `Paw ${sel.id}`;
+        mutate(() => { sel.name = v; }, "paw_renamed", { id: sel.id, name: v });
+        toast(`Renamed button to "${v}"`);
+      };
+      document.getElementById("tapSel").onchange = e => mutate(() => { sel.tap = e.target.value; }, "paw_tap_changed");
+      document.getElementById("holdSel").onchange = e => mutate(() => { sel.hold = e.target.value; }, "paw_hold_changed");
+      document.getElementById("holdMsSel").onchange = e => mutate(() => { sel.holdMs = Number(e.target.value); }, "paw_hold_ms_changed");
+      document.getElementById("testTapBtn").onclick = () => firePaw(sel, "tap");
+      document.getElementById("testHoldBtn").onclick = () => firePaw(sel, "hold");
+    }
+    return;
+  }
+
+  if (railMode === "visor" && tab === "power") {
+    root.innerHTML = `
+      <div class="view-head"><h2 class="view-title">Power &amp; Fan</h2></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span>Power Budget</span><span class="mono">${pwr.draw.toFixed(1)}A / ${state.limitA.toFixed(1)}A</span></div>
+          <div class="row"><span class="muted">Brightness</span><span class="mono">${state.brightness}%</span></div>
+          <input type="range" id="brSl" min="10" max="100" value="${state.brightness}" data-track="brightness"/>
+          <div class="row"><span class="muted">5V Bank Limit</span><span class="mono">${state.limitA.toFixed(1)}A</span></div>
+          <input type="range" id="limSl" min="1.5" max="5.0" step="0.1" value="${state.limitA}" data-track="power_limit"/>
+          ${pwr.capped ? `<div class="alert">Power cap active · Scaled to ${pwr.effPct}% to prevent brownout.</div>` : `<div class="alert ok">Within safe 5V battery budget.</div>`}
+        </div>
+        <div class="card">
+          <div class="card-title"><span>Cooling Fan</span><span class="mono">${state.fan}%</span></div>
+          <div class="seg">
+            ${[[40,"Quiet 40%"],[65,"Balanced 65%"],[100,"Con 100%"]].map(([v,lbl]) =>
+              `<button class="${state.fan === v ? "active" : ""}" data-fan="${v}" data-track="fan_${v}">${lbl}</button>`
+            ).join("")}
+          </div>
+          <input type="range" id="fanSl" min="0" max="100" value="${state.fan}" data-track="fan_slider"/>
+          ${state.fan < 20 ? `<div class="alert">Low airflow (&lt;20%) may fog visor. Unlocked.</div>` : ""}
+        </div>
+      </div>
+    `;
+    document.getElementById("brSl").oninput = e => mutate(() => { state.brightness = Number(e.target.value); }, "brightness_changed");
+    document.getElementById("limSl").oninput = e => mutate(() => { state.limitA = Number(e.target.value); }, "limit_changed");
+    document.getElementById("fanSl").oninput = e => mutate(() => { state.fan = Number(e.target.value); }, "fan_changed");
+    root.querySelectorAll("[data-fan]").forEach(el => { el.onclick = () => mutate(() => { state.fan = Number(el.dataset.fan); }, "fan_preset"); });
+    return;
+  }
+
+  if (railMode === "settings") {
+    root.innerHTML = `
+      <div class="view-head"><h2 class="view-title">Backup &amp; Reset</h2></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span>Factory Snapshot</span></div>
+          <span class="muted">Loads saved builder snapshot into RAM preview.</span>
+          <button class="btn" id="restoreBtn" data-track="restore_factory">Restore Factory Snapshot</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>Profile File</span></div>
+          <span class="muted">Export or load a .protoprofile.json backup.</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="expProfBtn" data-track="export_profile">Export JSON</button>
+            <button class="btn" id="impProfBtn" data-track="import_profile">Import</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(245,158,11,0.35)">
+        <div class="row">
+          <div>
+            <div style="font-weight:600;margin-bottom:3px">Hardware Workbench (Teensy Pinouts &amp; Firmware)</div>
+            <span class="muted">Opens builder.protostack.dev — dedicated PCB pinout &amp; flashing tool.</span>
+          </div>
+          <button class="btn amber" id="launchBuilderBtn" data-track="launch_builder">Open Builder Workbench ↗</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("restoreBtn").onclick = () => {
+      openModal(`
+        <div class="card-title"><span>Restore Factory Snapshot?</span><button class="icon-btn" id="mX">✕</button></div>
+        <span class="muted">Loads the saved snapshot into RAM preview until you press Save.</span>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn" id="mCancel">Cancel</button>
+          <button class="btn primary" id="mConfirm" data-track="confirm_restore">Restore</button>
+        </div>
+      `, (box) => {
+        box.querySelector("#mX").onclick = closeModal;
+        box.querySelector("#mCancel").onclick = closeModal;
+        box.querySelector("#mConfirm").onclick = () => { mutate(() => { state = structuredClone(factory); }, "factory_restored"); closeModal(); toast("Factory Snapshot loaded into RAM preview"); };
+      });
+    };
+    document.getElementById("expProfBtn").onclick = () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = u; a.download = `${state.helmetName.toLowerCase().replace(/\s+/g,"-")}.protoprofile.json`; a.click();
+      URL.revokeObjectURL(u);
+      track("profile_exported");
+      toast("Downloaded profile JSON");
+    };
+    document.getElementById("impProfBtn").onclick = () => { track("profile_imported"); toast("Profile loaded into RAM preview"); };
+    document.getElementById("launchBuilderBtn").onclick = () => {
+      toast("Opened builder.protostack.dev");
+      setView("builder", "visor", "workbench");
+    };
+  }
+}
+
+function render() {
+  if (site === "builder") renderBuilder();
+  else renderConfig();
+}
+
+document.addEventListener("click", () => { if (devMenuOpen) { devMenuOpen = false; render(); } });
+
+// ===== LIVE LED CANVAS RENDERER =====
+const mainCtx = document.getElementById("visorCanvas").getContext("2d");
+const entryCtx = document.getElementById("entryCanvas").getContext("2d");
+const builderCtx = document.getElementById("builderCanvas").getContext("2d");
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  if (state.order === "RBG") return [r, b, g];
+  if (state.order === "BGR") return [b, g, r];
+  return [r, g, b];
+}
+
+function drawHalf(ctx, ox, flipX, glyph, t, rgb, scale) {
+  const [r, g, b] = rgb.map(v => Math.round(v * scale));
+  const mainCol = `rgb(${r},${g},${b})`;
+  const pink = `rgb(${Math.round(255 * scale)},${Math.round(90 * scale)},${Math.round(155 * scale)})`;
+  function px(x, y, col = mainCol) {
+    const lx = flipX ? (63 - x) : x;
+    if (lx < 0 || lx >= 64 || y < 0 || y >= 32) return;
+    ctx.fillStyle = col; ctx.fillRect(ox + lx, y, 1, 1);
+  }
+  function rect(x, y, w, h, col = mainCol) { for (let dy = 0; dy < h; dy++) for (let dx = 0; dx < w; dx++) px(x + dx, y + dy, col); }
+  const blinking = (glyph === "idle" || glyph === "sleepy") && (t % 3.6) > 3.42;
+
+  if (glyph === "idle") {
+    if (blinking) rect(18, 12, 18, 2);
+    else { rect(18, 7, 18, 2); rect(16, 9, 22, 3); rect(18, 12, 18, 2); rect(22, 14, 10, 1); }
+    rect(26, 23, 24, 2); rect(48, 21, 6, 2); rect(18, 22, 8, 2); rect(55, 16, 4, 2);
+  } else if (glyph === "happy") {
+    const bnc = Math.round(Math.sin(t * 6) * 1);
+    for (let i = 0; i < 18; i++) rect(17 + i, 13 - Math.round(Math.sin((i / 17) * Math.PI) * 6) + bnc, 2, 2);
+    rect(18, 21, 34, 2); rect(15, 19, 4, 2); rect(50, 19, 5, 2); rect(24, 23, 22, 2); rect(55, 15, 4, 2);
+  } else if (glyph === "blush") {
+    rect(20, 6, 14, 2); rect(18, 8, 18, 5); rect(20, 13, 14, 2); rect(22, 8, 3, 3, "#040608");
+    const p = 0.65 + 0.35 * Math.sin(t * 7);
+    const bc = `rgb(${Math.round(255 * scale * p)},${Math.round(85 * scale * p)},${Math.round(150 * scale * p)})`;
+    for (let i = 0; i < 3; i++) rect(11 + i * 5, 17, 2, 4, bc);
+    rect(34, 22, 8, 2); rect(42, 24, 6, 2); rect(48, 22, 8, 2); rect(55, 16, 4, 2);
+  } else if (glyph === "angry") {
+    for (let i = 0; i < 18; i++) rect(17 + i, 7 + Math.floor(i * 0.38), 2, 3);
+    rect(21, 13, 12, 2);
+    for (let i = 0; i < 32; i += 6) { rect(18 + i, 22, 3, 2); rect(21 + i, 24, 3, 2); }
+    rect(55, 16, 4, 2);
+  } else if (glyph === "sleepy") {
+    rect(17, 12, 18, 2); if (!blinking) rect(20, 14, 12, 2);
+    const zy = 4 + Math.round(Math.sin(t * 2.5) * 1);
+    rect(6, zy, 5, 1); px(9, zy + 1); px(8, zy + 2); px(7, zy + 3); rect(6, zy + 4, 5, 1);
+    rect(32, 23, 18, 2); rect(55, 17, 3, 2);
+  } else if (glyph === "starry") {
+    const p = Math.sin(t * 8) > 0 ? 1 : 0;
+    rect(25, 5 - p, 2, 11 + p * 2); rect(20 - p, 9, 12 + p * 2, 2); rect(23, 7, 6, 6);
+    rect(20, 22, 32, 2); rect(50, 20, 4, 2); rect(55, 16, 4, 2);
+  } else if (glyph === "heart") {
+    const bt = Math.sin(t * 7) > 0.2 ? 1 : 0;
+    rect(20 - bt, 7, 5 + bt, 4, pink); rect(27, 7, 5 + bt, 4, pink);
+    rect(19 - bt, 9, 14 + bt * 2, 3, pink); rect(21, 12, 10, 2, pink);
+    rect(23, 14, 6, 2, pink); rect(25, 16, 2, 1, pink);
+    rect(22, 22, 28, 2); rect(48, 20, 5, 2); rect(55, 16, 4, 2);
+  }
+}
+
+function drawId(ctx, panel) {
+  const ox = panel === 1 ? 0 : 64;
+  ctx.fillStyle = "#0a2014"; ctx.fillRect(ox + 1, 1, 62, 30);
+  ctx.strokeStyle = "#22c55e"; ctx.strokeRect(ox + 1.5, 1.5, 61, 29);
+  ctx.fillStyle = "#22c55e";
+  for (let i = 0; i < 7; i++) ctx.fillRect(ox + 20 - i, 7 + i, i * 2 + 1, 1);
+  ctx.fillRect(ox + 19, 14, 3, 10);
+  if (panel === 1) { ctx.fillRect(ox + 40, 8, 3, 16); ctx.fillRect(ox + 37, 10, 3, 2); ctx.fillRect(ox + 37, 22, 9, 2); }
+  else { ctx.fillRect(ox + 36, 8, 10, 2); ctx.fillRect(ox + 44, 10, 2, 5); ctx.fillRect(ox + 36, 15, 10, 2); ctx.fillRect(ox + 36, 17, 2, 5); ctx.fillRect(ox + 36, 22, 10, 2); }
+}
+
+function drawTestBars(ctx) {
+  const cols = state.order === "RBG" ? ["#ef4444","#3b82f6","#22c55e"] : state.order === "BGR" ? ["#3b82f6","#22c55e","#ef4444"] : ["#ef4444","#22c55e","#3b82f6"];
+  for (let p = 0; p < 2; p++) {
+    const ox = p * 64;
+    cols.forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(ox + 4 + i * 19, 6, 17, 20); });
+  }
+}
+
+function loop(now) {
+  const t = now / 1000;
+  const pwr = calcPower();
+  const faceId = (now < boopOverrideUntil) ? state.boopFaceId : state.activeFaceId;
+  const glyph = getFace(faceId).glyph;
+  const rgb = hexToRgb(state.color);
+
+  // Main config visor
+  mainCtx.fillStyle = "#040608"; mainCtx.fillRect(0, 0, 128, 32);
+  mainCtx.fillStyle = "rgba(255,255,255,0.08)"; mainCtx.fillRect(63, 0, 2, 32);
+  drawHalf(mainCtx, 0, false, glyph, t, rgb, pwr.effScale);
+  drawHalf(mainCtx, 64, state.mirror, glyph, t, rgb, pwr.effScale);
+
+  // Entry preview
+  entryCtx.fillStyle = "#040608"; entryCtx.fillRect(0, 0, 128, 32);
+  entryCtx.fillStyle = "rgba(255,255,255,0.08)"; entryCtx.fillRect(63, 0, 2, 32);
+  drawHalf(entryCtx, 0, false, "idle", t, [56,189,248], 0.8);
+  drawHalf(entryCtx, 64, true, "idle", t, [56,189,248], 0.8);
+
+  // Builder hardware panel test canvas
+  builderCtx.fillStyle = "#020305"; builderCtx.fillRect(0, 0, 128, 32);
+  builderCtx.fillStyle = "rgba(255,255,255,0.12)"; builderCtx.fillRect(63, 0, 2, 32);
+  if (now < identifyUntil && identifyPanel > 0) drawId(builderCtx, identifyPanel);
+  else drawTestBars(builderCtx);
+
+  requestAnimationFrame(loop);
+}
+
+track("session_start", { prototype: "final-v3-pcb-builder-rename", viewport: `${window.innerWidth}x${window.innerHeight}` });
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

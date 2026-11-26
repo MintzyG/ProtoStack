@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ProtoStack Heuristics &amp; Architecture</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+    color: var(--foreground, #eef2f8);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+  .panel {
+    background: var(--card, #141923);
+    border: 1px solid var(--border, rgba(255,255,255,0.1));
+    border-radius: var(--radius, 10px);
+    padding: 16px;
+  }
+  .panel-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .panel-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .panel-sub {
+    font-size: 11.5px;
+    color: var(--muted-foreground, #8b95a8);
+    margin: 2px 0 0 0;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--muted-foreground, #8b95a8);
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* Heuristics Chart */
+  .h-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .h-row {
+    display: grid;
+    grid-template-columns: 195px 1fr 74px;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .h-row:hover, .h-row.active {
+    background: var(--secondary, rgba(255,255,255,0.05));
+  }
+  .h-label {
+    font-size: 11.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .h-label code {
+    font-family: var(--font-mono, monospace);
+    font-size: 10.5px;
+    color: var(--muted-foreground, #8b95a8);
+    margin-right: 4px;
+  }
+  .bars {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .bar-track {
+    width: 100%;
+    height: 6px;
+    background: var(--muted, rgba(255,255,255,0.06));
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 99px;
+  }
+  .bar-current { background: var(--destructive, #ef4444); opacity: 0.85; }
+  .bar-target { background: var(--chart-1, #38bdf8); }
+  .h-score {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    text-align: right;
+    white-space: nowrap;
+    color: var(--muted-foreground, #8b95a8);
+  }
+  .h-score strong {
+    color: var(--foreground, #eef2f8);
+  }
+  .detail-strip {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--secondary, rgba(255,255,255,0.04));
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .detail-strip .d-head {
+    font-weight: 600;
+    color: var(--foreground, #eef2f8);
+  }
+  .detail-strip .d-fail {
+    color: var(--muted-foreground, #8b95a8);
+  }
+  .detail-strip .d-fix {
+    color: var(--success, #22c55e);
+  }
+
+  /* Architecture Diagram */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .pillar {
+    background: var(--secondary, rgba(255,255,255,0.04));
+    border: 1px solid var(--border, rgba(255,255,255,0.09));
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .pillar-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 99px;
+    font-weight: 500;
+    background: var(--muted, rgba(255,255,255,0.08));
+    color: var(--muted-foreground, #9aa4b6);
+  }
+  .crate {
+    background: var(--card, #141923);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 6px;
+    padding: 7px 9px;
+  }
+  .crate-name {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--foreground, #eef2f8);
+  }
+  .crate-desc {
+    font-size: 11px;
+    color: var(--muted-foreground, #8b95a8);
+    margin-top: 2px;
+  }
+  .split-callout {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px dashed var(--chart-1, #38bdf8);
+    background: var(--accent-surface, rgba(56,189,248,0.08));
+    font-size: 11.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .kpi {
+    background: var(--secondary, rgba(255,255,255,0.04));
+    border: 1px solid var(--border, rgba(255,255,255,0.07));
+    border-radius: 7px;
+    padding: 8px 10px;
+  }
+  .kpi-val {
+    font-family: var(--font-mono, monospace);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .kpi-lbl {
+    font-size: 10.5px;
+    color: var(--muted-foreground, #8b95a8);
+    margin-top: 2px;
+  }
+  @media (max-width: 580px) {
+    .h-row { grid-template-columns: 130px 1fr 48px; }
+    .arch-grid { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="stack">
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2 class="panel-title">Nielsen's 10 Heuristics Audit: Ecosystem Baseline vs. ProtoStack Target</h2>
+        <p class="panel-sub">Click any row to inspect failure mode &amp; ProtoUI design countermeasure (Score 1–5, higher is better)</p>
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="dot" style="background:var(--destructive,#ef4444)"></span>Current Protogen Tools (Avg 1.8)</span>
+        <span class="legend-item"><span class="dot" style="background:var(--chart-1,#38bdf8)"></span>ProtoStack v1 Target (Avg 4.6)</span>
+      </div>
+    </div>
+
+    <div class="h-list" id="hList"></div>
+
+    <div class="detail-strip" id="hDetail">
+      <div class="d-head" id="dHead"></div>
+      <div class="d-fail" id="dFail"></div>
+      <div class="d-fix" id="dFix"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2 class="panel-title">Locked Rust Architecture: 4 Clean Pillars (ProtoUI · ProtoSpeak · ProtoIO · ProtoBrain)</h2>
+        <p class="panel-sub">Zero overlap between shared protocol/mesh (ProtoSpeak) and chip-specific electrical drivers (ProtoIO)</p>
+      </div>
+    </div>
+
+    <div class="arch-grid" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="pillar">
+        <div class="pillar-badge" style="color:var(--chart-1,#38bdf8)">
+          <span>1. ProtoUI</span>
+          <span class="tag">Rust + WASM</span>
+        </div>
+        <div class="crate">
+          <div class="crate-name">proto-ui-web &amp; proto-ui-builder</div>
+          <div class="crate-desc">Cloudflare Owner WebHID App + Tauri Desktop Builder (HalfKay Flasher &amp; Pinout Mapper)</div>
+        </div>
+        <div class="crate">
+          <div class="crate-name">proto-ui-core</div>
+          <div class="crate-desc">Shared Leptos UI + Brandless Tokens + Embedded WASM Simulator</div>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <div class="pillar-badge" style="color:var(--chart-4,#fbbf24)">
+          <span>2. ProtoSpeak</span>
+          <span class="tag">no_std + WASM</span>
+        </div>
+        <div class="crate">
+          <div class="crate-name">proto-speak (Shared Language)</div>
+          <div class="crate-desc">Postcard + CRC16 · WebHID Control, Encrypted Intra-Suit Mesh, Proto-to-Proto Social Beacons</div>
+        </div>
+        <div class="crate">
+          <div class="crate-name">ProtoProfile Schema</div>
+          <div class="crate-desc">Self-describing HardwareManifest, expressions, triggers &amp; Factory Snapshots</div>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <div class="pillar-badge" style="color:var(--chart-2,#a78bfa)">
+          <span>3. ProtoIO</span>
+          <span class="tag">no_std / Hardware</span>
+        </div>
+        <div class="crate">
+          <div class="crate-name">proto-io (Hardware Traits)</div>
+          <div class="crate-desc">VisorDisplay, AuxLeds, SensorBus, FanPwm, PowerMonitor, RadioPhy, FlashStore</div>
+        </div>
+        <div class="crate">
+          <div class="crate-name">proto-bsp-* (Board Drivers)</div>
+          <div class="crate-desc">v0.1 Teensy 4.1 (FlexIO HUB75) → v0.3 ESP32-S3 → v1.0 Pi / OrangePi</div>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <div class="pillar-badge" style="color:var(--chart-3,#34d399)">
+          <span>4. ProtoBrain</span>
+          <span class="tag">no_std + WASM</span>
+        </div>
+        <div class="crate">
+          <div class="crate-name">Compositor &amp; Trigger Engine</div>
+          <div class="crate-desc">Sprites, animations, reactive mouth/blink/blush + Autonomous Tail fallback</div>
+        </div>
+        <div class="crate">
+          <div class="crate-name">Safety Governor</div>
+          <div class="crate-desc">mA power limiter, thermal fan curve, Right-to-Repair Snapshot recovery</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="split-callout">
+      <span><strong>Why the 4-Pillar Split Wins:</strong> Both <code>ProtoSpeak</code> and <code>ProtoBrain</code> compile cleanly to WASM, so the browser simulator runs the <em>exact same Rust engine &amp; protocol</em> as the Teensy 4.1.</span>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-val" style="color:var(--chart-1,#38bdf8)">v0.1</div>
+        <div class="kpi-lbl">Teensy 4.1 + HUB75 + Cloudflare WebHID</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val" style="color:var(--chart-2,#a78bfa)">v0.2</div>
+        <div class="kpi-lbl">Tauri Builder + Pinout Mapper + HalfKay</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val" style="color:var(--chart-3,#34d399)">v0.3</div>
+        <div class="kpi-lbl">ESP32-S3 + ProtoIO Wireless Suit Mesh</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val" style="color:var(--chart-4,#fbbf24)">v1.0</div>
+        <div class="kpi-lbl">Social Mesh + Procedural Faces + Pi/SBC</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const data = [
+  { id: "H1", name: "System Status Visibility", cur: 1.5, tgt: 4.8, fail: "Current tools flash blindly; no live sensor bars, power draw, or temp readouts.", fix: "ProtoUI: Persistent USB/Sim pill, 60fps live visor mirror, 20Hz sensor & mA sparklines." },
+  { id: "H2", name: "Real-World Language Match", cur: 1.4, tgt: 4.7, fail: "C++ macros & raw pin/ADC jargon exposed directly to non-technical suit owners.", fix: "ProtoUI: Owner site uses human Protogen terms (Boop Distance, Cheek Glow); pins stay in Builder." },
+  { id: "H3", name: "User Control & Freedom", cur: 1.5, tgt: 4.8, fail: "No undo or safe rollback; bad upload can blank visor right before a convention.", fix: "ProtoUI: Volatile RAM Live Preview vs. explicit Flash Save + Right-to-Repair Factory Snapshot." },
+  { id: "H4", name: "Consistency & Standards", cur: 2.0, tgt: 4.6, fail: "Every board/repo invents incompatible sprite formats, schemas, and controls.", fix: "ProtoUI: One self-describing ProtoIO manifest & unified brandless token design across all MCUs." },
+  { id: "H5", name: "Error Prevention", cur: 1.3, tgt: 4.7, fail: "Easy to trigger 5V brownout loops, miswire HUB75 pins, or kill cooling fans.", fix: "ProtoUI: Live current-budget auto-dimmer, pin-conflict checks & non-locking safety warnings." },
+  { id: "H6", name: "Recognition Over Recall", cur: 2.0, tgt: 4.5, fail: "Makers memorize pin maps, matrix chaining order, and numeric animation IDs.", fix: "ProtoUI: Visual Teensy 4.1 pinout SVG, Panel Identify flasher ('▲ 1'), and visual face gallery." },
+  { id: "H7", name: "Flexibility & Efficiency", cur: 2.2, tgt: 4.5, fail: "Either C++ overload for owners or locked-down toys for commission studios.", fix: "ProtoUI: Dual surface — instant Cloudflare Web App for owners + template-driven Tauri Builder." },
+  { id: "H8", name: "Minimalist Design", cur: 2.1, tgt: 4.5, fail: "ESP32 AP portals cram 40 ungrouped sliders onto cluttered neon pages.", fix: "ProtoUI: Clean 3-zone Wootility-style workbench with 5 focused nav tabs & progressive disclosure." },
+  { id: "H9", name: "Error Diagnosis & Recovery", cur: 1.6, tgt: 4.6, fail: "Silent USB failures, browser permission confusion, and mysterious brownout reboots.", fix: "ProtoUI: Guided WebHID Troubleshooter + on-device Crash/Brownout log readable on reconnect." },
+  { id: "H10", name: "Help & Documentation", cur: 2.2, tgt: 4.3, fail: "Setup knowledge scattered across Discord pins and outdated Google Docs.", fix: "ProtoUI: Inline tooltips, Zero-Hardware Simulator onboarding, and auto wiring checklists." }
+];
+
+const list = document.getElementById("hList");
+const dHead = document.getElementById("dHead");
+const dFail = document.getElementById("dFail");
+const dFix = document.getElementById("dFix");
+
+function select(idx) {
+  const item = data[idx];
+  document.querySelectorAll(".h-row").forEach((el, i) => el.classList.toggle("active", i === idx));
+  dHead.textContent = `${item.id}: ${item.name} (${item.cur.toFixed(1)} → ${item.tgt.toFixed(1)} / 5.0)`;
+  dFail.textContent = `Gap today: ${item.fail}`;
+  dFix.textContent = `Countermeasure: ${item.fix}`;
+}
+
+data.forEach((item, i) => {
+  const row = document.createElement("div");
+  row.className = "h-row";
+  row.innerHTML = `
+    <div class="h-label"><code>${item.id}</code>${item.name}</div>
+    <div class="bars">
+      <div class="bar-track"><div class="bar-fill bar-current" style="width:${(item.cur/5)*100}%"></div></div>
+      <div class="bar-track"><div class="bar-fill bar-target" style="width:${(item.tgt/5)*100}%"></div></div>
+    </div>
+    <div class="h-score">${item.cur.toFixed(1)} → <strong>${item.tgt.toFixed(1)}</strong></div>
+  `;
+  row.addEventListener("click", () => select(i));
+  list.appendChild(row);
+});
+
+select(0);
+</script>
+</body>
+</html>
