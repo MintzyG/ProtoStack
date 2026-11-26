@@ -31,15 +31,15 @@ Because early development is a **tabletop bench setup** (no helmet shell yet), o
 > - **Adafruit** discontinued Teensy boards and SmartLED Shield V5 (`4828`); they still sell `64x32` P3 panels (`2279`), but at ~$44.95 *each* (2–3× AliExpress pricing).
 > - **Brazil Import Note (Remessa Conforme):** AliExpress prices below show the **base item price before shipping and Brazilian import taxes** (~44% combined II + ICMS up to US$ 50, ~92% above US$ 50). Mercado Livre prices are typical local BR listings.
 
-| # | Status | Component | Exact Spec / ML Search Term | USD Estimate (Base) | BRL Estimate (Mercado Livre / Local BR) | BRL Estimate (AliExpress Base, pre-tax) | Where to Buy / Notes |
+| # | Status | Component | Exact Spec / Mercado Livre Link | USD Estimate (Base) | BRL Estimate (Mercado Livre / Local BR) | BRL Estimate (AliExpress Base, pre-tax) | Where to Buy / Notes |
 |---|---|---|---|---:|---:|---:|---|
-| 1 | **Need** | **Teensy 4.1 (with Pins)** | `Teensy 4.1 com pinos soldados` (PJRC / SparkFun `DEV-16996`) | **$35.95** *(SparkFun / DigiKey)* | **R$ 400 – R$ 700** | *(Avoid)* | Buy from a well-rated ML seller (MercadoLíder / Full) or SparkFun/DigiKey. Verify on arrival within the return window by pressing the board button and confirming USB HalfKay bootloader (`16c0:0478`). |
-| 2 | **Need** | **2× RGB LED Matrix Panels** | **2× `Painel LED RGB 64x32 P3 HUB75 1/16`** *(~192×96 mm each; DP5020B or FM6126A driver OK)* | **$24 – $44** *(pair)* | **R$ 300 – R$ 600** *(pair)* | **R$ 130 – R$ 240** *(pair)* | **Critical:** Confirm **1/16 scan (16S)** and **HUB75** (avoid 1/8 scan, 1/4 scan, and HUB75E). Check that each panel includes its 16-pin IDC ribbon cable & 5V power cable. |
-| 3 | **Need** | **Level Shifter Chips (3.3V → 5V)** | **2× `CI SN74HCT245N DIP-20`** *(or `74AHCT245N`)* | **$2 – $4** | **R$ 15 – R$ 30** *(2–5 pcs)* | **R$ 10 – R$ 15** | **Do NOT buy cheap blue 4-channel I2C MOSFET level-shifter boards**—they are too slow for HUB75 clocks. Always use `74HCT245` / `74AHCT245`. |
-| 4 | **Need** | **Breadboard (1660-pt), Jumpers & 8× Paw Buttons** | `Protoboard 1660 pontos` (base metálica) + `jumpers M-M M-F` + `10× chave táctil 6x6mm 4 pinos` | **$12 – $20** | **R$ 75 – R$ 115** *(board + jumpers + buttons)* | **R$ 45 – R$ 75** | Buy locally on Mercado Livre. One solid metal-backed 1660-pt board holds Teensy 4.1 + both `74HCT245` chips on the top half and all **8 paw buttons** (4L + 4R) cleanly on the bottom half—zero soldering, won't slide when clicking. |
-| 5 | **Need** | **5V Power Supply (Bench)** | **`Fonte 5V 5A` wall-wart (P4 plug) + `adaptador P4 borne`** *(bivolt)* | **$7 – $12** | **R$ 35 – R$ 65** | **R$ 30 – R$ 50** | Buy locally on Mercado Livre. An enclosed 5V 5A wall-wart + P4-to-screw-terminal adapter is much safer for beginners than an open metal *fonte colmeia* (no exposed 110V/220V wall wires). |
-| 6 | **Need** | **USB Micro-B *Data* Cable** | Shielded **USB-A/C to Micro-B *data* cable** | **$3 – $6** | **R$ 15 – R$ 35** | **R$ 10 – R$ 20** | Teensy 4.1 uses **Micro-B**. Avoid charge-only cables. *(Skip if you already own a known-good data cable.)* |
-| 7 | *Optional* | **USB Logic Analyzer *(Debug Tool)*** | **8-channel 24 MHz USB Logic Analyzer** (Saleae clone, works with free Linux **PulseView / sigrok**) | **$4 – $8** | **R$ 35 – R$ 90** | **R$ 20 – R$ 35** | Not needed to run ProtoStack—optional insurance only if we hit a HUB75 signal timing issue during `v0.2` bring-up. Fine to skip for now. |
+| 1 | **Need** | **Teensy 4.1 (with Pins)** | [Teensy 4.1 com pinos (ML)](https://lista.mercadolivre.com.br/teensy-4.1-pinos) *(PJRC / SparkFun `DEV-16996`)* | **$35.95** *(SparkFun / DigiKey)* | **R$ 400 – R$ 700** | *(Avoid)* | Buy from a well-rated ML seller (MercadoLíder / Full) or SparkFun/DigiKey. Verify on arrival within the return window by pressing the board button and confirming USB HalfKay bootloader (`16c0:0478`). |
+| 2 | **Need** | **2× RGB LED Matrix Panels** | [Painel LED RGB 64x32 HUB75 (ML)](https://lista.mercadolivre.com.br/painel-led-rgb-64x32-hub75) *(2× `64x32` P3, 1/16 scan)* | **$24 – $44** *(pair)* | **R$ 300 – R$ 600** *(pair)* | **R$ 130 – R$ 240** *(pair)* | **Critical:** Confirm **1/16 scan (16S)** and **HUB75** (avoid 1/8 scan, 1/4 scan, and HUB75E). Check that each panel includes its 16-pin IDC ribbon cable & 5V power cable. |
+| 3 | **Need** | **Level Shifter Chips (3.3V → 5V)** | [CI SN74HCT245N DIP-20 (ML)](https://lista.mercadolivre.com.br/sn74hct245n-dip) *(2× pcs; `74AHCT245N` also OK)* | **$2 – $4** | **R$ 15 – R$ 30** *(2–5 pcs)* | **R$ 10 – R$ 15** | **Do NOT buy cheap blue 4-channel I2C MOSFET level-shifter boards**—they are too slow for HUB75 clocks. Always use `74HCT245` / `74AHCT245`. |
+| 4 | **Need** | **Breadboard (1660-pt), Jumpers & 8× Paw Buttons** | [Protoboard 1660 pontos (ML)](https://lista.mercadolivre.com.br/protoboard-1660-pontos) + [Jumpers M-M / M-F (ML)](https://lista.mercadolivre.com.br/kit-jumpers-macho-femea-protoboard) + [Chave Táctil 6×6mm (ML)](https://lista.mercadolivre.com.br/chave-tactil-6x6) | **$12 – $20** | **R$ 75 – R$ 115** *(board + jumpers + buttons)* | **R$ 45 – R$ 75** | Buy locally on Mercado Livre. One solid metal-backed 1660-pt board holds Teensy 4.1 + both `74HCT245` chips on the top half and all **8 paw buttons** (4L + 4R) cleanly on the bottom half—zero soldering, won't slide when clicking. |
+| 5 | **Need** | **5V Power Supply (Bench)** | [Fonte 5V 5A P4 (ML)](https://lista.mercadolivre.com.br/fonte-5v-5a-p4) + [Adaptador P4 fêmea borne (ML)](https://lista.mercadolivre.com.br/adaptador-p4-femea-borne) *(bivolt)* | **$7 – $12** | **R$ 35 – R$ 65** | **R$ 30 – R$ 50** | Buy locally on Mercado Livre. An enclosed 5V 5A wall-wart + P4-to-screw-terminal adapter is much safer for beginners than an open metal *fonte colmeia* (no exposed 110V/220V wall wires). |
+| 6 | **Need** | **USB Micro-B *Data* Cable** | [Cabo USB Micro-B de dados (ML)](https://lista.mercadolivre.com.br/cabo-usb-micro-b-dados) | **$3 – $6** | **R$ 15 – R$ 35** | **R$ 10 – R$ 20** | Teensy 4.1 uses **Micro-B**. Avoid charge-only cables. *(Skip if you already own a known-good data cable.)* |
+| 7 | *Optional* | **USB Logic Analyzer *(Debug Tool)*** | [Analisador Lógico USB 24MHz 8ch (ML)](https://lista.mercadolivre.com.br/analisador-logico-usb-24mhz-8-canais) *(works with Linux PulseView)* | **$4 – $8** | **R$ 35 – R$ 90** | **R$ 20 – R$ 35** | Not needed to run ProtoStack—optional insurance only if we hit a HUB75 signal timing issue during `v0.2` bring-up. Fine to skip for now. |
 
 ---
 
@@ -47,10 +47,10 @@ Because early development is a **tabletop bench setup** (no helmet shell yet), o
 
 These are helmet-shell add-ons deferred out of `v1.0` to keep the tabletop bench lean and affordable:
 
-| Component | Spec (For Later) | Typical Cost Saved Now |
+| Component | Spec / Mercado Livre Link (For Later) | Typical Cost Saved Now |
 |---|---|---:|
-| **Boop Sensor** | 1× **APDS-9960** I2C proximity breakout (3.3V) *(+ optional TTP223 touch)* | ~$3–$5 / **R$ 30–45** |
-| **Cooling Fan (5V PWM)** | Noctua `NF-A4x10 5V PWM` or generic 40mm **5V 4-wire PWM** *(never 12V)* | ~$15–$20 / **R$ 150–220** |
+| **Boop Sensor** | [APDS-9960 I2C (ML)](https://lista.mercadolivre.com.br/apds-9960) *(3.3V proximity breakout; + optional TTP223 touch)* | ~$3–$5 / **R$ 30–45** |
+| **Cooling Fan (5V PWM)** | [Noctua NF-A4x10 5V PWM (ML)](https://lista.mercadolivre.com.br/noctua-nf-a4x10-5v-pwm) *(or generic 40mm 5V 4-wire PWM—never 12V)* | ~$15–$20 / **R$ 150–220** |
 
 ---
 
