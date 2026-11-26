@@ -9,34 +9,37 @@ Reference Exchange Rate: **1 USD ≈ R$ 5.75 – R$ 5.85** *(prices are estimate
 ## 1. Plain-English Hardware Primer
 
 ### What is HUB75?
-**HUB75** is the standard **16-pin ribbon cable connector and wiring format** on the back of full-color `64x32` RGB LED matrix panels. When people say "two HUB75 panels," they mean two `64x32` RGB LED display boards that plug together via HUB75 ribbon cables (Panel 1 `OUT` → Panel 2 `IN`) to form a `128x32` Protogen visor.
+**HUB75** is **not** a separate box you buy—it is the standard **16-pin ribbon cable plug and wiring format** already built into the back of full-color `64x32` RGB LED matrix panels (think of it like "HDMI" for LED panels). Two `64x32` panels chain together directly (`Panel 1 OUT` → `Panel 2 IN`) with the included flat ribbon cable to form a `128x32` Protogen visor.
 
-### What is a Shield / Carrier (SmartLED Shield V5)?
-A **shield** (or **carrier board**) is a small adapter circuit board that sits *between* your Teensy 4.1 and the HUB75 LED panel:
+### Why `2× SN74HCT245N` Chips + a Breadboard?
+The Teensy 4.1 speaks **3.3V** logic, while HUB75 LED panels expect **5V** logic signals. Without 3.3V → 5V level shifting, panels can flicker, glitch, or stay blank.
 
-1. **Voltage translation (3.3V → 5V):** The Teensy 4.1 outputs **3.3V** logic signals, while HUB75 panels expect **5V** logic signals. A shield contains fast buffer chips (like `74HCT245`) that cleanly boost the signals so panels don't flicker or glitch.
-2. **Plug-and-play wiring:** Instead of running 14+ fragile jumper wires by hand, you plug your pre-pinned Teensy 4.1 into female headers on the shield, plug the HUB75 ribbon cable into the shield's 16-pin socket, and screw your 5V power wire into the shield's power terminal.
+- **Why 2 chips instead of 1?** A HUB75 cable carries **13 signal wires** (`6` colors `R1/G1/B1/R2/G2/B2` + `4` row lines `A/B/C/D` + `3` control lines `CLK/LAT/OE`). Each `SN74HCT245N` chip boosts **8 channels**, so **2 chips sit side-by-side** (`2 × 8 = 16` channels) to cover all 13 wires. *(You do **not** chain them—Chip 1 handles `R1/G1/B1/R2/G2/B2/CLK/LAT` and Chip 2 handles `A/B/C/D/OE`. Panel 1 then passes the boosted 5V signals straight through to Panel 2.)*
+- **Why a breadboard?** Each `SN74HCT245N` is a bare 20-leg DIP chip—you can't plug jumper wires directly onto bare legs. An 830-point breadboard lets you push in the pre-pinned Teensy 4.1, both chips, and your paw buttons with **zero soldering**, and gives you tidy shared `5V` and `GND` rails.
+- **What happened to SmartLED Shield V5?** Pixelmatix's **SmartLED Shield V5** (`DEV-17521` at SparkFun / `4828` at Adafruit)—which is literally just two `74HCT245` chips pre-soldered onto a carrier PCB—has been **retired/discontinued** at both SparkFun and Adafruit. *(Its PCB design is open-source on GitHub if you ever want to order custom boards from JLCPCB later, but for a tabletop bench, the breadboard + `2× SN74HCT245N` setup is cheaper, locally available in Brazil, and requires zero soldering.)*
 
-> **Pre-pinned Teensy 4.1 compatibility:** A standard "Teensy 4.1 with Pins" has **male headers pointing down**. It plugs straight into a breadboard or into **female headers** soldered onto a SmartLED Shield V5—no soldering directly onto the Teensy required.
+> **Pre-pinned Teensy 4.1 compatibility:** A "Teensy 4.1 with Pins" (*com pinos soldados*) has **male headers pointing down**, so it plugs straight into a standard breadboard with no soldering required.
 
 ---
 
 ## 2. Lean Tabletop Dev-Bench Cart (`v0.2` – `v1.0`)
 
-Because early development is a **tabletop bench setup** (no helmet shell yet), only the visor display, Teensy 4.1, 5V power, and paw buttons are required for `v1.0`. Boop sensors and cooling fans are deferred to `v1.1` (see Section 3).
+Because early development is a **tabletop bench setup** (no helmet shell yet), only the Teensy 4.1, two `64x32` HUB75 panels, level-shifting breadboard kit, 5V power supply, and paw buttons are required for `v1.0`. Boop sensors and cooling fans are deferred to `v1.1` (see Section 3).
 
-> **Brazil Import Note (Remessa Conforme):** AliExpress and US-store prices below show the **base item price before shipping and Brazilian import taxes** (typically ~44% combined II + ICMS on orders up to US$ 50, and ~92% above US$ 50). Mercado Livre prices shown are typical local/in-country listings.
+> **Store Stock Notes (Verified 2026-11-26):**
+> - **SparkFun** actively stocks Teensy 4.1 with Pins (`DEV-16996`), but **retired** both its `32x64` panel (`COM-14718`) and SmartLED Shield V5 (`DEV-17521`).
+> - **Adafruit** discontinued Teensy boards and SmartLED Shield V5 (`4828`); they still sell `64x32` P3 panels (`2279`), but at ~$44.95 *each* (2–3× AliExpress pricing).
+> - **Brazil Import Note (Remessa Conforme):** AliExpress prices below show the **base item price before shipping and Brazilian import taxes** (~44% combined II + ICMS up to US$ 50, ~92% above US$ 50). Mercado Livre prices are typical local BR listings.
 
-| # | Status | Component | Exact Spec to Buy | USD Estimate (Base) | BRL Estimate (Mercado Livre / Local BR) | BRL Estimate (AliExpress Base, pre-tax) | Where to Buy / Notes |
+| # | Status | Component | Exact Spec / ML Search Term | USD Estimate (Base) | BRL Estimate (Mercado Livre / Local BR) | BRL Estimate (AliExpress Base, pre-tax) | Where to Buy / Notes |
 |---|---|---|---|---:|---:|---:|---|
-| 1 | **Need** | **Teensy 4.1 (with Pins)** | PJRC Teensy 4.1 w/ pre-soldered headers (`DEV-16996`) | **$35.95** *(PJRC / SparkFun)* | **R$ 400 – R$ 700** | *(Rare / avoid fakes)* | Official PJRC / SparkFun / authorized distributor (or Mercado Livre local stock). |
-| 2 | **Need (pick A or B)** | **A: HUB75 Shield *(Easiest)*** | **Pixelmatix SmartLED Shield V5 for Teensy 4** (`DEV-17521` / Adafruit `4828`) + female headers | **$20 – $25** *(SparkFun / Adafruit / Mouser)* | *Not sold locally on ML* | *Not sold on AliExpress* | Plug-and-play; pinout matches our SmartLED V5 preset. **No full breadboard needed** if you choose Option A. Bundle with Teensy if importing from US/Mouser. |
-| 2b | **Need (pick A or B)** | **B: HUB75 DIY Adapter *(BR Local Backup)*** | **2× `SN74HCT245N` DIP-20** level-shifters + 16-pin IDC header + **830-pt breadboard & jumpers** | **$8 – $14** | **R$ 50 – R$ 80** *(chips + protoboard + jumpers)* | **R$ 30 – R$ 50** | Cheap local fallback in Brazil if SmartLED Shield V5 is out of stock or expensive to import. You only need a full breadboard if you pick Option B. |
-| 3 | **Need** | **2× RGB LED Matrix Panels** | **2× `64x32` P3 HUB75**, **1/16 scan (16S)** *(~192×96 mm each; DP5020B or FM6126A driver OK)* | **$24 – $44** *(for 2 panels, $12–$22 ea)* | **R$ 300 – R$ 600** *(for 2 panels)* | **R$ 130 – R$ 240** *(for 2 panels)* | **Critical:** Confirm **1/16 scan** and **HUB75** (avoid 1/8 scan, 1/4 scan, and HUB75E). Check that 16-pin IDC ribbon cables & 5V power cables are included. |
-| 4 | **Need** | **5V Power Supply (Bench)** | **5V 5A regulated switching power supply** (*Fonte Chaveada 5V 5A*, bivolt) + P4-to-screw-terminal adapter | **$7 – $12** | **R$ 35 – R$ 65** | **R$ 30 – R$ 50** | Easier and cheaper to buy locally on Mercado Livre (already BR plug & heavy to ship). |
-| 5 | **Need** | **Paw Buttons + Wires** | **2–4× tactile pushbuttons** + a few M-F/F-F DuPont wires *(+ optional tiny mini-breadboard if using Option A)* | **$2 – $4** | **R$ 15 – R$ 25** | **R$ 10 – R$ 15** | Wire directly from Teensy GPIO → `GND` using internal pull-ups. |
-| 6 | **Need** | **USB Micro-B *Data* Cable** | Good shielded **USB-A/C to Micro-B *data* cable** | **$3 – $6** | **R$ 15 – R$ 35** | **R$ 10 – R$ 20** | Teensy 4.1 uses **Micro-B**. Avoid charge-only cables. *(Skip if you already own a known-good data cable.)* |
-| 7 | *Optional* | **USB Logic Analyzer *(Debug Tool)*** | **8-channel 24 MHz USB Logic Analyzer** (Saleae clone, works with free Linux **PulseView / sigrok**) | **$4 – $8** | **R$ 35 – R$ 90** | **R$ 20 – R$ 35** | Not needed to run ProtoStack—cheap insurance only if we hit a HUB75 signal timing issue during `v0.2` bring-up. Fine to skip for now. |
+| 1 | **Need** | **Teensy 4.1 (with Pins)** | `Teensy 4.1 com pinos soldados` (PJRC / SparkFun `DEV-16996`) | **$35.95** *(SparkFun / DigiKey)* | **R$ 400 – R$ 700** | *(Avoid)* | Buy from a well-rated ML seller (MercadoLíder / Full) or SparkFun/DigiKey. Verify on arrival within the return window by pressing the board button and confirming USB HalfKay bootloader (`16c0:0478`). |
+| 2 | **Need** | **2× RGB LED Matrix Panels** | **2× `Painel LED RGB 64x32 P3 HUB75 1/16`** *(~192×96 mm each; DP5020B or FM6126A driver OK)* | **$24 – $44** *(pair)* | **R$ 300 – R$ 600** *(pair)* | **R$ 130 – R$ 240** *(pair)* | **Critical:** Confirm **1/16 scan (16S)** and **HUB75** (avoid 1/8 scan, 1/4 scan, and HUB75E). Check that each panel includes its 16-pin IDC ribbon cable & 5V power cable. |
+| 3 | **Need** | **Level Shifter Chips (3.3V → 5V)** | **2× `CI SN74HCT245N DIP-20`** *(or `74AHCT245N`)* | **$2 – $4** | **R$ 15 – R$ 30** *(2–5 pcs)* | **R$ 10 – R$ 15** | **Do NOT buy cheap blue 4-channel I2C MOSFET level-shifter boards**—they are too slow for HUB75 clocks. Always use `74HCT245` / `74AHCT245`. |
+| 4 | **Need** | **Breadboard, Jumpers & Paw Buttons** | `Kit protoboard 830 + jumpers M-M M-F + botões táteis` | **$8 – $14** | **R$ 45 – R$ 80** *(combo kit)* | **R$ 25 – R$ 45** | Buy locally on Mercado Livre (fast shipping, no import tax). Holds Teensy 4.1, both `74HCT245` chips, and 2–4 paw buttons with zero soldering. |
+| 5 | **Need** | **5V Power Supply (Bench)** | **`Fonte 5V 5A` wall-wart (P4 plug) + `adaptador P4 borne`** *(bivolt)* | **$7 – $12** | **R$ 35 – R$ 65** | **R$ 30 – R$ 50** | Buy locally on Mercado Livre. An enclosed 5V 5A wall-wart + P4-to-screw-terminal adapter is much safer for beginners than an open metal *fonte colmeia* (no exposed 110V/220V wall wires). |
+| 6 | **Need** | **USB Micro-B *Data* Cable** | Shielded **USB-A/C to Micro-B *data* cable** | **$3 – $6** | **R$ 15 – R$ 35** | **R$ 10 – R$ 20** | Teensy 4.1 uses **Micro-B**. Avoid charge-only cables. *(Skip if you already own a known-good data cable.)* |
+| 7 | *Optional* | **USB Logic Analyzer *(Debug Tool)*** | **8-channel 24 MHz USB Logic Analyzer** (Saleae clone, works with free Linux **PulseView / sigrok**) | **$4 – $8** | **R$ 35 – R$ 90** | **R$ 20 – R$ 35** | Not needed to run ProtoStack—optional insurance only if we hit a HUB75 signal timing issue during `v0.2` bring-up. Fine to skip for now. |
 
 ---
 
@@ -53,17 +56,14 @@ These are helmet-shell add-ons deferred out of `v1.0` to keep the tabletop bench
 
 ## 4. Rough Total Budget Estimate (`v1.0` Tabletop Cart)
 
-- **Lean Local/AliExpress Mix (Option B: local `74HCT245` + breadboard + AliExpress panels + local ML basics + Teensy):**
-  - **USD equivalent (base):** ~**$75 – $115 USD**
-  - **BRL realistic total in Brazil (local ML + AliExpress w/ taxes + Teensy):** ~**R$ 680 – R$ 1,050 BRL**
-- **Plug-and-Play Mix (Option A: importing SmartLED Shield V5 alongside Teensy + AliExpress/ML panels + local basics):**
-  - **USD equivalent (base):** ~**$90 – $125 USD** *(before international shipping/taxes)*
-  - **BRL realistic total in Brazil:** ~**R$ 950 – R$ 1,400 BRL**
+- **100% Mercado Livre (Fastest, All-Local Brazil):** ~**R$ 810 – R$ 1,500 BRL** *(mostly driven by local ML pricing for Teensy 4.1 + 2× panels)*
+- **Hybrid Mix (AliExpress 2× panels w/ Remessa Conforme + Local ML for Teensy, chips, breadboard & PSU):** ~**R$ 680 – R$ 1,100 BRL** *(~$75 – $115 USD base equivalent)*
 
 ---
 
 ## 5. Essential Bench Safety Notes (Read Before Plugging In!)
 
 1. **Never power HUB75 panels from your computer's USB port.** Dual `64x32` panels can draw 3–5A at full brightness and will trip or damage a PC USB port.
-2. **Prevent 5V back-feeding into USB:** Keep the external 5V panel power separate from the Teensy's `VIN` pin while plugged into USB (share **GND only**), *or* cut the Teensy 4.1 `VUSB-VIN` solder bridge on the bottom of the board if powering the Teensy from the shield's 5V supply.
-3. **Verify HUB75 scan rate on arrival:** Check the silkscreen on the back of both panels for `64x32`, `16S` (or `1/16`), and identical driver IC labels so Panel 1 and Panel 2 match cleanly when daisy-chained.
+2. **Prevent 5V back-feeding into USB:** Keep the external 5V panel power rail **completely disconnected** from the Teensy's `VIN` / `5V` pin while plugged into USB—connect **GND only** between the Teensy and the external 5V supply! *(Only tie them together if you intentionally cut the Teensy 4.1 `VUSB-VIN` solder bridge on the bottom of the board.)*
+3. **Verify your Teensy 4.1 on day 1:** Plug it into USB and press the onboard button; confirm it enters PJRC's HalfKay bootloader (`16c0:0478`) while still inside your marketplace return window.
+4. **Verify HUB75 scan rate on arrival:** Check the silkscreen on the back of both panels for `64x32`, `16S` (or `1/16`), and identical driver IC labels so Panel 1 and Panel 2 match cleanly when daisy-chained.
