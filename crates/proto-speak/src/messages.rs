@@ -35,7 +35,7 @@ pub struct HelloInfo {
     pub visor_width: u16,
     /// Logical canvas bounding-box height in pixels (e.g. 32); physical panel/LED mapping lives in `GET_MANIFEST`.
     pub visor_height: u16,
-    /// Number of configured paw buttons (0..=8).
+    /// Number of configured input buttons (up to 8 in v1.0; wire format supports more).
     pub button_count: u8,
 }
 
@@ -49,8 +49,8 @@ pub struct PreviewState {
     pub tint_rgb: [u8; 3],
     /// Master brightness percentage (`0..=100`).
     pub brightness: u8,
-    /// Bitmask of virtual paw buttons currently pressed (bit 0 = button 1).
-    pub virtual_button_mask: u8,
+    /// Bitmask of virtual buttons currently pressed (bit 0 = button 1; up to 32 buttons).
+    pub virtual_button_mask: u32,
 }
 
 /// Acknowledgement payload for `Opcode::PREVIEW_STATE` (device -> host).
