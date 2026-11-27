@@ -10,12 +10,10 @@
 
 #![no_std]
 
-pub mod crc;
 pub mod hid;
 pub mod messages;
 pub mod packet;
 
-pub use crc::crc16_ccitt;
 pub use hid::{
     HidChunker, HidReassembler, HID_CHUNK_DATA_LEN, HID_HEADER_LEN, HID_REPORT_ID, HID_REPORT_SIZE,
 };

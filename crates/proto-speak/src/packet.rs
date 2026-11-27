@@ -13,9 +13,13 @@
 //! Last 2 bytes: CRC-16/CCITT-FALSE over bytes 0..12+len
 //! ```
 
+use crc::{Crc, CRC_16_IBM_3740};
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::{crc16_ccitt, Error};
+use crate::Error;
+
+/// CRC-16/CCITT-FALSE (poly `0x1021`, init `0xFFFF`, check value `0x29B1`).
+const CRC16: Crc<u16> = Crc::<u16>::new(&CRC_16_IBM_3740);
 
 /// Current ProtoSpeak wire format version (fits in 4 bits).
 pub const PROTOCOL_VERSION: u8 = 1;
@@ -203,7 +207,7 @@ pub fn encode_packet(mut header: Header, payload: &[u8], out: &mut [u8]) -> Resu
     out[..HEADER_LEN].copy_from_slice(&header.to_bytes());
     out[HEADER_LEN..HEADER_LEN + payload.len()].copy_from_slice(payload);
 
-    let crc = crc16_ccitt(&out[..HEADER_LEN + payload.len()]);
+    let crc = CRC16.checksum(&out[..HEADER_LEN + payload.len()]);
     out[HEADER_LEN + payload.len()..total_len].copy_from_slice(&crc.to_le_bytes());
 
     Ok(total_len)
@@ -233,7 +237,7 @@ pub fn encode_payload<T: Serialize>(
     out[..HEADER_LEN].copy_from_slice(&final_header.to_bytes());
 
     let crc_offset = HEADER_LEN + payload_len;
-    let crc = crc16_ccitt(&out[..crc_offset]);
+    let crc = CRC16.checksum(&out[..crc_offset]);
     out[crc_offset..crc_offset + CRC_LEN].copy_from_slice(&crc.to_le_bytes());
 
     Ok(crc_offset + CRC_LEN)
@@ -261,7 +265,7 @@ pub fn decode_packet(raw: &[u8]) -> Result<DecodedPacket<'_>, Error> {
         return Err(Error::TruncatedPacket);
     }
 
-    let expected = crc16_ccitt(&raw[..crc_offset]);
+    let expected = CRC16.checksum(&raw[..crc_offset]);
     let actual = u16::from_le_bytes([raw[crc_offset], raw[crc_offset + 1]]);
     if expected != actual {
         return Err(Error::BadCrc { expected, actual });
