@@ -53,7 +53,7 @@ fn render_full_ascii(fb: &Framebuffer, expected_color: Rgb) -> String {
 fn load_ascii_frame(brain: &mut ProtoBrain, slot_id: u8, frame_idx: u8, ascii: &str) {
     let (w, h, mask) = pack_ascii_mask(ascii);
     if let Err(err) = brain
-        .slots_mut()
+        .source_mut()
         .load_frame(slot_id, frame_idx, w, h, &mask)
     {
         panic!("failed to load test fixture into slot {slot_id} frame {frame_idx}: {err:?}");
@@ -73,12 +73,12 @@ fn animates_loaded_community_neutral_and_happy_slots() {
     // Slot 0: Neutral (open + blink frames, 10 ticks per frame).
     load_ascii_frame(&mut brain, 0, 0, neutral_open);
     load_ascii_frame(&mut brain, 0, 1, neutral_blink);
-    assert!(brain.slots_mut().set_frame_ticks(0, 10).is_ok());
+    assert!(brain.source_mut().set_frame_ticks(0, 10).is_ok());
 
     // Slot 1: Happy (closed + open maw frames, 5 ticks per frame).
     load_ascii_frame(&mut brain, 1, 0, happy_closed);
     load_ascii_frame(&mut brain, 1, 1, happy_open);
-    assert!(brain.slots_mut().set_frame_ticks(1, 5).is_ok());
+    assert!(brain.source_mut().set_frame_ticks(1, 5).is_ok());
 
     // Slot 2: Surprised (single frame).
     load_ascii_frame(&mut brain, 2, 0, surprised);
@@ -140,7 +140,7 @@ fn zero_brightness_and_cleared_slot_render_black() {
     });
     assert!(brain.framebuffer().as_rgb_bytes().iter().all(|&b| b == 0));
 
-    assert!(brain.slots_mut().clear_slot(0).is_ok());
+    assert!(brain.source_mut().clear_slot(0).is_ok());
     brain.apply_preview(PreviewState {
         expression_id: 0,
         tint_rgb: Rgb::DEFAULT_TINT.to_array(),

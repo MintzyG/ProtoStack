@@ -1,26 +1,41 @@
-//! Data-driven `#![no_std]` face slot storage and animation frame selection.
+//! Pluggable [`FaceSource`] trait and default in-RAM 1-bit [`SlotBank`].
 //!
-//! `proto-brain` ships with zero hardcoded faces. Studios, DIY makers, or
-//! simulator setups load 1-bit sprite frames (and in later versions multi-color
-//! sprites or 3D meshes) into numbered slots at runtime or provisioning time.
+//! `proto-brain` ships with zero hardcoded faces and does not assume a fixed
+//! slot count or pixel format. Any backend that implements [`FaceSource`]
+//! (in-RAM 1-bit masks, flash/SD multi-color GIF stores, or real-time 3D
+//! blendshape renderers) can drive the 24-bit RGB [`Framebuffer`].
 
 use crate::framebuffer::{Bitmap1Bit, Framebuffer, Rgb, DEFAULT_VISOR_HEIGHT, DEFAULT_VISOR_WIDTH};
 
-/// Maximum number of face slots held in RAM in v0.1.
-pub const MAX_SLOTS: usize = 8;
+/// Default in-RAM slot count for [`SlotBank`] in v0.1 (protocol allows up to 256).
+pub const DEFAULT_SLOT_CAPACITY: usize = 8;
 
-/// Maximum number of animation frames per slot in v0.1.
-pub const MAX_FRAMES_PER_SLOT: usize = 4;
+/// Default maximum animation frames per slot for [`SlotBank`] in v0.1.
+pub const DEFAULT_FRAMES_PER_SLOT: usize = 4;
 
-/// Maximum 1-bit packed mask size per frame (`128 * 32 / 8 = 512` bytes).
-pub const MAX_MASK_BYTES: usize = DEFAULT_VISOR_WIDTH.div_ceil(8) * DEFAULT_VISOR_HEIGHT;
+/// Maximum 1-bit packed mask size per frame for [`SlotBank`] (`128 * 32 / 8 = 512` bytes).
+pub const DEFAULT_MASK_BYTES: usize = DEFAULT_VISOR_WIDTH.div_ceil(8) * DEFAULT_VISOR_HEIGHT;
+
+/// Pluggable visor renderer / asset store consumed by [`crate::ProtoBrain`].
+///
+/// Backends can render 1-bit tinted sprites ([`SlotBank`]), full-color animated
+/// GIF/RGB565 frames from flash or MicroSD, or live 3D blendshape meshes into
+/// the 24-bit RGB [`Framebuffer`].
+pub trait FaceSource {
+    /// Renders `slot_id` at animation `tick` into `fb` (already cleared to black).
+    ///
+    /// `tint` is the user color tint (`[255, 255, 255]` leaves full-color assets
+    /// untinted) and `brightness` is clamped to `0..=100`. Empty or unknown
+    /// slots should leave `fb` blank.
+    fn render_slot(&self, slot_id: u8, tick: u32, tint: Rgb, brightness: u8, fb: &mut Framebuffer);
+}
 
 /// Errors returned while loading frames into a [`SlotBank`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SlotError {
-    /// Slot index is outside `0..MAX_SLOTS`.
+    /// Slot index is outside `0..self.capacity()`.
     InvalidSlot(u8),
-    /// Frame index is outside `0..MAX_FRAMES_PER_SLOT`.
+    /// Frame index is outside `0..slot.max_frames()`.
     InvalidFrameIndex(u8),
     /// Frame dimensions are zero or exceed the fixed mask storage capacity.
     InvalidDimensions {
@@ -38,14 +53,14 @@ pub enum SlotError {
     },
 }
 
-/// One animated face slot holding up to [`MAX_FRAMES_PER_SLOT`] 1-bit frames.
+/// One animated 1-bit face slot holding up to [`DEFAULT_FRAMES_PER_SLOT`] frames in RAM.
 #[derive(Debug, Clone)]
 pub struct FaceSlot {
     width: u16,
     height: u16,
     frame_count: u8,
     frame_ticks: u8,
-    frames: [[u8; MAX_MASK_BYTES]; MAX_FRAMES_PER_SLOT],
+    frames: [[u8; DEFAULT_MASK_BYTES]; DEFAULT_FRAMES_PER_SLOT],
 }
 
 impl Default for FaceSlot {
@@ -62,8 +77,13 @@ impl FaceSlot {
             height: 0,
             frame_count: 0,
             frame_ticks: 1,
-            frames: [[0u8; MAX_MASK_BYTES]; MAX_FRAMES_PER_SLOT],
+            frames: [[0u8; DEFAULT_MASK_BYTES]; DEFAULT_FRAMES_PER_SLOT],
         }
+    }
+
+    /// Maximum number of frames this slot can store.
+    pub const fn max_frames(&self) -> usize {
+        DEFAULT_FRAMES_PER_SLOT
     }
 
     /// Returns true if no frames have been loaded into this slot.
@@ -71,7 +91,7 @@ impl FaceSlot {
         self.frame_count == 0
     }
 
-    /// Returns the number of loaded animation frames (`0..=MAX_FRAMES_PER_SLOT`).
+    /// Returns the number of loaded animation frames.
     pub const fn frame_count(&self) -> u8 {
         self.frame_count
     }
@@ -113,7 +133,7 @@ impl FaceSlot {
         mask: &[u8],
     ) -> Result<(), SlotError> {
         let idx = frame_index as usize;
-        if idx >= MAX_FRAMES_PER_SLOT {
+        if idx >= self.max_frames() {
             return Err(SlotError::InvalidFrameIndex(frame_index));
         }
 
@@ -163,10 +183,10 @@ impl FaceSlot {
     }
 }
 
-/// Fixed-size bank of [`MAX_SLOTS`] face slots.
+/// Default in-RAM bank of 1-bit animated face slots (implements [`FaceSource`]).
 #[derive(Debug, Clone)]
 pub struct SlotBank {
-    slots: [FaceSlot; MAX_SLOTS],
+    slots: [FaceSlot; DEFAULT_SLOT_CAPACITY],
 }
 
 impl Default for SlotBank {
@@ -179,8 +199,13 @@ impl SlotBank {
     /// Creates an empty slot bank (all slots blank until loaded).
     pub const fn new() -> Self {
         Self {
-            slots: [const { FaceSlot::empty() }; MAX_SLOTS],
+            slots: [const { FaceSlot::empty() }; DEFAULT_SLOT_CAPACITY],
         }
+    }
+
+    /// Number of slots available in this bank.
+    pub const fn capacity(&self) -> usize {
+        self.slots.len()
     }
 
     /// Returns a read-only reference to slot `slot_id`, if in range.
@@ -230,6 +255,15 @@ impl SlotBank {
     }
 }
 
+impl FaceSource for SlotBank {
+    fn render_slot(&self, slot_id: u8, tick: u32, tint: Rgb, brightness: u8, fb: &mut Framebuffer) {
+        if let Some(slot) = self.get(slot_id) {
+            let color = tint.scale(brightness);
+            slot.render_into(fb, tick, color);
+        }
+    }
+}
+
 fn required_mask_bytes(width: u16, height: u16) -> Result<usize, SlotError> {
     if width == 0 || height == 0 {
         return Err(SlotError::InvalidDimensions { width, height });
@@ -238,7 +272,7 @@ fn required_mask_bytes(width: u16, height: u16) -> Result<usize, SlotError> {
         .div_ceil(8)
         .checked_mul(height as usize)
         .ok_or(SlotError::InvalidDimensions { width, height })?;
-    if bytes > MAX_MASK_BYTES {
+    if bytes > DEFAULT_MASK_BYTES {
         return Err(SlotError::InvalidDimensions { width, height });
     }
     Ok(bytes)

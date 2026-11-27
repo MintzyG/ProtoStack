@@ -1,10 +1,10 @@
 //! Core `#![no_std]` visor engine and `ProtoSpeak` Domain 0 command handler.
 //!
-//! `ProtoBrain` ships with zero hardcoded faces. It stores uploaded animation
-//! frames in a fixed-size [`SlotBank`], renders the active slot into a 24-bit
-//! RGB [`Framebuffer`], and handles `ProtoSpeak` control packets. Because it
-//! has no OS or heap dependencies, the browser WASM simulator and the Teensy
-//! 4.1 firmware run the exact same engine.
+//! `ProtoBrain` ships with zero hardcoded faces. It renders active slots
+//! through a pluggable [`FaceSource`] into a 24-bit RGB [`Framebuffer`] and
+//! handles `ProtoSpeak` control packets. Because it has no OS or heap
+//! dependencies, the browser WASM simulator and the Teensy 4.1 firmware run
+//! the exact same engine.
 
 #![no_std]
 
@@ -15,7 +15,10 @@ pub use framebuffer::{
     Bitmap1Bit, Framebuffer, Rgb, DEFAULT_FRAMEBUFFER_RGBA_LEN, DEFAULT_FRAMEBUFFER_RGB_LEN,
     DEFAULT_VISOR_HEIGHT, DEFAULT_VISOR_WIDTH,
 };
-pub use slots::{FaceSlot, SlotBank, SlotError, MAX_FRAMES_PER_SLOT, MAX_MASK_BYTES, MAX_SLOTS};
+pub use slots::{
+    FaceSlot, FaceSource, SlotBank, SlotError, DEFAULT_FRAMES_PER_SLOT, DEFAULT_MASK_BYTES,
+    DEFAULT_SLOT_CAPACITY,
+};
 
 use proto_speak::{
     decode_packet, decode_payload, encode_payload, Flags, Header, HelloInfo, McuKind, NodeId,
@@ -37,9 +40,9 @@ impl From<proto_speak::Error> for BrainError {
     }
 }
 
-/// Core ProtoStack visor runtime state.
+/// Core ProtoStack visor runtime state, generic over any [`FaceSource`] backend.
 #[derive(Debug)]
-pub struct ProtoBrain {
+pub struct ProtoBrain<S: FaceSource = SlotBank> {
     mcu: McuKind,
     button_count: u8,
     base_slot: u8,
@@ -48,14 +51,22 @@ pub struct ProtoBrain {
     brightness: u8,
     virtual_button_mask: u32,
     frame: u32,
-    slots: SlotBank,
+    source: S,
     framebuffer: Framebuffer,
 }
 
-impl ProtoBrain {
-    /// Creates a new `ProtoBrain` with an empty [`SlotBank`], default cyan tint,
-    /// and 80% brightness. The framebuffer stays blank until face frames are loaded.
+impl ProtoBrain<SlotBank> {
+    /// Creates a new `ProtoBrain` backed by an empty in-RAM [`SlotBank`], default
+    /// cyan tint, and 80% brightness. The framebuffer stays blank until faces are loaded.
     pub fn new(mcu: McuKind, button_count: u8) -> Self {
+        Self::with_source(mcu, button_count, SlotBank::new())
+    }
+}
+
+impl<S: FaceSource> ProtoBrain<S> {
+    /// Creates a `ProtoBrain` with a custom [`FaceSource`] backend (for example
+    /// a multi-color GIF flash store or a 3D blendshape renderer).
+    pub fn with_source(mcu: McuKind, button_count: u8, source: S) -> Self {
         let mut brain = Self {
             mcu,
             button_count,
@@ -65,22 +76,22 @@ impl ProtoBrain {
             brightness: 80,
             virtual_button_mask: 0,
             frame: 0,
-            slots: SlotBank::new(),
+            source,
             framebuffer: Framebuffer::new(),
         };
         brain.render();
         brain
     }
 
-    /// Returns a read-only reference to the loaded face slots.
-    pub const fn slots(&self) -> &SlotBank {
-        &self.slots
+    /// Returns a read-only reference to the active [`FaceSource`] backend.
+    pub const fn source(&self) -> &S {
+        &self.source
     }
 
-    /// Returns a mutable reference to the face slots for loading or clearing frames.
-    /// Call [`Self::render`] after modifying the active slot to refresh the framebuffer.
-    pub fn slots_mut(&mut self) -> &mut SlotBank {
-        &mut self.slots
+    /// Returns a mutable reference to the active [`FaceSource`] backend.
+    /// Call [`Self::render`] after modifying loaded face data to refresh the framebuffer.
+    pub fn source_mut(&mut self) -> &mut S {
+        &mut self.source
     }
 
     /// Returns the base slot index selected by the user (before temporary button overrides).
@@ -174,14 +185,16 @@ impl ProtoBrain {
     }
 
     /// Renders the active slot and current animation tick into `self.framebuffer`.
-    /// If the active slot is empty or out of range, the framebuffer renders black.
     pub fn render(&mut self) {
         self.framebuffer.clear();
         let slot_id = self.active_slot();
-        let effective_color = self.tint.scale(self.brightness);
-        if let Some(slot) = self.slots.get(slot_id) {
-            slot.render_into(&mut self.framebuffer, self.frame, effective_color);
-        }
+        self.source.render_slot(
+            slot_id,
+            self.frame,
+            self.tint,
+            self.brightness,
+            &mut self.framebuffer,
+        );
     }
 
     /// Decodes one complete `ProtoSpeak` packet, applies it, and writes the response packet
