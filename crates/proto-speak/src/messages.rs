@@ -31,9 +31,9 @@ pub struct HelloInfo {
     pub protocol_version: u8,
     /// Board or simulator runtime kind.
     pub mcu: McuKind,
-    /// Logical visor width in pixels (e.g. 128).
+    /// Logical canvas bounding-box width in pixels (e.g. 128); physical panel/LED mapping lives in `GET_MANIFEST`.
     pub visor_width: u16,
-    /// Logical visor height in pixels (e.g. 32).
+    /// Logical canvas bounding-box height in pixels (e.g. 32); physical panel/LED mapping lives in `GET_MANIFEST`.
     pub visor_height: u16,
     /// Number of configured paw buttons (0..=8).
     pub button_count: u8,
