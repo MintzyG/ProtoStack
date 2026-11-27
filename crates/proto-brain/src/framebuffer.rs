@@ -193,38 +193,4 @@ impl Framebuffer {
             }
         }
     }
-
-    /// Draws a 1-bit bitmap squashed vertically toward its center row for blinking.
-    ///
-    /// `open_pct` is `100` for fully open and `0` for closed to a 2-pixel horizontal slit.
-    pub fn draw_bitmap_1bit_blink(
-        &mut self,
-        x: i32,
-        y: i32,
-        bitmap: Bitmap1Bit<'_>,
-        color: Rgb,
-        open_pct: u8,
-    ) {
-        if open_pct >= 100 || bitmap.height <= 2 {
-            self.draw_bitmap_1bit(x, y, bitmap, color);
-            return;
-        }
-
-        let target_h = ((bitmap.height * open_pct as usize) / 100).max(2);
-        let y_offset = ((bitmap.height - target_h) / 2) as i32;
-        let row_bytes = bitmap.width.div_ceil(8);
-
-        for dst_row in 0..target_h {
-            let src_row = (dst_row * bitmap.height) / target_h;
-            for col in 0..bitmap.width {
-                let byte_idx = src_row * row_bytes + (col / 8);
-                let Some(&byte) = bitmap.data.get(byte_idx) else {
-                    continue;
-                };
-                if (byte & (0x80 >> (col % 8))) != 0 {
-                    self.set_pixel(x + col as i32, y + y_offset + dst_row as i32, color);
-                }
-            }
-        }
-    }
 }

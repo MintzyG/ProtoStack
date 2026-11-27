@@ -1,12 +1,12 @@
 # Third-Party Notices and Attribution
 
-ProtoStack includes community-created pixel art bitmaps adapted under their original permissive licenses.
+ProtoStack includes community-created pixel art fixtures and optional starter assets adapted under their original permissive licenses. No third-party faces are hardcoded into the `proto-brain` firmware crate.
 
-## LumiFur_Controller (Starter Protogen Visor Bitmaps)
+## LumiFur_Controller (Community Protogen Visor Snapshots / Starter Pack)
 
 - **Source:** https://github.com/stef1949/LumiFur_Controller (`src/assets/bitmaps.h`)
 - **Author:** Stefan Ritchie
-- **Assets used in `crates/proto-brain/src/faces.rs`:** `slanteyes`, `slanteyesL`, `Eye`, `EyeL`, `circleeyes`, `nose`, `noseL`, `maw2`, `maw2L`, `maw2Closed`, `maw2ClosedL`
+- **Assets adapted for golden test fixtures (`crates/proto-brain/tests/snapshots/*.txt`) and optional web simulator presets:** `slanteyes`, `slanteyesL`, `Eye`, `EyeL`, `circleeyes`, `nose`, `noseL`, `maw2`, `maw2L`, `maw2Closed`, `maw2ClosedL`
 - **License:** BSD 3-Clause License
 
 ```text

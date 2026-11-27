@@ -1,20 +1,21 @@
 //! Core `#![no_std]` visor engine and `ProtoSpeak` Domain 0 command handler.
 //!
-//! `ProtoBrain` owns the active visor state (`Expression`, tint, brightness,
-//! virtual button mask) and the `128x32` RGB framebuffer. Because it has no OS
-//! or heap dependencies, the browser WASM simulator and the Teensy 4.1 firmware
-//! run the exact same engine.
+//! `ProtoBrain` ships with zero hardcoded faces. It stores uploaded animation
+//! frames in a fixed-size [`SlotBank`], renders the active slot into a 24-bit
+//! RGB [`Framebuffer`], and handles `ProtoSpeak` control packets. Because it
+//! has no OS or heap dependencies, the browser WASM simulator and the Teensy
+//! 4.1 firmware run the exact same engine.
 
 #![no_std]
 
-pub mod faces;
 pub mod framebuffer;
+pub mod slots;
 
-pub use faces::{blink_open_pct, render_expression, Expression};
 pub use framebuffer::{
     Bitmap1Bit, Framebuffer, Rgb, DEFAULT_FRAMEBUFFER_RGBA_LEN, DEFAULT_FRAMEBUFFER_RGB_LEN,
     DEFAULT_VISOR_HEIGHT, DEFAULT_VISOR_WIDTH,
 };
+pub use slots::{FaceSlot, SlotBank, SlotError, MAX_FRAMES_PER_SLOT, MAX_MASK_BYTES, MAX_SLOTS};
 
 use proto_speak::{
     decode_packet, decode_payload, encode_payload, Flags, Header, HelloInfo, McuKind, NodeId,
@@ -41,63 +42,73 @@ impl From<proto_speak::Error> for BrainError {
 pub struct ProtoBrain {
     mcu: McuKind,
     button_count: u8,
-    base_expression: Expression,
+    base_slot: u8,
+    button_override_slot: u8,
     tint: Rgb,
     brightness: u8,
     virtual_button_mask: u32,
     frame: u32,
+    slots: SlotBank,
     framebuffer: Framebuffer,
 }
 
 impl ProtoBrain {
-    /// Creates a new `ProtoBrain` initialized to `Neutral`, default cyan tint,
-    /// and 80% brightness, with the initial frame already rendered.
+    /// Creates a new `ProtoBrain` with an empty [`SlotBank`], default cyan tint,
+    /// and 80% brightness. The framebuffer stays blank until face frames are loaded.
     pub fn new(mcu: McuKind, button_count: u8) -> Self {
         let mut brain = Self {
             mcu,
             button_count,
-            base_expression: Expression::Neutral,
+            base_slot: 0,
+            button_override_slot: 1,
             tint: Rgb::DEFAULT_TINT,
             brightness: 80,
             virtual_button_mask: 0,
             frame: 0,
+            slots: SlotBank::new(),
             framebuffer: Framebuffer::new(),
         };
         brain.render();
         brain
     }
 
-    /// Returns the current animation frame counter.
-    pub const fn frame(&self) -> u32 {
-        self.frame
+    /// Returns a read-only reference to the loaded face slots.
+    pub const fn slots(&self) -> &SlotBank {
+        &self.slots
     }
 
-    /// Advances the animation by one frame and re-renders the framebuffer.
-    pub fn tick(&mut self) {
-        self.frame = self.frame.wrapping_add(1);
+    /// Returns a mutable reference to the face slots for loading or clearing frames.
+    /// Call [`Self::render`] after modifying the active slot to refresh the framebuffer.
+    pub fn slots_mut(&mut self) -> &mut SlotBank {
+        &mut self.slots
+    }
+
+    /// Returns the base slot index selected by the user (before temporary button overrides).
+    pub const fn base_slot(&self) -> u8 {
+        self.base_slot
+    }
+
+    /// Returns the slot index temporarily activated while virtual button 1 is pressed.
+    pub const fn button_override_slot(&self) -> u8 {
+        self.button_override_slot
+    }
+
+    /// Sets which slot index virtual button 1 activates while pressed.
+    pub fn set_button_override_slot(&mut self, slot_id: u8) {
+        self.button_override_slot = slot_id;
         self.render();
     }
 
-    /// Sets the animation frame counter explicitly and re-renders.
-    pub fn set_frame(&mut self, frame: u32) {
-        self.frame = frame;
-        self.render();
-    }
-
-    /// Returns the base expression chosen by the user (before temporary button overrides).
-    pub const fn base_expression(&self) -> Expression {
-        self.base_expression
-    }
-
-    /// Returns the currently displayed expression after applying active button overrides.
-    pub const fn active_expression(&self) -> Expression {
+    /// Returns the currently displayed slot index after applying active button overrides.
+    pub const fn active_slot(&self) -> u8 {
         if (self.virtual_button_mask & 1) != 0 {
-            match self.base_expression {
-                Expression::Surprised => Expression::Happy,
-                _ => Expression::Surprised,
+            if self.base_slot == self.button_override_slot {
+                0
+            } else {
+                self.button_override_slot
             }
         } else {
-            self.base_expression
+            self.base_slot
         }
     }
 
@@ -114,6 +125,23 @@ impl ProtoBrain {
     /// Returns the active virtual button bitmask.
     pub const fn virtual_button_mask(&self) -> u32 {
         self.virtual_button_mask
+    }
+
+    /// Returns the current animation tick counter.
+    pub const fn frame(&self) -> u32 {
+        self.frame
+    }
+
+    /// Advances the animation by one tick and re-renders the framebuffer.
+    pub fn tick(&mut self) {
+        self.frame = self.frame.wrapping_add(1);
+        self.render();
+    }
+
+    /// Sets the animation tick counter explicitly and re-renders.
+    pub fn set_frame(&mut self, frame: u32) {
+        self.frame = frame;
+        self.render();
     }
 
     /// Returns a read-only reference to the rendered RGB framebuffer.
@@ -133,23 +161,27 @@ impl ProtoBrain {
 
     /// Updates state from a `PreviewState` payload and immediately re-renders the framebuffer.
     pub fn apply_preview(&mut self, preview: PreviewState) -> PreviewAck {
-        self.base_expression = Expression::from_u8(preview.expression_id);
+        self.base_slot = preview.expression_id;
         self.tint = Rgb::from_array(preview.tint_rgb);
         self.brightness = preview.brightness.min(100);
         self.virtual_button_mask = preview.virtual_button_mask;
         self.render();
 
         PreviewAck {
-            active_expression: self.active_expression().as_u8(),
+            active_expression: self.active_slot(),
             effective_brightness: self.brightness,
         }
     }
 
-    /// Renders the current state and animation frame into `self.framebuffer`.
+    /// Renders the active slot and current animation tick into `self.framebuffer`.
+    /// If the active slot is empty or out of range, the framebuffer renders black.
     pub fn render(&mut self) {
-        let expr = self.active_expression();
+        self.framebuffer.clear();
+        let slot_id = self.active_slot();
         let effective_color = self.tint.scale(self.brightness);
-        render_expression(&mut self.framebuffer, expr, self.frame, effective_color);
+        if let Some(slot) = self.slots.get(slot_id) {
+            slot.render_into(&mut self.framebuffer, self.frame, effective_color);
+        }
     }
 
     /// Decodes one complete `ProtoSpeak` packet, applies it, and writes the response packet

@@ -1,10 +1,17 @@
-//! Integration tests for `ProtoBrain` state transitions and `ProtoSpeak` packet handling.
+//! Integration tests for `ProtoBrain` state transitions, `SlotBank`, and `ProtoSpeak` handling.
 
-use proto_brain::{BrainError, Expression, ProtoBrain, Rgb};
+use proto_brain::{BrainError, ProtoBrain, Rgb, SlotError, MAX_FRAMES_PER_SLOT, MAX_SLOTS};
 use proto_speak::{
     decode_packet, decode_payload, encode_payload, Flags, Header, HelloInfo, HelloRequest, McuKind,
     NodeId, Opcode, PreviewAck, PreviewState, MAX_PACKET_SIZE, PROTOCOL_VERSION,
 };
+
+#[test]
+fn starts_empty_and_renders_black_without_prebaked_faces() {
+    let brain = ProtoBrain::new(McuKind::WasmSimulator, 1);
+    assert!(brain.slots().get(0).is_some_and(|s| s.is_empty()));
+    assert!(brain.framebuffer().as_rgb_bytes().iter().all(|&b| b == 0));
+}
 
 #[test]
 fn handles_hello_info_handshake() {
@@ -50,10 +57,11 @@ fn handles_hello_info_handshake() {
 #[test]
 fn handles_preview_state_clamping_and_virtual_button_override() {
     let mut brain = ProtoBrain::new(McuKind::WasmSimulator, 1);
+    brain.set_button_override_slot(2);
 
-    // Send Happy with brightness 150 (must clamp to 100) and virtual button 1 pressed.
+    // Select slot 1 with brightness 150 (clamps to 100) and virtual button 1 pressed.
     let preview = PreviewState {
-        expression_id: Expression::Happy.as_u8(),
+        expression_id: 1,
         tint_rgb: [100, 255, 180],
         brightness: 150,
         virtual_button_mask: 1,
@@ -83,21 +91,53 @@ fn handles_preview_state_clamping_and_virtual_button_override() {
         Err(e) => panic!("ack decode failed: {e:?}"),
     };
 
-    // Base expression is Happy, but pressing virtual button 1 overrides to Surprised.
-    assert_eq!(brain.base_expression(), Expression::Happy);
-    assert_eq!(brain.active_expression(), Expression::Surprised);
-    assert_eq!(ack.active_expression, Expression::Surprised.as_u8());
+    // Base slot is 1, but holding virtual button 1 temporarily activates slot 2.
+    assert_eq!(brain.base_slot(), 1);
+    assert_eq!(brain.active_slot(), 2);
+    assert_eq!(ack.active_expression, 2);
     assert_eq!(ack.effective_brightness, 100);
     assert_eq!(brain.tint(), Rgb::from_array([100, 255, 180]));
 
-    // Releasing virtual button 1 returns cleanly to Happy.
+    // Releasing virtual button 1 returns cleanly to slot 1.
     let released = PreviewState {
         virtual_button_mask: 0,
         ..preview
     };
     let ack2 = brain.apply_preview(released);
-    assert_eq!(ack2.active_expression, Expression::Happy.as_u8());
-    assert_eq!(brain.active_expression(), Expression::Happy);
+    assert_eq!(ack2.active_expression, 1);
+    assert_eq!(brain.active_slot(), 1);
+}
+
+#[test]
+fn validates_slot_bounds_and_mask_dimensions() {
+    let mut brain = ProtoBrain::new(McuKind::WasmSimulator, 1);
+
+    assert_eq!(
+        brain
+            .slots_mut()
+            .load_frame(MAX_SLOTS as u8, 0, 8, 8, &[0u8; 8]),
+        Err(SlotError::InvalidSlot(MAX_SLOTS as u8))
+    );
+    assert_eq!(
+        brain
+            .slots_mut()
+            .load_frame(0, MAX_FRAMES_PER_SLOT as u8, 8, 8, &[0u8; 8]),
+        Err(SlotError::InvalidFrameIndex(MAX_FRAMES_PER_SLOT as u8))
+    );
+    assert_eq!(
+        brain.slots_mut().load_frame(0, 0, 0, 8, &[]),
+        Err(SlotError::InvalidDimensions {
+            width: 0,
+            height: 8
+        })
+    );
+    assert_eq!(
+        brain.slots_mut().load_frame(0, 0, 8, 8, &[0u8; 4]),
+        Err(SlotError::InvalidMaskLength {
+            expected: 8,
+            actual: 4
+        })
+    );
 }
 
 #[test]
