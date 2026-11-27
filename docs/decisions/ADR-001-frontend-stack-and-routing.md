@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-11-26
-- **Supersedes (partially):** `docs/02-architecture-and-critique.md` (Section 2, Leptos / two micro-frontends) and `docs/04-protoui-design-and-test-plan.md` (Section 1, two Cloudflare micro-frontends)
+- **Synced living docs:** `docs/01-discovery-and-heuristics.md`, `docs/02-architecture-and-critique.md`, `docs/04-protoui-design-and-test-plan.md`, `docs/05-implementation-handoff-checklist.md`
 
 ## Context
 
@@ -18,7 +18,7 @@ During pre-implementation engineering review with the client, we evaluated the p
 
 1. **Hybrid Architecture (TypeScript UI + Rust/WASM Core):**
    - `crates/proto-speak` and `crates/proto-brain` remain pure `#![no_std]` Rust and compile to `wasm32-unknown-unknown` via `wasm-bindgen`.
-   - `ProtoUI` (`web/`) will be built with **TypeScript + Vite + React** and brandless `--ps-*` CSS tokens, consuming the compiled Rust/WASM module for visor rendering, boop hysteresis, Tap+Hold state machine, current-budget governor, and `ProtoSpeak` packet framing.
+   - `ProtoUI` (`web/`) will be built with **TypeScript + Vite + React** and brandless `--ps-*` CSS tokens, consuming the compiled Rust/WASM module (`crates/proto-wasm`) for visor rendering, Tap+Hold state machine, current-budget governor, and `ProtoSpeak` packet framing (plus boop hysteresis when sensors land in `v1.1`).
    - All WebHID transport (`navigator.hid`), file/image import, and HalfKay `.hex` flashing live cleanly in TypeScript behind a thin transport interface (allowing an in-memory loopback transport in Simulator Mode).
 
 2. **Single Web App, Two Visually Distinct Routes:**

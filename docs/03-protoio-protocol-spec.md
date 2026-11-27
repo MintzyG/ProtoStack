@@ -2,7 +2,7 @@
 
 Doc ID: PS-PROTO-003
 Crate: `crates/proto-speak` (`#![no_std]`, compiles for MCUs, Linux, and WASM)
-Status: Draft for client review
+Status: Current (living specification — synced with ADR-001 & ADR-002)
 
 ## 1. Overview
 
@@ -44,21 +44,21 @@ Last 2-4 B: CRC-16 (or 4-byte auth MIC on encrypted Suit Mesh frames)
 
 The device describes its own hardware on connect so the website does not need hardcoded board lists.
 
-| Opcode | Name | Direction | Purpose |
-|---|---|---|---|
-| `0x0001` | `HELLO_INFO` | Both | Firmware version, MCU type, preset ID, protocol version, and capability flags. |
-| `0x0002` | `GET_MANIFEST` | Both | Reads the active hardware manifest (display size, panel layout, driver type, color order, sensors, current limit). |
-| `0x0003` | `SET_MANIFEST` | Host to Dev | Updates hardware mapping (from Builder view) in RAM or flash. |
-| `0x0010` | `PREVIEW_STATE` | Host to Dev | Live volatile preview in RAM: switch face, tint, brightness, or push a test frame with zero flash wear. |
-| `0x0011` | `PROFILE_UPLOAD` | Host to Dev | Chunked upload of face assets, animations, and trigger settings. |
-| `0x0012` | `COMMIT_FLASH` | Host to Dev | Atomically saves RAM config to flash using A/B ping-pong slots so power loss cannot corrupt it. |
-| `0x0013` | `SNAPSHOT_CTRL` | Host to Dev | Save or restore the Factory Snapshot (right-to-repair safe rollback). |
-| `0x0020` | `TELEMETRY_SUB` | Host to Dev | Starts a 20 Hz live stream of sensor readings, estimated LED mA, temperature, fan duty, and FPS. |
-| `0x0030` | `PANEL_IDENTIFY` | Host to Dev | Draws an orientation arrow and panel index on Panel N so builders can verify wiring visually. |
-| `0x0031` | `SENSOR_SCAN` | Both | Scans I2C/SPI/ADC buses and reports detected chips (APDS9960, BNO055, INA219, SSD1306). |
-| `0x0032` | `CALIBRATE_POSE` | Host to Dev | Saves the current 3-axis IMU reading as Neutral, Tilt, or Look Up without manual coordinate editing. |
-| `0x00F0` | `GET_FAULT_LOG` | Both | Reads the last 8 brownout, watchdog, or crash entries from retained memory. |
-| `0x00FE` | `BOOTLOADER_JUMP` | Host to Dev | Blanks LEDs safely and reboots into the USB bootloader (Teensy HalfKay via `bkpt #251`) for browser firmware updates. |
+| Opcode | Name | Direction | Target | Purpose |
+|---|---|---|---|---|
+| `0x0001` | `HELLO_INFO` | Both | `v0.1` | Firmware version, MCU type, preset ID, protocol version, and capability flags. |
+| `0x0002` | `GET_MANIFEST` | Both | `v0.2` | Reads the active hardware manifest (display size, panel layout, driver type, color order, buttons, current limit). |
+| `0x0003` | `SET_MANIFEST` | Host to Dev | `v0.4` | Updates hardware mapping (from `/builder` view) in RAM or flash. |
+| `0x0010` | `PREVIEW_STATE` | Host to Dev | `v0.1` | Live volatile preview in RAM: switch face, tint, brightness, or push a test frame with zero flash wear. |
+| `0x0011` | `PROFILE_UPLOAD` | Host to Dev | `v0.4` | Chunked upload of face assets, animations, and button trigger settings. |
+| `0x0012` | `COMMIT_FLASH` | Host to Dev | `v0.3` | Atomically saves RAM config to flash using A/B ping-pong slots so power loss cannot corrupt it. |
+| `0x0013` | `SNAPSHOT_CTRL` | Host to Dev | `v0.3` | Save or restore the Factory Snapshot (right-to-repair safe rollback). |
+| `0x0020` | `TELEMETRY_SUB` | Both | `v0.2` | Live stream of active expression, physical paw button states, estimated LED mA, and FPS (adds boop/temp/fan in `v1.1`). |
+| `0x0030` | `PANEL_IDENTIFY` | Host to Dev | `v0.4` / `v0.5` | Draws an orientation arrow and panel index on Panel N so builders can verify wiring visually. |
+| `0x0031` | `SENSOR_SCAN` | Both | `v1.1` | Scans I2C/SPI/ADC buses and reports detected chips (APDS9960, BNO055, INA219, SSD1306). |
+| `0x0032` | `CALIBRATE_POSE` | Host to Dev | `v1.1+` | Saves the current 3-axis IMU reading as Neutral, Tilt, or Look Up without manual coordinate editing. |
+| `0x00F0` | `GET_FAULT_LOG` | Both | `v1.0` | Reads the last 8 brownout, watchdog, or crash entries from retained memory. |
+| `0x00FE` | `BOOTLOADER_JUMP` | Host to Dev | `v0.4` | Blanks LEDs safely and reboots into the USB bootloader (Teensy HalfKay via `bkpt #251`) for browser firmware updates. |
 
 ## 4. Intra-Suit Modular Bus and Mesh (Domain 1: v1.2 Wired -> v1.3 Wireless)
 
