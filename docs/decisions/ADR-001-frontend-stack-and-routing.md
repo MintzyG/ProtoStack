@@ -1,39 +1,38 @@
-# ADR-001: TypeScript UI + Rust/WASM Core, and Single Web App with Distinct Routes
+# ADR-001: TypeScript UI + Rust/WASM Core, Single Web App with Two Routes
 
 - **Status:** Accepted
 - **Date:** 2026-11-26
-- **Synced living docs:** `docs/01-discovery-and-heuristics.md`, `docs/02-architecture-and-critique.md`, `docs/04-protoui-design-and-test-plan.md`, `docs/05-implementation-handoff-checklist.md`
+- **Related docs:** `docs/01-discovery-and-heuristics.md`, `docs/02-architecture-and-critique.md`, `docs/04-protoui-design-and-test-plan.md`, `docs/05-implementation-handoff-checklist.md`
 
 ## Context
 
-The discovery specification proposed writing the entire `ProtoUI` frontend in Rust/WASM (`Leptos`) and deploying two separate Cloudflare micro-frontends (`proto-ui-config` and `proto-ui-builder`) from day one.
+Early discovery notes proposed writing the entire web UI in Rust/WASM (`Leptos`) and deploying two separate Cloudflare sites (`proto-ui-config` and `proto-ui-builder`) from day one.
 
-During pre-implementation engineering review with the client, we evaluated the practical tradeoffs for maintainability, contributor accessibility, and shipping speed:
+Before starting implementation, we reviewed the practical tradeoffs:
 
-1. **Rust earns its place in embedded and shared core logic**, where `#![no_std]` safety and identical execution between Teensy 4.1 and the browser WASM simulator (`proto-brain` + `proto-speak`) eliminate simulation drift.
-2. **Writing the browser UI itself in Leptos adds friction without user-facing benefit:** `web-sys` WebHID bindings are incomplete/unstable, browser-heavy tasks (HTML5 canvas, drag-and-drop PNG/GIF decoding, HalfKay Intel `.hex` parsing, interactive SVG PCB pinout workbench) are far more ergonomic in TypeScript, and Rust/WASM rebuild loops slow down UI polish.
-3. **Config vs. Builder separation is a UX requirement, not a deployment requirement on day one.** Usability Session 03 proved that users must never confuse the consumer Config view with the Maker/Studio Builder PCB workbench. Maintaining two separate build/deploy pipelines early adds duplication and version-sync overhead with zero benefit until the shared UI stabilizes.
+1. Rust makes sense for the embedded firmware and the shared core (`proto-brain` and `proto-speak`). Compiling that core to WASM guarantees the browser simulator runs the exact same code as the Teensy 4.1.
+2. Writing the UI itself in Leptos adds friction. Browser WebHID bindings in `web-sys` are awkward, canvas rendering, PNG/GIF decoding, HalfKay `.hex` parsing, and SVG pinout maps are much simpler in TypeScript, and Rust/WASM rebuild times slow down UI work.
+3. Separating Config and Builder is a UX requirement, not a deployment requirement on day one. Users should never confuse the consumer Config page with the Builder hardware page, which only requires two distinct routes and layouts. Running two separate build pipelines early just adds boilerplate.
 
 ## Decision
 
-1. **Hybrid Architecture (TypeScript UI + Rust/WASM Core):**
-   - `crates/proto-speak` and `crates/proto-brain` remain pure `#![no_std]` Rust and compile to `wasm32-unknown-unknown` via `wasm-bindgen`.
-   - `ProtoUI` (`web/`) will be built with **TypeScript + Vite + React** and brandless `--ps-*` CSS tokens, consuming the compiled Rust/WASM module (`crates/proto-wasm`) for visor rendering, Tap+Hold state machine, current-budget governor, and `ProtoSpeak` packet framing (plus boop hysteresis when sensors land in `v1.1`).
-   - All WebHID transport (`navigator.hid`), file/image import, and HalfKay `.hex` flashing live cleanly in TypeScript behind a thin transport interface (allowing an in-memory loopback transport in Simulator Mode).
+1. **TypeScript UI + Rust/WASM core:**
+   - `crates/proto-speak` and `crates/proto-brain` stay `#![no_std]` Rust and compile to WASM via `crates/proto-wasm` (`wasm-bindgen`).
+   - `web/` uses TypeScript, Vite, React, and neutral `--ps-*` CSS tokens. It calls into `proto-wasm` for visor rendering, Tap/Hold button logic, the current-budget limiter, and `ProtoSpeak` packet framing (plus boop hysteresis in v1.1).
+   - Browser WebHID (`navigator.hid`), file/image import, and HalfKay `.hex` flashing live in TypeScript behind a small transport interface, with an in-memory loopback transport for Simulator Mode.
 
-2. **Single Web App, Two Visually Distinct Routes:**
-   - Start with one web application serving two completely distinct layouts:
-     - `/` — **Config** (Wootility v5-style consumer layout)
-     - `/builder` — **Builder** (Teensy 4.1 PCB Hardware Workbench layout)
-   - Keep the route boundary clean so they can still be deployed to separate Cloudflare subdomains (`config.*` and `builder.*`) later with minimal effort if desired.
+2. **One web app, two distinct routes:**
+   - `/` is the **Config** view (Wootility-style consumer layout).
+   - `/builder` is the **Builder** view (Teensy 4.1 PCB hardware workbench layout).
+   - Both routes stay cleanly separated in code so they can still be split into two subdomains later if needed.
 
-## Tradeoffs & Consequences
+## Tradeoffs
 
 - **Pros:**
-  - Faster UI iteration and much lower barrier for open-source web contributors.
-  - Native, strongly typed WebHID, Canvas, and file APIs without unstable `web-sys` wrappers.
-  - Still runs the **exact same Rust `ProtoBrain` and `ProtoSpeak` code** in the browser simulator and on the Teensy 4.1.
-  - Single repo/build pipeline during early milestones (`v0.1`–`v0.4`), zero duplicated state or tokens.
+  - Faster UI iteration and lower barrier for web contributors.
+  - Direct access to browser WebHID, Canvas, and File APIs without `web-sys` workarounds.
+  - Browser simulator still runs the exact same Rust `proto-brain` and `proto-speak` code as the Teensy 4.1.
+  - One build pipeline and one token file during v0.1-v1.0.
 - **Cons:**
-  - Repo requires both Rust (`cargo` + `wasm-pack`) and JS/TS (`pnpm`) toolchains.
-  - Requires keeping the TypeScript ↔ WASM boundary small, explicit, and well-typed.
+  - Contributors need both Rust (`cargo`, `wasm-pack`) and Node/JS (`pnpm`) toolchains.
+  - The TypeScript <-> WASM boundary needs to stay small and well-typed.

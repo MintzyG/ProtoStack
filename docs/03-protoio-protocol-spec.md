@@ -2,7 +2,7 @@
 
 Doc ID: PS-PROTO-003
 Crate: `crates/proto-speak` (`#![no_std]`, compiles for MCUs, Linux, and WASM)
-Status: Current (living specification — synced with ADR-001 & ADR-002)
+Status: Current (synced with ADR-001 and ADR-002)
 
 ## 1. Overview
 

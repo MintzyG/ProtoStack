@@ -2,34 +2,32 @@
 
 Doc ID: PS-UX-004
 Stack: TypeScript + Vite + React (`web/`) wrapping Rust/WASM (`crates/proto-wasm`), deployed on Cloudflare Pages
-Status: Current (living specification — synced with ADR-001 & ADR-002)
+Status: Current (synced with ADR-001 and ADR-002)
 
-## 1. Single web app with two visually distinct routes (`/` Config vs `/builder` Builder)
+## 1. Single web app with two distinct routes (`/` Config and `/builder` Builder)
 
-Our research into Coela's ProtoTracer uploader proved that Teensy 4.1 can be both configured and flashed straight from Chrome/Edge over WebHID. That means `v1.0` needs **no desktop app installer** at all.
+Our review of Coela's ProtoTracer uploader showed that Teensy 4.1 can be configured and flashed directly from Chrome/Edge over WebHID, so v1.0 needs no desktop app installer.
 
-To minimize accidental tinkering by non-technical owners while keeping strict right-to-repair (zero locks), `ProtoUI` ships as **one TypeScript + Vite + React web app** (`web/`) wrapping our compiled Rust/WASM core (`crates/proto-wasm`) with **two completely distinct route layouts** *(originally explored as two separate Leptos micro-frontends; simplified in `ADR-001` while keeping clean route boundaries if split subdomains are ever wanted later)*:
+To keep non-technical owners out of low-level hardware settings without adding locks, `ProtoUI` is one TypeScript + Vite + React app (`web/`) wrapping `crates/proto-wasm` with two separate route layouts (earlier drafts considered two Leptos micro-frontends; simplified in `ADR-001`, while keeping clean route boundaries if split subdomains are wanted later):
 
-- **`/` — Config route (for Suit Owners — Wootility v5 layout):** Clean everyday controls built around a narrow left icon rail, a floating rounded sidebar with a proper Device Switcher dropdown card, a floating top action pill bar (`Undo`, `Redo`, `Save to Head`), and a borderless live dual `64x32` visor preview (running in Simulator Mode or mirroring a connected Phase 1 Teensy 4.1 live over WebHID). Supports **inline renaming** for the helmet name, expressions, and paw buttons (e.g. "Thumb", "Index"), PNG/GIF animation import, live color tint, **Tap + Hold** bindings on `0`–`8` wired paw buttons, and LED current-budget protection. *(Boop calibration and fan comfort join in `v1.1`.)*
-- **`/builder` — Builder route (for DIY Makers and Commission Studios — distinct Hardware Workbench layout):** Not a recolored clone of Config. Uses a dedicated engineering workbench layout centered on an **interactive Teensy 4.1 PCB pinout and HUB75/button wiring diagram** as the main canvas, paired with a hardware inspector for one-click WebHID HalfKay firmware flashing, board presets (Breadboard `74HCT245`, SmartLED V5, Coela shields, custom pinouts), Panel 1/2 orientation testing (`PANEL_IDENTIFY`), wiring `0`–`8` paw buttons, fault log viewer, and saving a Factory Snapshot. *(I2C `SENSOR_SCAN` joins in `v1.1`.)*
+- **`/` (Config route - Wootility-style layout):** Left icon rail, floating sidebar with a Device Switcher dropdown, top action bar (`Undo`, `Redo`, `Save to Head`), and a borderless live dual `64x32` visor preview (running in Simulator Mode or mirroring a connected Phase 1 Teensy 4.1 over WebHID). Supports inline renaming for the helmet name, expressions, and paw buttons, PNG/GIF animation import, color tint, Tap + Hold bindings on 0-8 paw buttons, and LED current-budget protection. (Boop calibration and fan settings join in v1.1.)
+- **`/builder` (Builder route - Hardware Workbench layout):** Separate engineering layout built around an interactive Teensy 4.1 PCB pinout diagram, paired with a hardware inspector for WebHID HalfKay firmware flashing, board presets (Breadboard `74HCT245`, SmartLED V5, Coela shields, custom pinouts), Panel 1/2 orientation testing (`PANEL_IDENTIFY`), wiring 0-8 paw buttons, fault log viewer, and saving a Factory Snapshot. (I2C `SENSOR_SCAN` joins in v1.1.)
 
-## 2. Layout and navigation (`/` Config route in `v1.0`)
-
-The layout uses a clean three-part workbench similar to Wootility so users always see what their visor is doing:
+## 2. Layout and navigation (`/` Config route in v1.0)
 
 1. **Top bar:**
    - Neutral logo slot (`[BRAND_SLOT]` + `ProtoStack`)
    - Connection pill (`Connected: Teensy 4.1` or `Simulator Mode`) + Connect button
-   - Live status strip: estimated LED power draw (e.g. `1.2A / 3.0A`) *(adds temp & fan % in `v1.1`)*
-   - Save controls: `Previewing in RAM` indicator, Undo, Redo, and primary `Save to Head` button
-2. **Left navigation (4 focused tabs, zero bloat):**
-   - **Faces:** Built-in expression gallery, drag-and-drop PNG/GIF animation import (showing exact `64x32` per-panel / `128x32` specs), live color tint, and mirror toggle.
-   - **Buttons (`v1.0`; adds Boop in `v1.1`):** Clean list of `0`–`8` wired paw buttons with independent **Tap** and **Hold** actions + inline renaming.
-   - **Power (`v1.0`; adds Fan in `v1.1`):** Master brightness slider and 5V power bank current-budget limiter (soft warnings, never locked).
-   - **Profile & Reset:** Export/import `.protoprofile`, one-click Restore Factory Snapshot, and a quiet link to `/builder`.
+   - Status strip: estimated LED power draw (e.g. `1.2A / 3.0A`; adds temp and fan % in v1.1)
+   - Save controls: `Previewing in RAM` badge, Undo, Redo, and `Save to Head` button
+2. **Left navigation (4 tabs):**
+   - **Faces:** Built-in expression gallery, drag-and-drop PNG/GIF animation import (`64x32` per-panel / `128x32` combined), color tint, and mirror toggle.
+   - **Buttons (adds Boop in v1.1):** List of 0-8 wired paw buttons with independent Tap and Hold actions and inline renaming.
+   - **Power (adds Fan in v1.1):** Master brightness slider and 5V power supply current-budget limiter (soft warnings, never locked).
+   - **Profile & Reset:** Export/import `.protoprofile`, one-click Restore Factory Snapshot, and a link to `/builder`.
 3. **Center stage (always visible):**
-   - Live dual `64x32` HUB75 virtual visor powered by the real Rust `ProtoBrain` compiled to WASM (and mirrored live from physical Teensy 4.1 hardware over WebHID).
-   - Virtual test controls underneath (live `Paw Button 1..N` buttons) so you can verify every face and trigger with or without hardware plugged in.
+   - Live dual `64x32` HUB75 visor rendered by Rust `ProtoBrain` in WASM (and mirrored live from a connected Teensy 4.1 over WebHID).
+   - Virtual `Paw Button 1..N` test buttons underneath so you can test faces and triggers with or without hardware plugged in.
 
 ## 3. Brandless CSS token setup
 
@@ -60,9 +58,9 @@ No brand colors are hardcoded into UI components. Everything reads from one toke
 }
 ```
 
-## 4. Discovery usability validation (Completed — Sessions 01–03)
+## 4. Discovery usability validation (Completed - Sessions 01-03)
 
-Before writing production code, we built clickable interactive prototypes (`prototypes/wireframe-test`, `hifi-test`, `final-test`) and ran three recorded usability sessions covering the core owner and builder flows (note: discovery sessions also tested boop calibration, fan comfort, and I2C sensor scan, which are now scheduled for `v1.1` per `ADR-002`):
+Before writing production code, we built clickable HTML prototypes (`prototypes/wireframe-test`, `hifi-test`, `final-test`) and ran three recorded usability sessions covering the main owner and builder flows. (These early sessions also included boop calibration, fan settings, and I2C sensor scan, which are now scheduled for v1.1 per `ADR-002`.)
 
 ### Historical discovery test tasks
 

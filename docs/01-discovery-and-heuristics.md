@@ -1,26 +1,26 @@
 # ProtoStack: Discovery, Competitive Review, and Heuristics Audit
 
 Doc ID: PS-DISC-001
-Status: Current (living specification — synced with ADR-001 & ADR-002)
+Status: Current (synced with ADR-001 and ADR-002)
 
 ## 1. What we are building
 
 ProtoStack is an open-source software stack with a Rust embedded/WASM core and a TypeScript browser configurator for running and configuring custom Protogen helmets. The main goal is to fix the worst part of owning or building a Protogen today: changing faces, colors, or button settings usually requires installing VS Code and PlatformIO, editing C++ files, and recompiling firmware, or fighting a slow Wi-Fi captive portal on an ESP32.
 
-The user experience benchmark is Wooting's Wootility. A suit owner should be able to plug their helmet (or tabletop dev bench) into a computer over USB, open a website hosted on Cloudflare, and change settings right away with no driver install.
+The user experience benchmark is Wooting's Wootility. A suit owner should be able to plug their helmet (or desk setup) into a computer over USB, open a website hosted on Cloudflare, and change settings right away with no driver install.
 
 ### Core requirements from the client interviews
 
 - Target users are DIY builders, fursuit commission studios building repeatable heads, and non-technical suit owners.
 - Right to repair comes first. Builders and studios cannot lock owners out of hardware settings. Safety relies on clear warnings, current limits, and a one-click restore to a saved builder preset, not locks or DRM.
-- Hardware priority starts with **Teensy 4.1** in `v1.0` (built incrementally: USB-powered Teensy 4.1 + wired paw buttons with live PC visor rendering over WebHID first, then physical dual `64x32` HUB75 panels in `v0.5`), with clean hardware traits leaving a trail for ESP32-S3, WS2812B/MAX7219, and Linux boards (Raspberry Pi / OrangePi) later.
-- `v1.0` is a lean, fully wired single-head / tabletop visor system with `0` to `8` wired paw buttons (independent Tap + Hold) and a software LED current-budget cap. Helmet-shell comfort & sensor add-ons (boop sensor, 5V PWM cooling fan, I2C sensor scanning) were explored in initial discovery and intentionally moved to `v1.1` (see `ADR-002`) so `v1.0` stays fast to bring up on a tabletop bench.
+- Hardware priority starts with Teensy 4.1 in v1.0. Phase 1 (v0.2-v0.4) runs on a USB-powered Teensy 4.1 + wired buttons with live PC visor rendering over WebHID; Phase 2 (v0.5) adds physical dual `64x32` HUB75 panels. Hardware traits leave a clean path for ESP32-S3, WS2812B/MAX7219, and Linux boards (Raspberry Pi / OrangePi) later.
+- v1.0 is a wired single-head / desk visor system with 0 to 8 wired paw buttons (independent Tap + Hold) and a software LED current-budget cap. Helmet-shell extras (boop sensor, 5V PWM cooling fan, I2C sensor scanning) were reviewed during discovery and moved to v1.1 (see `ADR-002`).
 - The system is split into four parts:
-  1. `ProtoUI`: a single TypeScript + Vite + React web app hosted on Cloudflare Pages with two visually distinct routes (`/` Owner Config and `/builder` Hardware Workbench), backed by our shared Rust/WASM core *(originally explored as two separate Leptos micro-frontends; updated in `ADR-001`)*.
-  2. `ProtoBrain`: the `#![no_std]` Rust runtime that drives faces, animations, triggers, and safety limits—compiled both for Teensy 4.1 and browser WASM.
-  3. `ProtoIO`: physical hardware traits and board definitions (HUB75 panels, paw buttons, flash storage in `v1.0`; boop sensors, fans, auxiliary LEDs in `v1.1+`).
-  4. `ProtoSpeak`: the shared binary protocol (USB WebHID in `v1.0`, with packet fields already reserved for wired/wireless intra-suit and Proto-to-Proto mesh in later versions).
-- Modularity (`ProtoParts`): Every attachment (`Visor` and `ButtonBank(N)` in `v1.0`; `BoopSensor` and `CoolingFan` in `v1.1`; tails, wings, chest panels, body LEDs, extra sensors, or custom community accessories in `v1.2+`) describes itself as a `ProtoPart` with events, actions, and optional UI controls. Multi-piece modularity will be proven over a wired `ProtoSpeak` bus first (`v1.2`) before adding wireless (`v1.3`).
+  1. `ProtoUI`: a single TypeScript + Vite + React web app hosted on Cloudflare Pages with two distinct routes (`/` Owner Config and `/builder` Hardware Workbench), backed by our Rust/WASM core (earlier drafts considered two Leptos micro-frontends; updated in `ADR-001`).
+  2. `ProtoBrain`: the `#![no_std]` Rust runtime that drives faces, animations, triggers, and safety limits, compiled for both Teensy 4.1 and browser WASM.
+  3. `ProtoIO`: physical hardware traits and board drivers (USB WebHID, paw buttons, flash storage, HUB75 panels in v1.0; boop sensors, fans, and aux LEDs in v1.1+).
+  4. `ProtoSpeak`: the shared binary protocol (USB WebHID in v1.0, with packet fields already reserved for wired/wireless intra-suit and Proto-to-Proto mesh in later versions).
+- Modularity (`ProtoParts`): Every attachment (`Visor` and `ButtonBank(N)` in v1.0; `BoopSensor` and `CoolingFan` in v1.1; tails, wings, chest panels, body LEDs, extra sensors, or custom community accessories in v1.2+) describes itself as a `ProtoPart` with events, actions, and optional UI controls. Multi-piece modularity will be proven over a wired `ProtoSpeak` bus first (v1.2) before adding wireless (v1.3).
 - Wireless autonomy (v1.3+): Once wireless `ProtoParts` are added, standalone pieces like a tail should keep running their own saved animation if the wearer leaves the head in another room, then resync automatically when the head or phone comes back. Wired links stay preferred whenever plugged in for lower latency and shared battery power.
 - Visual design should stay neutral and brandless for now, using CSS variables so a brand palette and logo can be added later without rewriting the UI.
 
