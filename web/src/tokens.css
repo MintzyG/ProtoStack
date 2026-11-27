@@ -1,0 +1,27 @@
+/* Brandless ProtoStack design tokens (see docs/04-protoui-design-and-test-plan.md). */
+:root {
+  --ps-brand-accent: #38bdf8;
+  --ps-brand-accent-hover: #0ea5e9;
+  --ps-brand-accent-ink: #07131c;
+  --ps-brand-surface: rgba(56, 189, 248, 0.14);
+  --ps-brand-radius: 12px;
+  --ps-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  --ps-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Neutral Wootility-style dark chrome */
+  --ps-bg-canvas: #111316;
+  --ps-bg-panel: #1a1c20;
+  --ps-bg-elevated: #21242a;
+  --ps-bg-elevated-hover: #282c34;
+  --ps-border: rgba(255, 255, 255, 0.08);
+  --ps-border-strong: rgba(255, 255, 255, 0.16);
+  --ps-text: #f1f5f9;
+  --ps-text-muted: #8b95a7;
+
+  /* Status colors */
+  --ps-ok: #22c55e;
+  --ps-ok-surface: rgba(34, 197, 94, 0.14);
+  --ps-warn: #f59e0b;
+  --ps-warn-surface: rgba(245, 158, 11, 0.14);
+  --ps-danger: #ef4444;
+}

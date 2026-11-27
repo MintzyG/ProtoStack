@@ -1,0 +1,25 @@
+[package]
+name = "proto-wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Thin wasm-bindgen bridge exposing ProtoBrain and 64-byte ProtoSpeak HID framing to web/"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# Note: wasm_bindgen macro expands unsafe FFI glue internally, so this crate
+# omits workspace `unsafe_code = "forbid"` while keeping strict clippy lints.
+[lints.rust]
+missing_docs = "warn"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+
+[dependencies]
+proto-brain = { path = "../proto-brain" }
+proto-speak = { path = "../proto-speak" }
+wasm-bindgen = "0.2"
