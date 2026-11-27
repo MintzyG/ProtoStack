@@ -1,20 +1,14 @@
 //! CRC-16/CCITT-FALSE checksum used on ProtoSpeak frames.
 
-/// Computes CRC-16/CCITT-FALSE (polynomial `0x1021`, initial value `0xFFFF`,
-/// no final XOR, MSB-first).
+use crc::{Crc, CRC_16_IBM_3740};
+
+/// CRC-16/IBM-3740 (also known as CRC-16/CCITT-FALSE: poly `0x1021`, init `0xFFFF`,
+/// no reflection, no final XOR, check value `0x29B1`).
+const CRC16: Crc<u16> = Crc::<u16>::new(&CRC_16_IBM_3740);
+
+/// Computes CRC-16/CCITT-FALSE over `bytes`.
 pub fn crc16_ccitt(bytes: &[u8]) -> u16 {
-    let mut crc: u16 = 0xFFFF;
-    for &byte in bytes {
-        crc ^= (byte as u16) << 8;
-        for _ in 0..8 {
-            if (crc & 0x8000) != 0 {
-                crc = (crc << 1) ^ 0x1021;
-            } else {
-                crc <<= 1;
-            }
-        }
-    }
-    crc
+    CRC16.checksum(bytes)
 }
 
 #[cfg(test)]
@@ -23,7 +17,6 @@ mod tests {
 
     #[test]
     fn standard_check_vector() {
-        // Standard CRC-16/CCITT-FALSE check value for ASCII "123456789" is 0x29B1.
         assert_eq!(crc16_ccitt(b"123456789"), 0x29B1);
     }
 

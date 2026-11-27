@@ -10,5 +10,6 @@ description = "Shared no_std binary protocol for ProtoStack USB WebHID and futur
 workspace = true
 
 [dependencies]
+crc = "3"
 postcard = { version = "1", default-features = false }
 serde = { version = "1", default-features = false, features = ["derive"] }
