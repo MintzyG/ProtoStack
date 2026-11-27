@@ -1,16 +1,20 @@
-//! Logical `128x32` RGB framebuffer and simple 2D pixel drawing primitives.
+//! Logical RGB framebuffer and simple 2D pixel drawing primitives.
+//!
+//! v0.1 allocates a default `128x32` backing buffer, while exposing dynamic
+//! `width()`, `height()`, and slice APIs so callers do not assume `128x32` is
+//! the only or maximum resolution supported later.
 
-/// Logical visor bounding-box width in pixels (two chained 64x32 HUB75 panels).
-pub const VISOR_WIDTH: usize = 128;
+/// Default logical visor width in pixels (two chained 64x32 HUB75 panels).
+pub const DEFAULT_VISOR_WIDTH: usize = 128;
 
-/// Logical visor bounding-box height in pixels.
-pub const VISOR_HEIGHT: usize = 32;
+/// Default logical visor height in pixels.
+pub const DEFAULT_VISOR_HEIGHT: usize = 32;
 
-/// Number of bytes in the packed RGB framebuffer (`128 * 32 * 3`).
-pub const FRAMEBUFFER_RGB_LEN: usize = VISOR_WIDTH * VISOR_HEIGHT * 3;
+/// Packed RGB byte count for the default `128x32` visor (`128 * 32 * 3`).
+pub const DEFAULT_FRAMEBUFFER_RGB_LEN: usize = DEFAULT_VISOR_WIDTH * DEFAULT_VISOR_HEIGHT * 3;
 
-/// Number of bytes in an RGBA copy for HTML5 Canvas (`128 * 32 * 4`).
-pub const FRAMEBUFFER_RGBA_LEN: usize = VISOR_WIDTH * VISOR_HEIGHT * 4;
+/// Packed RGBA byte count for the default `128x32` visor (`128 * 32 * 4`).
+pub const DEFAULT_FRAMEBUFFER_RGBA_LEN: usize = DEFAULT_VISOR_WIDTH * DEFAULT_VISOR_HEIGHT * 4;
 
 /// 24-bit RGB color.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -63,10 +67,14 @@ impl Rgb {
     }
 }
 
-/// Fixed-size `128x32` RGB framebuffer (no heap allocation).
+/// Fixed-storage RGB framebuffer (no heap allocation).
+///
+/// Currently backed by `DEFAULT_VISOR_WIDTH x DEFAULT_VISOR_HEIGHT`; callers
+/// should read `width()`, `height()`, and `as_rgb_bytes()` instead of assuming
+/// fixed dimensions.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Framebuffer {
-    pixels: [u8; FRAMEBUFFER_RGB_LEN],
+    pixels: [u8; DEFAULT_FRAMEBUFFER_RGB_LEN],
 }
 
 impl Default for Framebuffer {
@@ -76,11 +84,31 @@ impl Default for Framebuffer {
 }
 
 impl Framebuffer {
-    /// Creates a black (all-zero) `128x32` framebuffer.
+    /// Creates a black (all-zero) framebuffer at the default `128x32` resolution.
     pub const fn new() -> Self {
         Self {
-            pixels: [0u8; FRAMEBUFFER_RGB_LEN],
+            pixels: [0u8; DEFAULT_FRAMEBUFFER_RGB_LEN],
         }
+    }
+
+    /// Logical framebuffer width in pixels.
+    pub const fn width(&self) -> usize {
+        DEFAULT_VISOR_WIDTH
+    }
+
+    /// Logical framebuffer height in pixels.
+    pub const fn height(&self) -> usize {
+        DEFAULT_VISOR_HEIGHT
+    }
+
+    /// Byte length of the packed RGB buffer (`width * height * 3`).
+    pub const fn rgb_len(&self) -> usize {
+        self.width() * self.height() * 3
+    }
+
+    /// Byte length required for an RGBA copy (`width * height * 4`).
+    pub const fn rgba_len(&self) -> usize {
+        self.width() * self.height() * 4
     }
 
     /// Clears all pixels to black.
@@ -89,17 +117,18 @@ impl Framebuffer {
     }
 
     /// Returns the raw packed RGB slice (`[r, g, b, r, g, b, ...]`).
-    pub fn as_rgb_bytes(&self) -> &[u8; FRAMEBUFFER_RGB_LEN] {
+    pub fn as_rgb_bytes(&self) -> &[u8] {
         &self.pixels
     }
 
     /// Copies the framebuffer into an RGBA buffer (`alpha = 255`) for browser canvas rendering.
-    /// Returns `false` if `out.len() < FRAMEBUFFER_RGBA_LEN`.
+    /// Returns `false` if `out.len() < self.rgba_len()`.
     pub fn copy_rgba_into(&self, out: &mut [u8]) -> bool {
-        if out.len() < FRAMEBUFFER_RGBA_LEN {
+        if out.len() < self.rgba_len() {
             return false;
         }
-        for i in 0..(VISOR_WIDTH * VISOR_HEIGHT) {
+        let pixel_count = self.width() * self.height();
+        for i in 0..pixel_count {
             let src = i * 3;
             let dst = i * 4;
             out[dst] = self.pixels[src];
@@ -110,16 +139,16 @@ impl Framebuffer {
         true
     }
 
-    /// Sets one pixel if `(x, y)` is inside `0..128` x `0..32`. Out-of-bounds writes are ignored.
+    /// Sets one pixel if `(x, y)` is inside `0..width` x `0..height`. Out-of-bounds writes are ignored.
     pub fn set_pixel(&mut self, x: i32, y: i32, color: Rgb) {
         if x < 0 || y < 0 {
             return;
         }
         let (ux, uy) = (x as usize, y as usize);
-        if ux >= VISOR_WIDTH || uy >= VISOR_HEIGHT {
+        if ux >= self.width() || uy >= self.height() {
             return;
         }
-        let idx = (uy * VISOR_WIDTH + ux) * 3;
+        let idx = (uy * self.width() + ux) * 3;
         self.pixels[idx] = color.r;
         self.pixels[idx + 1] = color.g;
         self.pixels[idx + 2] = color.b;
@@ -127,10 +156,10 @@ impl Framebuffer {
 
     /// Reads one pixel. Returns `Rgb::BLACK` for out-of-bounds coordinates.
     pub fn get_pixel(&self, x: usize, y: usize) -> Rgb {
-        if x >= VISOR_WIDTH || y >= VISOR_HEIGHT {
+        if x >= self.width() || y >= self.height() {
             return Rgb::BLACK;
         }
-        let idx = (y * VISOR_WIDTH + x) * 3;
+        let idx = (y * self.width() + x) * 3;
         Rgb {
             r: self.pixels[idx],
             g: self.pixels[idx + 1],
@@ -138,10 +167,11 @@ impl Framebuffer {
         }
     }
 
-    /// Sets a pixel on the left panel `(x, y)` and mirrors it onto the right panel `(127 - x, y)`.
+    /// Sets a pixel on the left half `(x, y)` and mirrors it onto the right half `(width - 1 - x, y)`.
     pub fn set_mirrored_pixel(&mut self, x: i32, y: i32, color: Rgb) {
+        let mirrored_x = (self.width() as i32 - 1) - x;
         self.set_pixel(x, y, color);
-        self.set_pixel((VISOR_WIDTH as i32 - 1) - x, y, color);
+        self.set_pixel(mirrored_x, y, color);
     }
 
     /// Draws a filled rectangle mirrored across both left and right visor panels.

@@ -1,6 +1,6 @@
 //! Integration tests for `ProtoBrain` state transitions and `ProtoSpeak` packet handling.
 
-use proto_brain::{BrainError, Expression, ProtoBrain, Rgb, VISOR_HEIGHT, VISOR_WIDTH};
+use proto_brain::{BrainError, Expression, ProtoBrain, Rgb};
 use proto_speak::{
     decode_packet, decode_payload, encode_payload, Flags, Header, HelloInfo, HelloRequest, McuKind,
     NodeId, Opcode, PreviewAck, PreviewState, MAX_PACKET_SIZE, PROTOCOL_VERSION,
@@ -42,8 +42,8 @@ fn handles_hello_info_handshake() {
     };
     assert_eq!(info.protocol_version, PROTOCOL_VERSION);
     assert_eq!(info.mcu, McuKind::WasmSimulator);
-    assert_eq!(info.visor_width, VISOR_WIDTH as u16);
-    assert_eq!(info.visor_height, VISOR_HEIGHT as u16);
+    assert_eq!(info.visor_width, brain.visor_width());
+    assert_eq!(info.visor_height, brain.visor_height());
     assert_eq!(info.button_count, 1);
 }
 

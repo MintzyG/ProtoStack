@@ -12,7 +12,8 @@ pub mod framebuffer;
 
 pub use faces::{render_expression, Expression};
 pub use framebuffer::{
-    Framebuffer, Rgb, FRAMEBUFFER_RGBA_LEN, FRAMEBUFFER_RGB_LEN, VISOR_HEIGHT, VISOR_WIDTH,
+    Framebuffer, Rgb, DEFAULT_FRAMEBUFFER_RGBA_LEN, DEFAULT_FRAMEBUFFER_RGB_LEN,
+    DEFAULT_VISOR_HEIGHT, DEFAULT_VISOR_WIDTH,
 };
 
 use proto_speak::{
@@ -96,9 +97,19 @@ impl ProtoBrain {
         self.virtual_button_mask
     }
 
-    /// Returns a read-only reference to the rendered `128x32` RGB framebuffer.
+    /// Returns a read-only reference to the rendered RGB framebuffer.
     pub const fn framebuffer(&self) -> &Framebuffer {
         &self.framebuffer
+    }
+
+    /// Returns the active logical visor width in pixels.
+    pub const fn visor_width(&self) -> u16 {
+        self.framebuffer.width() as u16
+    }
+
+    /// Returns the active logical visor height in pixels.
+    pub const fn visor_height(&self) -> u16 {
+        self.framebuffer.height() as u16
     }
 
     /// Updates state from a `PreviewState` payload and immediately re-renders the framebuffer.
@@ -146,8 +157,8 @@ impl ProtoBrain {
                     fw_patch: 0,
                     protocol_version: PROTOCOL_VERSION,
                     mcu: self.mcu,
-                    visor_width: VISOR_WIDTH as u16,
-                    visor_height: VISOR_HEIGHT as u16,
+                    visor_width: self.visor_width(),
+                    visor_height: self.visor_height(),
                     button_count: self.button_count,
                 };
                 Ok(encode_payload(ack_header, &info, response_out)?)

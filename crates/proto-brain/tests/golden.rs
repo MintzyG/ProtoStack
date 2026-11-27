@@ -7,15 +7,13 @@
 //! To regenerate snapshots intentionally after editing `faces.rs`, run:
 //! `UPDATE_GOLDENS=1 cargo test -p proto-brain --test golden`
 
-use proto_brain::{
-    render_expression, Expression, Framebuffer, Rgb, FRAMEBUFFER_RGBA_LEN, VISOR_HEIGHT,
-    VISOR_WIDTH,
-};
+use proto_brain::{render_expression, Expression, Framebuffer, Rgb};
 
 fn render_left_half_ascii(fb: &Framebuffer, expected_color: Rgb) -> String {
-    let mut out = String::with_capacity((VISOR_WIDTH / 2 + 1) * VISOR_HEIGHT);
-    for y in 0..VISOR_HEIGHT {
-        for x in 0..(VISOR_WIDTH / 2) {
+    let half_w = fb.width() / 2;
+    let mut out = String::with_capacity((half_w + 1) * fb.height());
+    for y in 0..fb.height() {
+        for x in 0..half_w {
             let p = fb.get_pixel(x, y);
             if p == Rgb::BLACK {
                 out.push('.');
@@ -30,10 +28,11 @@ fn render_left_half_ascii(fb: &Framebuffer, expected_color: Rgb) -> String {
 }
 
 fn assert_horizontally_symmetric(fb: &Framebuffer) {
-    for y in 0..VISOR_HEIGHT {
-        for x in 0..(VISOR_WIDTH / 2) {
+    let w = fb.width();
+    for y in 0..fb.height() {
+        for x in 0..(w / 2) {
             let left = fb.get_pixel(x, y);
-            let right = fb.get_pixel(VISOR_WIDTH - 1 - x, y);
+            let right = fb.get_pixel(w - 1 - x, y);
             assert_eq!(left, right, "asymmetry at ({x}, {y})");
         }
     }
@@ -106,8 +105,8 @@ fn brightness_scales_lit_pixels_and_rgba_copy_preserves_channels() {
 
     // Every lit pixel must carry the exact scaled tint color.
     let mut lit_count = 0usize;
-    for y in 0..VISOR_HEIGHT {
-        for x in 0..VISOR_WIDTH {
+    for y in 0..fb.height() {
+        for x in 0..fb.width() {
             let p = fb.get_pixel(x, y);
             if p != Rgb::BLACK {
                 assert_eq!(p, expected);
@@ -118,7 +117,7 @@ fn brightness_scales_lit_pixels_and_rgba_copy_preserves_channels() {
     assert!(lit_count > 100);
 
     // Verify RGBA export for HTML5 Canvas (`alpha == 255` everywhere).
-    let mut rgba = [0u8; FRAMEBUFFER_RGBA_LEN];
+    let mut rgba = vec![0u8; fb.rgba_len()];
     assert!(fb.copy_rgba_into(&mut rgba));
     for pixel in rgba.as_chunks::<4>().0 {
         assert_eq!(pixel[3], 255);
