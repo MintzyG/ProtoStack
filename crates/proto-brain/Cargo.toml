@@ -1,0 +1,13 @@
+[package]
+name = "proto-brain"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Core no_std visor renderer, state engine, and ProtoSpeak command handler for ProtoStack"
+
+[lints]
+workspace = true
+
+[dependencies]
+proto-speak = { path = "../proto-speak" }

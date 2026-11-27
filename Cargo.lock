@@ -46,6 +46,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "proto-brain"
+version = "0.1.0"
+dependencies = [
+ "proto-speak",
+]
+
+[[package]]
 name = "proto-speak"
 version = "0.1.0"
 dependencies = [
