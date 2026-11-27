@@ -58,7 +58,11 @@ Why WebHID instead of WebUSB or WebSerial:
 One big finding from auditing Coela's ProtoTracer source code (`research/01-prototracer-teardown.md`): **Teensy 4.0 and 4.1 HalfKay bootloaders can also be flashed directly from Chrome/Edge over WebHID** (`VID 0x16C0`, `PID 0x0478/0479`, 1088-byte HID reports). If we add a `BOOTLOADER_JUMP` command (the same trick VIA uses, triggering Teensy's `bkpt #251`), owners can update Teensy 4.1 firmware straight from the Cloudflare website without opening their helmet to press the physical program button.
 
 ### Display pipeline on Teensy 4.1
-- `ProtoBrain` renders into a logical framebuffer (such as 128x32 for two chained 64x32 HUB75 panels) plus any auxiliary LED zones (cheeks, ears).
+- `ProtoBrain` renders into a 24-bit RGB logical framebuffer (defaulting to `128x32` today via dynamic `width()` / `height()` APIs so higher resolutions or non-rectangular LED maps via `GET_MANIFEST` do not require caller rewrites) plus any auxiliary LED zones (cheeks, ears).
+- Keep the face renderer decoupled inside `ProtoBrain` (a `FaceSource` / renderer boundary writing RGB pixels into `Framebuffer`) so all rendering backends share the exact same pipeline across Teensy 4.1 and browser WASM:
+  - v0.1: built-in 1-bit animated starter faces
+  - v0.4: multi-color PNG/GIF sprite animations (`PROFILE_UPLOAD` tagged by asset kind)
+  - v2.0+: procedural 2D effects and Coela-style real-time 3D blendshape meshes (driven by continuous weights like jaw openness and head pose on Teensy 4.1's 600 MHz Cortex-M7 FPU)
 - On Teensy 4.1, `proto-bsp-teensy41` streams the front buffer to HUB75 using the i.MX RT1062 FlexIO, FlexPWM, and eDMA peripherals while `ProtoBrain` prepares the next frame in the back buffer.
 - Hardware quirks we found in SmartMatrix/ProtoTracer (`research/01-prototracer-teardown.md`) - specifically FM6126A latch timing (100 ns), 18.462 MHz clock divider (26), and RGB vs RBG color channel swaps - will be runtime settings in the hardware manifest rather than compile-time C++ macros.
 
@@ -88,4 +92,4 @@ We scoped v1.0 around a desk-first workflow (see `ADR-002` for milestones v0.1 t
 - **v1.1 (Helmet sensors, comfort, and more boards):** Boop sensor (APDS-9960 I2C with 1.5 cm hysteresis, plus digital pin mode), 5V PWM cooling fan control, I2C `SENSOR_SCAN`, ESP32-S3 board support, WS2812B cheek/ear LEDs, MAX7219 panels, multi-profile slots, multi-button Combos and Double-Tap gestures, and optional mic/jaw lip-sync.
 - **v1.2 (Wired modular suit):** Enable `ProtoSpeak` Domain 1 over a physical wire (UART / CAN / RS-485) so wired tails, ears, chestplates, or sensor pods self-register and appear in `ProtoUI`.
 - **v1.3 (Wireless modular suit and autonomy):** Run the same Domain 1 messages over wireless PHYs (ESP-NOW, BLE, nRF24/LoRa) with encrypted `SuitPSKey` pairing and a 3-second standalone fallback when the head is out of range.
-- **v2.0 (Social mesh and ecosystem):** Opt-in Proto-to-Proto social beacons, procedural vector faces, optional in-browser pixel editor, and Linux SBCs (Raspberry Pi / OrangePi).
+- **v2.0 (Social mesh and advanced rendering):** Opt-in Proto-to-Proto social beacons, procedural 2D effects and real-time 3D blendshape faces (Coela ProtoTracer-style software renderer inside `proto-brain`), optional in-browser pixel editor, and Linux SBCs (Raspberry Pi / OrangePi).
