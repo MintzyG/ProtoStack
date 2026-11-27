@@ -1,4 +1,4 @@
-//! Logical RGB framebuffer and simple 2D pixel drawing primitives.
+//! Logical RGB framebuffer and 1-bit bitmap blitting primitives.
 //!
 //! v0.1 allocates a default `128x32` backing buffer, while exposing dynamic
 //! `width()`, `height()`, and slice APIs so callers do not assume `128x32` is
@@ -65,6 +65,17 @@ impl Rgb {
             b: ((self.b as u16 * pct + 50) / 100) as u8,
         }
     }
+}
+
+/// Borrowed 1-bit MSB-first packed bitmap (`row_stride = width.div_ceil(8)`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Bitmap1Bit<'a> {
+    /// Width in pixels.
+    pub width: usize,
+    /// Height in pixels.
+    pub height: usize,
+    /// Packed MSB-first pixel bytes.
+    pub data: &'a [u8],
 }
 
 /// Fixed-storage RGB framebuffer (no heap allocation).
@@ -167,67 +178,51 @@ impl Framebuffer {
         }
     }
 
-    /// Sets a pixel on the left half `(x, y)` and mirrors it onto the right half `(width - 1 - x, y)`.
-    pub fn set_mirrored_pixel(&mut self, x: i32, y: i32, color: Rgb) {
-        let mirrored_x = (self.width() as i32 - 1) - x;
-        self.set_pixel(x, y, color);
-        self.set_pixel(mirrored_x, y, color);
-    }
-
-    /// Draws a filled rectangle mirrored across both left and right visor panels.
-    pub fn fill_mirrored_rect(&mut self, x: i32, y: i32, w: i32, h: i32, color: Rgb) {
-        for dy in 0..h {
-            for dx in 0..w {
-                self.set_mirrored_pixel(x + dx, y + dy, color);
+    /// Draws an MSB-first 1-bit packed bitmap at `(x, y)`.
+    pub fn draw_bitmap_1bit(&mut self, x: i32, y: i32, bitmap: Bitmap1Bit<'_>, color: Rgb) {
+        let row_bytes = bitmap.width.div_ceil(8);
+        for row in 0..bitmap.height {
+            for col in 0..bitmap.width {
+                let byte_idx = row * row_bytes + (col / 8);
+                let Some(&byte) = bitmap.data.get(byte_idx) else {
+                    continue;
+                };
+                if (byte & (0x80 >> (col % 8))) != 0 {
+                    self.set_pixel(x + col as i32, y + row as i32, color);
+                }
             }
         }
     }
 
-    /// Draws a thick line segment (square brush of size `thickness`) mirrored across both panels.
-    pub fn draw_mirrored_line(
+    /// Draws a 1-bit bitmap squashed vertically toward its center row for blinking.
+    ///
+    /// `open_pct` is `100` for fully open and `0` for closed to a 2-pixel horizontal slit.
+    pub fn draw_bitmap_1bit_blink(
         &mut self,
-        mut x0: i32,
-        mut y0: i32,
-        x1: i32,
-        y1: i32,
-        thickness: i32,
+        x: i32,
+        y: i32,
+        bitmap: Bitmap1Bit<'_>,
         color: Rgb,
+        open_pct: u8,
     ) {
-        let dx = (x1 - x0).abs();
-        let sx = if x0 < x1 { 1 } else { -1 };
-        let dy = -(y1 - y0).abs();
-        let sy = if y0 < y1 { 1 } else { -1 };
-        let mut err = dx + dy;
-
-        loop {
-            self.fill_mirrored_rect(x0, y0, thickness, thickness, color);
-            if x0 == x1 && y0 == y1 {
-                break;
-            }
-            let e2 = 2 * err;
-            if e2 >= dy {
-                err += dy;
-                x0 += sx;
-            }
-            if e2 <= dx {
-                err += dx;
-                y0 += sy;
-            }
-        }
-    }
-
-    /// Draws a mirrored filled ellipse centered at `(cx, cy)` with radii `(rx, ry)`.
-    pub fn fill_mirrored_ellipse(&mut self, cx: i32, cy: i32, rx: i32, ry: i32, color: Rgb) {
-        if rx <= 0 || ry <= 0 {
+        if open_pct >= 100 || bitmap.height <= 2 {
+            self.draw_bitmap_1bit(x, y, bitmap, color);
             return;
         }
-        let rx2 = rx * rx;
-        let ry2 = ry * ry;
-        let bound = rx2 * ry2;
-        for dy in -ry..=ry {
-            for dx in -rx..=rx {
-                if dx * dx * ry2 + dy * dy * rx2 < bound {
-                    self.set_mirrored_pixel(cx + dx, cy + dy, color);
+
+        let target_h = ((bitmap.height * open_pct as usize) / 100).max(2);
+        let y_offset = ((bitmap.height - target_h) / 2) as i32;
+        let row_bytes = bitmap.width.div_ceil(8);
+
+        for dst_row in 0..target_h {
+            let src_row = (dst_row * bitmap.height) / target_h;
+            for col in 0..bitmap.width {
+                let byte_idx = src_row * row_bytes + (col / 8);
+                let Some(&byte) = bitmap.data.get(byte_idx) else {
+                    continue;
+                };
+                if (byte & (0x80 >> (col % 8))) != 0 {
+                    self.set_pixel(x + col as i32, y + y_offset + dst_row as i32, color);
                 }
             }
         }

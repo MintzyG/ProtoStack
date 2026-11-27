@@ -10,9 +10,9 @@
 pub mod faces;
 pub mod framebuffer;
 
-pub use faces::{render_expression, Expression};
+pub use faces::{blink_open_pct, render_expression, Expression};
 pub use framebuffer::{
-    Framebuffer, Rgb, DEFAULT_FRAMEBUFFER_RGBA_LEN, DEFAULT_FRAMEBUFFER_RGB_LEN,
+    Bitmap1Bit, Framebuffer, Rgb, DEFAULT_FRAMEBUFFER_RGBA_LEN, DEFAULT_FRAMEBUFFER_RGB_LEN,
     DEFAULT_VISOR_HEIGHT, DEFAULT_VISOR_WIDTH,
 };
 
@@ -45,6 +45,7 @@ pub struct ProtoBrain {
     tint: Rgb,
     brightness: u8,
     virtual_button_mask: u32,
+    frame: u32,
     framebuffer: Framebuffer,
 }
 
@@ -59,10 +60,28 @@ impl ProtoBrain {
             tint: Rgb::DEFAULT_TINT,
             brightness: 80,
             virtual_button_mask: 0,
+            frame: 0,
             framebuffer: Framebuffer::new(),
         };
         brain.render();
         brain
+    }
+
+    /// Returns the current animation frame counter.
+    pub const fn frame(&self) -> u32 {
+        self.frame
+    }
+
+    /// Advances the animation by one frame and re-renders the framebuffer.
+    pub fn tick(&mut self) {
+        self.frame = self.frame.wrapping_add(1);
+        self.render();
+    }
+
+    /// Sets the animation frame counter explicitly and re-renders.
+    pub fn set_frame(&mut self, frame: u32) {
+        self.frame = frame;
+        self.render();
     }
 
     /// Returns the base expression chosen by the user (before temporary button overrides).
@@ -126,11 +145,11 @@ impl ProtoBrain {
         }
     }
 
-    /// Renders the current state into `self.framebuffer`.
+    /// Renders the current state and animation frame into `self.framebuffer`.
     pub fn render(&mut self) {
         let expr = self.active_expression();
         let effective_color = self.tint.scale(self.brightness);
-        render_expression(&mut self.framebuffer, expr, effective_color);
+        render_expression(&mut self.framebuffer, expr, self.frame, effective_color);
     }
 
     /// Decodes one complete `ProtoSpeak` packet, applies it, and writes the response packet
